@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+
+<div>
+        {% contest.name %}
+</div>
+<p>
+    {% contest.description %}
+</p>
+<form action="{% url 'contest' %}" method="POST" enctype="multipart/form-data">
+    {% bootstrap_form form %}
+    {% buttons submit='Submit' %}{% endbuttons %}
+</form>
+{% for submission in submissions %}
+<p>{% submission.time %}{% submission.score %}</p>
+{% endfor %}
+</body>

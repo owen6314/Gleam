@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+
+<form action="{% url 'create_contest' %}" method="POST" enctype="multipart/form-data">
+    {% bootstrap_form form %}
+    {% buttons submit='Submit' %}{% endbuttons %}
+</form>
+
+</body>

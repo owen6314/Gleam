@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+{% for contest in contests %}
+<div>
+    <a href="{% url 'contest' contest.id %}">
+        {% contest.name %}
+    </a>
+</div>
+{% endfor %}
+</body>
