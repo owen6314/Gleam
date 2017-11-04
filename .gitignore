@@ -67,7 +67,7 @@ target/
 .idea
 
 # Custom files
-/configs.json
+configs.json
 
 # sublime project and workspace
 *.sublime-project

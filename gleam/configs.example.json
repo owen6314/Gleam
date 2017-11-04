@@ -1,4 +1,5 @@
 {
+  "SECRET_KEY": "$2ti7x)dz$09x!$15ewcckd3_%lmvu&yvv-6(ya&d!8rydf0!!",
   "DEBUG": true,
   "DB_NAME": "wechat_ticket",
   "DB_USER": "root",
