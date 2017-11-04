@@ -1,5 +1,10 @@
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.views import View
+from django.forms import inlineformset_factory
+
 import django.utils.timezone as timezone
 from .forms import *
 from .models import *
@@ -42,4 +47,10 @@ def contest(request, contest_id):
     return render(request, 'contest.html',
                   {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
 
+
+class OrganizerSignUp(View):
+
+    @staticmethod
+    def get(request):
+        return render(request, 'organizer_sign_up.html')
 

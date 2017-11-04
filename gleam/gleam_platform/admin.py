@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Organizer, Contestant, Team, Membership
+
+admin.site.register([Organizer, Contestant, Team, Membership])
