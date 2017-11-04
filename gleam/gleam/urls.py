@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from gleam_platform.views import OrganizerSignUp
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^signup/organizer', OrganizerSignUp.as_view(), name='organizer_sign_up')
 ]
