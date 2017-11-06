@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+from .models import Organizer, Contestant, Team, Membership, Profile, Contest
 
-from .models import Organizer, Contestant, Team, Membership
+admin.site.register([Contest, Profile])
 
-admin.site.register([Organizer, Contestant, Team, Membership])

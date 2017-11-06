@@ -1,15 +1,15 @@
+from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
 from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm
 
 import django.utils.timezone as timezone
 from .forms import *
 from .models import *
-
-# Create your views here.
 
 
 def home(request):
@@ -20,13 +20,13 @@ def home(request):
 @login_required
 def create_contest(request):
     if request.method == 'POST':
-        form = CreateContestForm(request.POST)
-        creator = XXX.objects.get(username=request.user.username)
+        form = ContestForm(request.POST)
+        creator = Organizer.objects.get(username=request.user.username)
         post = form.save()
         post.creator = creator
         post.save()
         return home(request)
-    return render(request, 'create_contest.html', {'form': CreateContestForm()})
+    return render(request, 'create_contest.html', {'form': ContestForm()})
 
 
 @login_required
@@ -48,9 +48,41 @@ def contest(request, contest_id):
                   {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
 
 
-class OrganizerSignUp(View):
+class OrganizerSignup(View):
 
     @staticmethod
     def get(request):
-        return render(request, 'organizer_sign_up.html')
+        user_form = UserCreationForm()
+        profile_form = ProfileForm()
+        return render(request, 'organizer_signup.html', {
+            'user_form': user_form,
+            'profile_form': profile_form
+        })
+
+    @staticmethod
+    def post(request):
+        user_form = UserCreationForm(data=request.POST)
+
+        if user_form.is_valid():
+            try:
+                user = user_form.save()
+                auth.login(request, user)
+                profile_form = ProfileForm(data=request.POST, instance=user)
+                profile_form.save()
+                return redirect('organizer_login')
+            except:
+                return redirect('organizer_signup')
+        else:
+            return redirect('organizer_signup')
+
+
+
+class OrganizerLogin(View):
+
+    @staticmethod
+    def get(request):
+        return render(request, 'organizer_login.html')
+
+
+
 

@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-
-from gleam_platform.views import OrganizerSignUp
+from gleam_platform.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^signup/organizer', OrganizerSignUp.as_view(), name='organizer_sign_up')
+    url(r'^signup/organizer', OrganizerSignup.as_view(), name='organizer_signup'),
+    url(r'^login/organizer', OrganizerLogin.as_view(), name='organizer_login'),
 ]

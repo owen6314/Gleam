@@ -1,6 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
-
+from django.contrib.auth.models import User, UserManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import AbstractUser
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
@@ -12,23 +14,42 @@ MAX_FLAG_LEN = 2
 MAX_RID_LEN = 18
 
 
-class Contest(models.Model):
-    # contest name
-    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-
-
-class Organizer(models.Model):
-
-    # basic user for auth
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # organization name
-    organization = models.CharField(max_length=MAX_NAME_LEN_LONG)
+
+    TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
+    type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
+
+    # # organization name
+    # o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+    #
+    # # resident id number
+    # c_resident_id = models.CharField(max_length=MAX_RID_LEN)
+    # # nick name
+    # c_nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+    # # school name
+    # c_school = models.CharField(max_length=MAX_NAME_LEN_LONG)
+    # # gender
+    # GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
+    # gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+class Organizer(Profile):
+    o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+
+    # objects = UserManager()
+
+    class Meta:
+        verbose_name = u'Organizer'
 
 
 class Contestant(models.Model):
-
-    # basic user for auth
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # resident id number
     resident_id = models.CharField(max_length=MAX_RID_LEN)
     # nick name
@@ -78,13 +99,13 @@ class Contest(models.Model):
     STATUS_FINISHED = 2
 
 
-def generate_filename(self, filename):
-    return "submissions/%s/%s" % (self.contest.name, filename)
+def generate_filename(instance, filename):
+    return "submissions/%s/%s" % (instance.contest.name, filename)
 
 
 class Submission(models.Model):
     contest = models.ForeignKey('Contest')
     team = models.ForeignKey('Team')
-    score = models.DecimalField(..., max_digits=4, decimal_places=2)
+    score = models.DecimalField(max_digits=4, decimal_places=2)
     data = models.FileField(upload_to=generate_filename)
     time = models.DateTimeField()
