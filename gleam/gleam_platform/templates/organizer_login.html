@@ -6,5 +6,11 @@
 </head>
 <body>
 <p>Login</p>
+<form action={% url 'organizer_login' %} method="POST">
+    {% csrf_token %}
+    <p><label>username</label><input type="text" value="{{ username }}" name="username"/></p>
+    <p><label>password</label><input type="text" value="{{ password }}" name="password"/></p>
+    <p><input type="submit" value="Submit"/></p>
+</form>
 </body>
 </html>

@@ -1,11 +1,8 @@
 from django.contrib import auth
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.views import View
-from django.forms import inlineformset_factory
-from django.contrib.auth.forms import UserCreationForm
 
 import django.utils.timezone as timezone
 from .forms import *
@@ -75,28 +72,22 @@ class OrganizerSignup(View):
     @staticmethod
     def get(request):
         user_form = UserCreationForm()
-        profile_form = ProfileForm()
-        return render(request, 'organizer_signup.html', {
-            'user_form': user_form,
-            'profile_form': profile_form
-        })
+        organizer_form = OrganizerForm()
+        return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
 
     @staticmethod
     def post(request):
-        user_form = UserCreationForm(data=request.POST)
-
-        if user_form.is_valid():
-            try:
-                user = user_form.save()
-                auth.login(request, user)
-                profile_form = ProfileForm(data=request.POST, instance=user)
-                profile_form.save()
-                return redirect('organizer_login')
-            except:
-                return redirect('organizer_signup')
-        else:
-            return redirect('organizer_signup')
-
+        user_form = UserCreationForm(request.POST)
+        organizer_form = OrganizerForm(request.POST)
+        if user_form.is_valid() and organizer_form.is_valid():
+            user = user_form.save()
+            profile = get_object_or_404(Profile, user=user)
+            profile.type = 'O'
+            organizer_profile = organizer_form.save()
+            profile.organizer_profile = organizer_profile
+            profile.save()
+            return redirect('organizer_login')
+        return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
 
 
 class OrganizerLogin(View):
@@ -104,6 +95,27 @@ class OrganizerLogin(View):
     @staticmethod
     def get(request):
         return render(request, 'organizer_login.html')
+
+    @staticmethod
+    def post(request):
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return render(request, 'organizer_login_successful.html')
+        else:
+            return render(request, 'organizer_login.html', {'username': username, 'password': password})
+
+class OrganizerLogout(View):
+
+    @staticmethod
+    def post(request):
+        logout(request)
+        redirect('organizer_login')
+
 
 
 
