@@ -4,15 +4,15 @@
 
 </head>
 <body>
-    <a href="signup/organizer">Sign Up</a>
-    <a href="login/organizer">Log In</a>
+    <a href="{% url 'organizer_signup' %}">Sign Up</a>
+    <a href="{% url 'organizer_login' %}">Log In</a>
     {% if user.is_authenticated %}
     <a href={% url "create_contest" %}>CreateContest</a>
     {% endif %}
     <h2>Contests</h2>
     {% for contest in contests %}
     <div>
-        <a href="{% url 'contest' contest.id %}">
+        <a href="{% url 'contest_detail' contest.id %}">
             {{ contest.name }}
         </a>
     </div>

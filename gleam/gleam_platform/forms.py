@@ -8,8 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 class ContestForm(forms.ModelForm):
     class Meta:
         model = Contest
-        fields = ['name', 'signup_begin_time', 'signup_end_time', 'submit_begin_time', 'submit_end_time',
-                  'announcement_time', 'description', 'evaluation', 'prizes', 'data_description']
+        exclude = ['organizer', 'status']
 
 
 class UploadImageForm(forms.ModelForm):

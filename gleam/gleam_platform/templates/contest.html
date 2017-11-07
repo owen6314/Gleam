@@ -5,17 +5,13 @@
 </head>
 <body>
 
-<div>
-        {{ contest.name }}
-</div>
 <p>
-    {{ contest.description }}
+        Name: {{ contest.name }}
 </p>
-<form action="{% url 'contest' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit"/>
-</form>
+<p>
+    Descripiton: {{ contest.description }}
+</p>
+
 {% for submission in submissions %}
 <p>{{ submission.time }} {{ submission.score }}</p>
 {% endfor %}
