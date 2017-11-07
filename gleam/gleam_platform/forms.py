@@ -19,6 +19,7 @@ class UploadImageForm(forms.ModelForm):
 class UploadFileForm(forms.ModelForm):
     file = forms.FileField(required=True, label='Upload file')
 
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile

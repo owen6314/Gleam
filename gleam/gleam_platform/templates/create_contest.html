@@ -4,10 +4,13 @@
 
 </head>
 <body>
-
+{% if user.is_authenticated %}
 <form action="{% url 'create_contest' %}" method="POST" enctype="multipart/form-data">
-    {% bootstrap_form form %}
-    {% buttons submit='Submit' %}{% endbuttons %}
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit"/>
 </form>
-
+{% else %}
+<a href="/login/organizer">You need to login</a>
+{% endif %}
 </body>

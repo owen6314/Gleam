@@ -6,16 +6,17 @@
 <body>
 
 <div>
-        {% contest.name %}
+        {{ contest.name }}
 </div>
 <p>
-    {% contest.description %}
+    {{ contest.description }}
 </p>
 <form action="{% url 'contest' %}" method="POST" enctype="multipart/form-data">
-    {% bootstrap_form form %}
-    {% buttons submit='Submit' %}{% endbuttons %}
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit"/>
 </form>
 {% for submission in submissions %}
-<p>{% submission.time %}{% submission.score %}</p>
+<p>{{ submission.time }} {{ submission.score }}</p>
 {% endfor %}
 </body>
