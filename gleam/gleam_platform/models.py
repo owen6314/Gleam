@@ -13,12 +13,35 @@ MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
 
+class Organizer(models.Model):
+    o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+
+    # objects = UserManager()
+
+    class Meta:
+        verbose_name = u'Organizer'
+
+
+class Contestant(models.Model):
+    # resident id number
+    resident_id = models.CharField(max_length=MAX_RID_LEN)
+    # nick name
+    nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+    # school name
+    school = models.CharField(max_length=MAX_NAME_LEN_LONG)
+    # gender
+    GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
+
+    organizer_profile = models.ForeignKey(Organizer, null=True)
+    Contestant_profile = models.ForeignKey(Contestant, null=True)
 
     # # organization name
     # o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
@@ -38,27 +61,6 @@ class Profile(models.Model):
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-
-class Organizer(Profile):
-    o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
-
-    # objects = UserManager()
-
-    class Meta:
-        verbose_name = u'Organizer'
-
-
-class Contestant(models.Model):
-    # resident id number
-    resident_id = models.CharField(max_length=MAX_RID_LEN)
-    # nick name
-    nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
-    # school name
-    school = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    # gender
-    GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
 
 class Team(models.Model):

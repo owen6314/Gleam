@@ -8,8 +8,8 @@
 <form action={% url 'organizer_signup' %} method="POST">
     {% csrf_token %}
     {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-    <input type="submit" value="Submit"/>
+    {{ organizer_form.as_p }}
+    <p><input type="submit" value="Submit"/></p>
 </form>
 </body>
 </html>
