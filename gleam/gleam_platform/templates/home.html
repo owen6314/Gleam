@@ -4,11 +4,17 @@
 
 </head>
 <body>
-{% for contest in contests %}
-<div>
-    <a href="{% url 'contest' contest.id %}">
-        {% contest.name %}
-    </a>
-</div>
-{% endfor %}
+    <a href="signup/organizer">Sign Up</a>
+    <a href="login/organizer">Log In</a>
+    {% if user.is_authenticated %}
+    <a href={% url "create_contest" %}>CreateContest</a>
+    {% endif %}
+    <h2>Contests</h2>
+    {% for contest in contests %}
+    <div>
+        <a href="{% url 'contest' contest.id %}">
+            {{ contest.name }}
+        </a>
+    </div>
+    {% endfor %}
 </body>
