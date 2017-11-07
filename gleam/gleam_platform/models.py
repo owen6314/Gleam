@@ -13,6 +13,7 @@ MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
 
+
 class Organizer(models.Model):
     o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 

@@ -14,6 +14,10 @@ def home(request):
     return render(request, 'home.html', {'contests': contests[:5]})
 
 
+def msg(request, msgs):
+    return render(request, 'msg.html', {'msgs': msgs})
+
+
 # Todo: login required
 class CreateContest(View):
     @staticmethod
@@ -24,31 +28,38 @@ class CreateContest(View):
     def post(request):
         form = ContestForm(request.POST)
         if form.is_valid():
-            creator = Organizer.objects.get(user=request.user)
-            post = form.save()
-            post.creator = creator
-            post.save()
-            return home(request)
-        else:  # Todo: error message
-            return home(request)
+            organizer = request.user.profile.organizer_profile
+            contest = form.save(commit=False)
+            contest.organizer = organizer
+            contest.status = Contest.STATUS_SAVED
+            contest.save()
+            msgs = []
+            msgs.append("Success")
+            return msg(request, msgs)
+        else: # Todo: error message
+            msgs = []
+            msgs.append("Fail")
+            return msg(request, msgs)
 
 
 class ContestDetail(View):
     @staticmethod
     def get(request, contest_id):
         contest = get_object_or_404(Contest, pk=contest_id)
-        contestant = Contestant.objects.get(user=request.user)
+        contestant = request.user.profile.contestant_profile
+        if not contestant:
+            return render(request, 'contest.html', {'contest': contest})
         team = contestant.Team_set.filter(contest=contest)
         if not team:
             return render(request, 'contest.html', {'contest': contest})
         submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
         return render(request, 'contest.html',
                       {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
-
+'''
     @staticmethod
     def post(request, contest_id):
         contest = get_object_or_404(Contest, pk=contest_id)
-        contestant = Contestant.objects.get(user=request.user)
+        contestant = request.user.profile.contestant_profile
         team = contestant.Team_set.filter(contest=contest)
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -56,6 +67,7 @@ class ContestDetail(View):
                                                    data=request.FILES['file'], time=timezone.now())
             submission.save()
             return redirect('contest', contest_id)
+'''
 
 
 class OrganizerSignup(View):

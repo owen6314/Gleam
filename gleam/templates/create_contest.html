@@ -7,10 +7,10 @@
 {% if user.is_authenticated %}
 <form action="{% url 'create_contest' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form }}
+    {{ form.as_p }}
     <input type="submit" value="Submit"/>
 </form>
 {% else %}
-<a href="/login/organizer">You need to login</a>
+<a href="{% url 'organizer_login' %}">You need to login</a>
 {% endif %}
 </body>
