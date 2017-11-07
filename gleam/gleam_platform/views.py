@@ -16,7 +16,6 @@ def home(request):
 
 # Todo: login required
 class CreateContest(View):
-
     @staticmethod
     def get(request):
         return render(request, 'create_contest.html', {'form': ContestForm()})
@@ -30,12 +29,11 @@ class CreateContest(View):
             post.creator = creator
             post.save()
             return home(request)
-        else: # Todo: error message
+        else:  # Todo: error message
             return home(request)
 
 
 class ContestDetail(View):
-
     @staticmethod
     def get(request, contest_id):
         contest = get_object_or_404(Contest, pk=contest_id)
@@ -61,7 +59,6 @@ class ContestDetail(View):
 
 
 class OrganizerSignup(View):
-
     @staticmethod
     def get(request):
         user_form = UserCreationForm()
@@ -84,7 +81,6 @@ class OrganizerSignup(View):
 
 
 class OrganizerLogin(View):
-
     @staticmethod
     def get(request):
         return render(request, 'organizer_login.html')
@@ -102,14 +98,57 @@ class OrganizerLogin(View):
         else:
             return render(request, 'organizer_login.html', {'username': username, 'password': password})
 
-class OrganizerLogout(View):
 
+class OrganizerLogout(View):
     @staticmethod
     def post(request):
         logout(request)
         redirect('organizer_login')
 
 
+class ContestantSignup(View):
+    @staticmethod
+    def get(request):
+        user_form = UserCreationForm()
+        contestant_form = ContestantForm()
+        return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
+
+    @staticmethod
+    def post(request):
+        user_form = UserCreationForm(request.POST)
+        contestant_form = ContestantForm(request.POST)
+        if user_form.is_valid() and contestant_form.is_valid():
+            user = user_form.save()
+            profile = get_object_or_404(Profile, user=user)
+            profile.type = 'C'
+            contestant_profile = contestant_form.save()
+            profile.contestant_profile = contestant_profile
+            profile.save()
+            return redirect('contestant_login')
+        return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
 
 
+class ContestantLogin(View):
+    @staticmethod
+    def get(request):
+        return render(request, 'contestant_login.html')
 
+    @staticmethod
+    def post(request):
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return render(request, 'contestant_login_successful.html')
+        else:
+            return render(request, 'contestant_login.html', {'username': username, 'password': password})
+
+
+class ContestantLogout(View):
+    @staticmethod
+    def post(request):
+        logout(request)
+        redirect('contestant_login')

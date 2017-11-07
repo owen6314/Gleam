@@ -59,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'gleam_platform/templates'
+            'templates'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
