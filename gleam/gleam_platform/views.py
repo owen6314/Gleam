@@ -17,6 +17,9 @@ def home(request):
     return render(request, 'home.html', {'contests': contests[:5]})
 
 
+def msg(request, msgs):
+    return render(request, 'msg.html', {'msgs': msgs})
+
 # Todo: login required
 class CreateContest(View):
 
@@ -28,13 +31,17 @@ class CreateContest(View):
     def post(request):
         form = ContestForm(request.POST)
         if form.is_valid():
-            creator = Organizer.objects.get(user=request.user)
+            #creator = request.user.profile.
             post = form.save()
             post.creator = creator
             post.save()
-            return home(request)
+            msgs = []
+            msgs.append("Success")
+            return msg(request, msgs)
         else: # Todo: error message
-            return home(request)
+            msgs = []
+            msgs.append("Fail")
+            return msg(request, msgs)
 
 
 class ContestDetail(View):
