@@ -1,24 +1,27 @@
 from django.contrib import auth
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.utils.decorators import method_decorator
 
 import django.utils.timezone as timezone
 from .forms import *
 from .models import *
 
 
-def home(request):
-    contests = Contest.objects.order_by('-submit_end_time')
-    return render(request, 'home.html', {'contests': contests[:5]})
+class HomeView(View):
+    @staticmethod
+    def get(request):
+        contests = Contest.objects.order_by('-submit_end_time')
+        return render(request, 'home.html', {'contests': contests[:5]})
 
 
 def msg(request, msgs):
     return render(request, 'msg.html', {'msgs': msgs})
 
 
-# Todo: login required
+@method_decorator(login_required, name='dispatch')
 class CreateContest(View):
     @staticmethod
     def get(request):
@@ -36,7 +39,7 @@ class CreateContest(View):
             msgs = []
             msgs.append("Success")
             return msg(request, msgs)
-        else: # Todo: error message
+        else:  # Todo: error message
             msgs = []
             msgs.append("Fail")
             return msg(request, msgs)
@@ -55,6 +58,8 @@ class ContestDetail(View):
         submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
         return render(request, 'contest.html',
                       {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
+
+
 '''
     @staticmethod
     def post(request, contest_id):
@@ -88,34 +93,8 @@ class OrganizerSignup(View):
             organizer_profile = organizer_form.save()
             profile.organizer_profile = organizer_profile
             profile.save()
-            return redirect('organizer_login')
+            return redirect('login')
         return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
-
-
-class OrganizerLogin(View):
-    @staticmethod
-    def get(request):
-        return render(request, 'organizer_login.html')
-
-    @staticmethod
-    def post(request):
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return render(request, 'organizer_login_successful.html')
-        else:
-            return render(request, 'organizer_login.html', {'username': username, 'password': password})
-
-
-class OrganizerLogout(View):
-    @staticmethod
-    def post(request):
-        logout(request)
-        redirect('organizer_login')
 
 
 class ContestantSignup(View):
@@ -136,14 +115,14 @@ class ContestantSignup(View):
             contestant_profile = contestant_form.save()
             profile.contestant_profile = contestant_profile
             profile.save()
-            return redirect('contestant_login')
+            return redirect('login')
         return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
 
 
-class ContestantLogin(View):
+class LoginView(View):
     @staticmethod
     def get(request):
-        return render(request, 'contestant_login.html')
+        return render(request, 'login.html')
 
     @staticmethod
     def post(request):
@@ -154,13 +133,139 @@ class ContestantLogin(View):
 
         if user is not None:
             login(request, user)
-            return render(request, 'contestant_login_successful.html')
+            return redirect('home')
         else:
-            return render(request, 'contestant_login.html', {'username': username, 'password': password})
+            return render(request, 'login.html', {'username': username, 'password': password})
 
 
-class ContestantLogout(View):
+@method_decorator(login_required, name='dispatch')
+class LogoutView(View):
+    @staticmethod
+    def get(request):
+        auth.logout(request)
+        return redirect('home')
+
+
+@method_decorator(login_required, name='dispatch')
+class UserDetailView(View):
+    @staticmethod
+    def get(request):
+        profile = request.user.profile
+        type = profile.type
+        details = dict()
+
+        # Organizer
+        if type == 'O':
+            details['organization'] = profile.organizer_profile.organization
+            return render(request, 'organizer_detail.html', context=details)
+
+        # Contestant
+        elif type == 'C':
+            details['resident_id'] = profile.contestant_profile.resident_id
+            details['nick_name'] = profile.contestant_profile.nick_name
+            details['school'] = profile.contestant_profile.school
+            details['gender'] = profile.contestant_profile.gender
+            return render(request, 'contestant_detail.html', context=details)
+
+
+class SignupOrganizerView(View):
+    # 注册赛事方
+    # email password
     @staticmethod
     def post(request):
-        logout(request)
-        redirect('contestant_login')
+        pass
+
+
+class SignupContestantView(View):
+    # 注册参赛者
+    # email password
+    @staticmethod
+    def post(request):
+        pass
+
+
+class LoginOrganizerView(View):
+    # 赛事方登录
+    # email password
+    @staticmethod
+    def post(request):
+        pass
+
+
+class LoginContestantView(View):
+    # 参赛方登录
+    # email password
+    @staticmethod
+    def post(request):
+        pass
+
+
+class IndexView(View):
+    # 渲染主页
+    @staticmethod
+    def get(request):
+        pass
+
+
+class HomeOrganizerView(View):
+    # 显示赛事方主页
+    @staticmethod
+    def get(request):
+        pass
+
+
+class HomeContestantView(View):
+    # 显示参赛者主页
+    @staticmethod
+    def get(request):
+        pass
+
+
+class ProfileOrganizerView(View):
+    # 显示赛事方信息
+    @staticmethod
+    def get(request):
+        pass
+
+    # 更新赛事方信息
+    @staticmethod
+    def post(request):
+        pass
+
+
+class ProfileContestantView(View):
+    # 显示参赛者信息
+    @staticmethod
+    def get(request):
+        pass
+
+    # 更新参赛者信息
+    @staticmethod
+    def post(request):
+        pass
+
+
+class CreateContestView(View):
+    # 渲染比赛创建页面
+    @staticmethod
+    def get(request):
+        pass
+
+    # 创建比赛
+    @staticmethod
+    def post(request):
+        pass
+
+
+class ContestDetailView(View):
+    # 显示当前比赛信息
+    @staticmethod
+    def get(request):
+        pass
+
+
+class ContestListView(View):
+    # 显示比赛列表
+    @staticmethod
+    def get(request):
+        pass

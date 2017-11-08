@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Contestant Signup</title>
 </head>
+<a href={% url 'home' %}>Home</a>
 <body>
 <form action={% url 'contestant_signup' %} method="POST">
     {% csrf_token %}

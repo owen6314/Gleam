@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Contestant Login</title>
+    <title>Organizer Log In</title>
 </head>
 <body>
-<form action={% url 'contestant_login' %} method="POST">
+<a href={% url 'home' %}>Home</a>
+<p>Login</p>
+<form action={% url 'login' %} method="POST">
     {% csrf_token %}
     <p><label>username</label><input type="text" value="{{ username }}" name="username"/></p>
     <p><label>password</label><input type="text" value="{{ password }}" name="password"/></p>
     <p><input type="submit" value="Submit"/></p>
 </form>
+<a href="{% url 'organizer_signup' %}">Organizer sign up.</a>
+<a href="{% url 'contestant_signup' %}">Contestant sign up.</a>
 </body>
 </html>

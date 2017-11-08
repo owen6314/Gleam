@@ -15,7 +15,7 @@ MAX_RID_LEN = 18
 
 
 class Organizer(models.Model):
-    o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+    organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
     # objects = UserManager()
 
@@ -41,21 +41,8 @@ class Profile(models.Model):
     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
-    organizer_profile = models.ForeignKey(Organizer, null=True)
-    contestant_profile = models.ForeignKey(Contestant, null=True)
-
-    # # organization name
-    # o_organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
-    #
-    # # resident id number
-    # c_resident_id = models.CharField(max_length=MAX_RID_LEN)
-    # # nick name
-    # c_nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
-    # # school name
-    # c_school = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    # # gender
-    # GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
-    # gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+    organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
+    contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
 
 
 @receiver(post_save, sender=User)
