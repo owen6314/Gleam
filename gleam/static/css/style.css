@@ -151,12 +151,6 @@ blockquote {
 	width: 100%;
 	z-index: 2;
 }
-.dropdown:hover{
-    background-color:rgba(0,0,0,0);
-}
-.dropdown-toggle:active {
-    outline: none;
-}
 .dropdown-menu{
     background-color:rgba(0, 0, 0, 0.5);
     text-align:center;
@@ -164,6 +158,7 @@ blockquote {
 .dropdown-menu > li > a {
   color: rgb(255, 255, 255);
 }
+
 .subfooter {
 	background-color: #fafafa;
 	border-top: 1px solid #f3f3f3;
@@ -181,7 +176,7 @@ blockquote {
 	background-color: #222222;
 	color: #ffffff;
 }
-.default-bg.blue {
+.default-bg.white {
 	background-color: #55acee;
 }
 .translucent-bg {
@@ -238,8 +233,8 @@ blockquote {
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.7);
 }
-.translucent-bg.blue:after {
-	background-color: rgba(85, 172, 238, 0.7);
+.translucent-bg.white:after {
+	background-color: rgba(255, 255, 255, 0.7);
 }
 .translucent-bg .container {
 	z-index: 3;
@@ -540,6 +535,13 @@ textarea {
 	.fixed-header-on .navbar-default .navbar-nav > li > a {
 		padding-top: 20px;
 		padding-bottom: 20px;
+	}
+}
+@media (min-width:768px) {
+	.fixed-header-on .navbar-default .navbar-nav > li > input {
+		position:relative;
+        top:17px;
+        width:300px;
 	}
 }
 @media (max-width:991px) {
