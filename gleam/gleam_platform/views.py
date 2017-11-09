@@ -300,7 +300,7 @@ class HomeOrganizerView(View):
         contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
         number = len(contests)
         total_team = sum([len(contest.Team_set.all()) for contest in contests])
-        pass
+        return render(request, 'organizer_admin.html')
 
 
 class HomeContestantView(View):
@@ -389,16 +389,16 @@ class ProfileContestantView(View):
         return render(request, 'contestant_detail.html', {'form': form})
 
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 class CreateContestView(View):
     # 渲染比赛创建页面
     @staticmethod
     def get(request):
         try:
-            organizer = request.user.profile.organizer_profile
+            organizer = request.user.organizer_profile
         except:
             # 403 permission denied
-            return redirect('index')
+            return render(request, 'contest_creation.html')
 
         pass
 
@@ -407,12 +407,13 @@ class CreateContestView(View):
     def post(request):
         form = ContestForm(request.POST)
         if form.is_valid():
-            organizer = request.user.profile.organizer_profile
+            #organizer = request.user.organizer_profile
             contest = form.save(commit=False)
-            contest.organizer = organizer
+            #contest.organizer = organizer
             contest.status = Contest.STATUS_SAVED
             contest.save()
-        pass
+        return redirect('home-organizer')
+
 
 
 class ContestDetailView(View):

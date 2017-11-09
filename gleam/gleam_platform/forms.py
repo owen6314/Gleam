@@ -55,9 +55,11 @@ class UserSignupForm(forms.ModelForm):
         model = User
         fields = ('email', 'password')
 
+
 class UserLoginForm(forms.Form):
     email = models.EmailField('email address')
     password = models.CharField('password', max_length=80)
+
 
 class ContestantDetailForm(forms.Form):
     email = models.EmailField('email address', unique=True)
@@ -66,6 +68,7 @@ class ContestantDetailForm(forms.Form):
 
     GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
     gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
 
 class OrganizerDetailForm(forms.Form):
     email = models.EmailField('email address', unique=True)

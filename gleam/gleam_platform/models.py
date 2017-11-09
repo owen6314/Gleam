@@ -27,10 +27,9 @@ class Organizer(models.Model):
         verbose_name = u'Organizer'
 
 
-
 class Contest(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    organizer = models.ForeignKey(Organizer)
+    organizer = models.ForeignKey(Organizer, null=True)
     signup_begin_time = models.DateTimeField()
     signup_end_time = models.DateTimeField()
     submit_begin_time = models.DateTimeField()
@@ -41,7 +40,7 @@ class Contest(models.Model):
     prizes = models.TextField()
     data_description = models.TextField()
     status = models.IntegerField()
-    image = models.ImageField()
+    image = models.ImageField(null=True)
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
