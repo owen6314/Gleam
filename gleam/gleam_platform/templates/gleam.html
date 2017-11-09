@@ -106,7 +106,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" form="login-contestant-form" class="btn btn-default" >提交</button>
+                    <button type="submit" id="contestant-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -126,10 +126,10 @@
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab2" class="nav nav-tabs bar_tabs" role="tablist">
-                            <li role="presentation" class=""><a href="#user-sign-in" id="signin-tab2" role="tab"
+                            <li role="presentation" class=""><a href="#sponsor-sign-in" id="signin-tab2" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
-                            <li role="presentation" class="active"><a href="#user-register" role="tab"
+                            <li role="presentation" class="active"><a href="#sponsor-register" role="tab"
                                                                       id="register-tab2" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
@@ -186,7 +186,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" form="login-contestant-form" class="btn btn-default" >提交</button>
+                    <button type="submit" id="orgnizer-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -1236,6 +1236,22 @@
     <script>
         $(function () {
             $(".banner-image").backstretch('/static/images/banner.jpg');
+        });
+        $("#contestant-form").click(function(){
+            if($("#signin-tab1").hasClass("active in"){
+                $("#login-contestant-form).submit();
+                }
+            else{
+                $("#register-contestant-form).submit();
+            }
+        });
+        $("#orgnizer-form").click(function(){
+            if($("#signin-tab2").hasClass("active in"){
+                $("#login-orgnizer-form).submit();
+            }
+            else{
+                $("#register-orgnizer-form).submit();
+            }
         });
     </script>
 {% endblock javascripts %}
