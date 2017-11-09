@@ -17,19 +17,19 @@
     <div class="row tile_count">
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-home"></i>进行中的比赛</span>
-        <div class="count"><a href="#competitions-on-line">1</a></div>
+        <div class="count"><a href="#competitions-on-line">{{count_online}}</a></div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
-        <div class="count">233</div>
+        <div class="count">{{team_count_online}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 累计举办比赛 </span>
-        <div class="count"><a href="#competitions-off-line">233</a></div>
+        <div class="count"><a href="#competitions-off-line">{{count_finished}}</a></div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-clock-o"></i> 累计参赛人数 </span>
-        <div class="count">2333</div>
+        <div class="count">{{team_count_finished}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-clock-o"></i> 累计发放奖金 </span>
@@ -58,7 +58,6 @@
                 <th>开始时间</th>
                 <th>结束时间</th>
                 <th>参赛人数</th>
-                <th>奖金数额</th>
                 <th>排行榜</th>
                 <th>比赛主页</th>
                 <th>修改</th>
@@ -66,16 +65,17 @@
             </thead>
 
             <tbody>
+              {% for c in contests_online %}
               <tr>
-                <td>”挑战杯“全国吃鸡大赛</td>
-                <td>2017/02/30</td>
-                <td>2018/1/1</td>
-                <td>233</td>
-                <td>666</td>
+                <td>{{c.name}}</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submie_end_time}}</td>
+                <td>{{c.team_count}}</td>
                 <td><a href="http://www.sohu.com/a/200899987_492159">排行榜</a></td>
-                <td><a href="https://pubg.com/">”挑战杯“全国吃鸡大赛</a></td>
+                <td><a href="https://pubg.com/"{{c.name}}</a></td>
                 <td><a href="https://www.12321.cn/"><i class="fa fa-wrench"></i></a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -103,12 +103,17 @@
               </tr>
             </thead>
             <tbody>
+              {% for c in contests_ready %}
               <tr>
-                <td>”迁瑞杯“全校吃鸡大赛</td>
-                <td>2017/12/30</td>
-                <td>2018/1/1</td>
-                <td>233</td>
+                <td>{{c.name}}</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submie_end_time}}</td>
+                <td>{{c.team_count}}</td>
+                <td><a href="http://www.sohu.com/a/200899987_492159">排行榜</a></td>
+                <td><a href="https://pubg.com/"{{c.name}}</a></td>
+                <td><a href="https://www.12321.cn/"><i class="fa fa-wrench"></i></a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -118,7 +123,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12" id="competitions-to-public">
       <div class="x_panel">
         <div class="x_title">
-          <h2>待发布的比赛</h2>
+          <h2>待审核的比赛</h2>
           <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
             </li>
@@ -140,15 +145,17 @@
             </thead>
 
             <tbody>
+              {% for c in contests_saved %}
               <tr>
-                <td>”校长杯“全校吃鸡大赛</td>
-                <td>2017/02/30</td>
-                <td>2017/11/3</td>
-                <td>666</td>
-                <td>233</td>
+                <td>{{c.name}}</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submie_end_time}}</td>
+                <td>{{c.team_count}}</td>
                 <td><a href="http://www.sohu.com/a/200899987_492159">排行榜</a></td>
-                <td><a href="https://pubg.com/">”校长杯“全校吃鸡大赛</a></td>
+                <td><a href="https://pubg.com/"{{c.name}}</a></td>
+                <td><a href="https://www.12321.cn/"><i class="fa fa-wrench"></i></a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -180,15 +187,17 @@
               </tr>
             </thead>
             <tbody>
+              {% for c in contests_finished %}
               <tr>
-                <td>”校长杯“全校吃鸡大赛</td>
-                <td>2017/02/30</td>
-                <td>2017/11/3</td>
-                <td>666</td>
-                <td>233</td>
+                <td>{{c.name}}</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submie_end_time}}</td>
+                <td>{{c.team_count}}</td>
                 <td><a href="http://www.sohu.com/a/200899987_492159">排行榜</a></td>
-                <td><a href="https://pubg.com/">”校长杯“全校吃鸡大赛</a></td>
+                <td><a href="https://pubg.com/"{{c.name}}</a></td>
+                <td><a href="https://www.12321.cn/"><i class="fa fa-wrench"></i></a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
