@@ -259,10 +259,10 @@ class LoginContestantView(View):
     def post(request):
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            email = request.POST['email']
+            password = request.POST['password']
             # 验证密码 和 用户类型
-            user = authenticate(request, email=email, password=password)
+            user = authenticate(request, username=email, password=password)
             if user is not None: # and user.type == 'C':
                 login(request, user)
                 # 跳转到主页
@@ -308,14 +308,15 @@ class HomeContestantView(View):
     @staticmethod
     def get(request):
         try:
-            contestant = request.user.profile.contestant_profile
+            contestant = request.user.contestant_profile
         except:
             # 403 permission denied
             return redirect('index')
-        contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISH, Contest.STATUS_FINISH]).order_by('-submit_end_time')
-        teams = contestant.Team_set.all()
+        contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISHED, Contest.STATUS_FINISHED]).order_by('-submit_end_time')
+        teams = contestant.team_set.all()
         my_contests = [team.contest for team in teams]
-        pass
+        return render(request, 'user_home.html')
+
 
 
 class ProfileOrganizerView(View):
@@ -367,9 +368,9 @@ class ProfileContestantView(View):
         data['email'] = user.email
         data['nick_name'] = profile.nick_name
         data['school'] = profile.school
-        form = ContestantDetailForm(data)
+        data['gender'] = profile.gender
 
-        return render(request, 'contestant_detail.html', {'form': form})
+        return render(request, 'user_admin.html', data)
 
     # 更新参赛者信息
     @staticmethod
@@ -382,11 +383,12 @@ class ProfileContestantView(View):
             user = request.user
             profile = user.contestant_profile
             # user.email = form.cleaned_data['email']
-            profile.nick_name = form.cleaned_data['email']
-            profile.school = form.cleaned_data['school']
+            profile.nick_name = request.POST['nick_name']
+            profile.school = request.POST['school']
+            profile.gender = request.POST['gender']
             profile.save()
 
-        return render(request, 'contestant_detail.html', {'form': form})
+        return redirect('profile-contestant')
 
 
 #@method_decorator(login_required, name='dispatch')

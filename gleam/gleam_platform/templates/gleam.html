@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_index.html" %}
 
 {% block title %} {% endblock title %}
 
@@ -59,7 +59,7 @@
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
-                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
+                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
@@ -145,7 +145,7 @@
                     <div class="space"></div>
                     <div class="row">
                         <div class="col-md-6">
-                            <img src="images/section-image-1.png" alt="">
+                            <img src="/static/images/section-image-1.png" alt="">
                             <div class="space"></div>
                         </div>
                         <div class="col-md-6">
@@ -302,7 +302,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-1.jpg" alt="">
+                                    <img src="/static/images/portfolio-1.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-1">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -343,7 +343,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-1.jpg" alt="">
+                                                    <img src="/static/images/portfolio-1.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -361,7 +361,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item app-development">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-2.jpg" alt="">
+                                    <img src="/static/images/portfolio-2.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-2">
                                         <i class="fa fa-search-plus"></i>
                                         <span>App Development</span>
@@ -402,7 +402,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-2.jpg" alt="">
+                                                    <img src="/static/images/portfolio-2.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -420,7 +420,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-3.jpg" alt="">
+                                    <img src="/static/images/portfolio-3.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-3">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -461,7 +461,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-3.jpg" alt="">
+                                                    <img src="/static/images/portfolio-3.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -479,7 +479,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item site-building">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-4.jpg" alt="">
+                                    <img src="/static/images/portfolio-4.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-4">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Site Building</span>
@@ -520,7 +520,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-4.jpg" alt="">
+                                                    <img src="/static/images/portfolio-4.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -538,7 +538,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item app-development">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-5.jpg" alt="">
+                                    <img src="/static/images/portfolio-5.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-5">
                                         <i class="fa fa-search-plus"></i>
                                         <span>App Development</span>
@@ -579,7 +579,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-5.jpg" alt="">
+                                                    <img src="/static/images/portfolio-5.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -597,7 +597,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-6.jpg" alt="">
+                                    <img src="/static/images/portfolio-6.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-6">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -638,7 +638,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-6.jpg" alt="">
+                                                    <img src="/static/images/portfolio-6.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -656,7 +656,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item site-building">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-7.jpg" alt="">
+                                    <img src="/static/images/portfolio-7.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-7">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Site Building</span>
@@ -697,7 +697,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-7.jpg" alt="">
+                                                    <img src="/static/images/portfolio-7.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -715,7 +715,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-8.jpg" alt="">
+                                    <img src="/static/images/portfolio-8.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-8">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -756,7 +756,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-8.jpg" alt="">
+                                                    <img src="/static/images/portfolio-8.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -774,7 +774,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-9.jpg" alt="">
+                                    <img src="/static/images/portfolio-9.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-9">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -815,7 +815,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-9.jpg" alt="">
+                                                    <img src="/static/images/portfolio-9.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -833,7 +833,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item site-building">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-10.jpg" alt="">
+                                    <img src="/static/images/portfolio-10.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-10">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Site Building</span>
@@ -874,7 +874,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-10.jpg" alt="">
+                                                    <img src="/static/images/portfolio-10.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -892,7 +892,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item web-design">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-11.jpg" alt="">
+                                    <img src="/static/images/portfolio-11.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-11">
                                         <i class="fa fa-search-plus"></i>
                                         <span>Web Design</span>
@@ -933,7 +933,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-11.jpg" alt="">
+                                                    <img src="/static/images/portfolio-11.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -951,7 +951,7 @@
                         <div class="col-sm-6 col-md-3 isotope-item app-development">
                             <div class="image-box">
                                 <div class="overlay-container">
-                                    <img src="images/portfolio-12.jpg" alt="">
+                                    <img src="/static/images/portfolio-12.jpg" alt="">
                                     <a class="overlay" data-toggle="modal" data-target="#project-12">
                                         <i class="fa fa-search-plus"></i>
                                         <span>App Development</span>
@@ -992,7 +992,7 @@
                                                         nesciunt.</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <img src="images/portfolio-12.jpg" alt="">
+                                                    <img src="/static/images/portfolio-12.jpg" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -1026,7 +1026,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-1.png" alt="">
+                            <img src="/static/images/testimonial-1.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">兼容个人和团队</h3>
@@ -1039,7 +1039,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-2.png" alt="">
+                            <img src="/static/images/testimonial-2.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">科学性与公正性</h3>
@@ -1052,7 +1052,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-3.png" alt="">
+                            <img src="/static/images/testimonial-3.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">方便快捷的浏览体验</h3>
@@ -1068,7 +1068,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-2.png" alt="">
+                            <img src="/static/images/testimonial-2.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">赛事提醒从不错过</h3>
@@ -1083,7 +1083,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-3.png" alt="">
+                            <img src="/static/images/testimonial-3.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">Amazing!</h3>
@@ -1097,7 +1097,7 @@
                 <div class="col-md-4">
                     <div class="media testimonial">
                         <div class="media-left">
-                            <img src="images/testimonial-1.png" alt="">
+                            <img src="/static/images/testimonial-1.png" alt="">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">Best!</h3>
@@ -1118,32 +1118,32 @@
                     <div class="row">
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-1.png" alt="client">
+                                <img src="/static/images/client-1.png" alt="client">
                             </div>
                         </div>
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-2.png" alt="client">
+                                <img src="/static/images/client-2.png" alt="client">
                             </div>
                         </div>
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-3.png" alt="client">
+                                <img src="/static/images/client-3.png" alt="client">
                             </div>
                         </div>
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-4.png" alt="client">
+                                <img src="/static/images/client-4.png" alt="client">
                             </div>
                         </div>
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-5.png" alt="client">
+                                <img src="/static/images/client-5.png" alt="client">
                             </div>
                         </div>
                         <div class="col-xs-2">
                             <div class="list-horizontal-item">
-                                <img src="images/client-6.png" alt="client">
+                                <img src="/static/images/client-6.png" alt="client">
                             </div>
                         </div>
                     </div>
@@ -1171,11 +1171,11 @@
 
 {% block javascripts %}
     {{ block.super }}
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript" src="js/template.js"></script>
+    <script type="text/javascript" src="/static/js/index.js"></script>
+    <script type="text/javascript" src="/static/js/template.js"></script>
     <script>
         $(function () {
-            $(".banner-image").backstretch('images/banner.jpg');
+            $(".banner-image").backstretch('/static/images/banner.jpg');
         });
     </script>
 {% endblock javascripts %}
