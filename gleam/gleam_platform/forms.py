@@ -15,6 +15,7 @@ MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
 
+
 class ContestForm(forms.ModelForm):
     class Meta:
         model = Contest
@@ -27,8 +28,6 @@ class UploadImageForm(forms.ModelForm):
 
 class UploadFileForm(forms.ModelForm):
     file = forms.FileField(required=True, label='Upload file')
-
-
 
 
 #
@@ -55,9 +54,11 @@ class UserSignupForm(forms.ModelForm):
         model = User
         fields = ('email', 'password')
 
+
 class UserLoginForm(forms.Form):
-    email = models.EmailField('email address')
+    email = models.EmailField('email')
     password = models.CharField('password', max_length=80)
+
 
 class ContestantDetailForm(forms.Form):
     email = models.EmailField('email address', unique=True)
@@ -66,6 +67,7 @@ class ContestantDetailForm(forms.Form):
 
     GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
     gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
 
 class OrganizerDetailForm(forms.Form):
     email = models.EmailField('email address', unique=True)
