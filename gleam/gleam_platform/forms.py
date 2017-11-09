@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 MAX_NAME_LEN_LONG = 80
 # max length of name(short version)
 MAX_NAME_LEN_SHORT = 24
+
 # max length of flag
 MAX_FLAG_LEN = 2
 # max length of resident id number
@@ -49,10 +50,14 @@ class OrganizerForm(forms.ModelForm):
         fields = '__all__'
 
 
-class UserAuthForm(forms.ModelForm):
+class UserSignupForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'password')
+
+class UserLoginForm(forms.Form):
+    email = models.EmailField('email address')
+    password = models.CharField('password', max_length=80)
 
 class ContestantDetailForm(forms.Form):
     email = models.EmailField('email address', unique=True)

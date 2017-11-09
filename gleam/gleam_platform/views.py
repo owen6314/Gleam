@@ -177,7 +177,7 @@ class SignupOrganizerView(View):
     # email password
     @staticmethod
     def post(request):
-        form = UserAuthForm(request.POST)
+        form = UserSignupForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
 
@@ -206,7 +206,7 @@ class SignupContestantView(View):
     # email password
     @staticmethod
     def post(request):
-        form = UserAuthForm(request.POST)
+        form = UserSignupForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
 
@@ -237,7 +237,7 @@ class LoginOrganizerView(View):
     # email password
     @staticmethod
     def post(request):
-        form = UserAuthForm(request.POST)
+        form = UserLoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -257,13 +257,13 @@ class LoginContestantView(View):
     # email password
     @staticmethod
     def post(request):
-        form = UserAuthForm(request.POST)
+        form = UserLoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # 验证密码 和 用户类型
             user = authenticate(request, email=email, password=password)
-            if user is not None and user.type == 'C':
+            if user is not None: # and user.type == 'C':
                 login(request, user)
                 # 跳转到主页
                 return redirect('home-contestant')
@@ -285,7 +285,7 @@ class IndexView(View):
     # 渲染主页
     @staticmethod
     def get(request):
-        return render(request, 'index.html')
+        return render(request, 'gleam.html')
 
 
 class HomeOrganizerView(View):

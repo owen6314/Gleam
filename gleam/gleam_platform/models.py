@@ -109,27 +109,6 @@ class User(AbstractUser):
 #     if created:
 #         Profile.objects.create(user=instance)
 
-
-class Team(models.Model):
-    # team name
-    name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
-    # team members
-    members = models.ManyToManyField(
-        Contestant,
-        through='Membership',
-        through_fields=('team', 'contestant'),
-    )
-    # team contest
-    contest = models.ForeignKey(Contest)
-
-
-class Membership(models.Model):
-    # team
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    # contestant
-    contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
-
-
 class Contest(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
     organizer = models.ForeignKey(Organizer)
@@ -149,6 +128,25 @@ class Contest(models.Model):
     STATUS_SAVED = 0
     STATUS_PUBLISHED = 1
     STATUS_FINISHED = 2
+
+class Team(models.Model):
+    # team name
+    name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+    # team members
+    members = models.ManyToManyField(
+        Contestant,
+        through='Membership',
+        through_fields=('team', 'contestant'),
+    )
+    # team contest
+    contest = models.ForeignKey(Contest)
+
+
+class Membership(models.Model):
+    # team
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
+    # contestant
+    contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
 
 
 def generate_dataset_filename(instance, filename):
