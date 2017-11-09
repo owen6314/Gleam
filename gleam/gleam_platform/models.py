@@ -134,6 +134,28 @@ class User(AbstractUser):
 #     if created:
 #         Profile.objects.create(user=instance)
 
+<<<<<<< HEAD
+=======
+class Contest(models.Model):
+    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+    organizer = models.ForeignKey(Organizer)
+    signup_begin_time = models.DateTimeField()
+    signup_end_time = models.DateTimeField()
+    submit_begin_time = models.DateTimeField()
+    submit_end_time = models.DateTimeField()
+    announcement_time = models.DateTimeField()
+    description = models.TextField()
+    evaluation = models.TextField()
+    prizes = models.TextField()
+    data_description = models.TextField()
+    status = models.IntegerField()
+    image = models.ImageField()
+
+    STATUS_DELETED = -1
+    STATUS_SAVED = 0
+    STATUS_PUBLISHED = 1
+    STATUS_FINISHED = 2
+>>>>>>> 18728064779427782e4473b9a8c73c5f4dcb27c4
 
 class Team(models.Model):
     # team name
@@ -154,7 +176,10 @@ class Membership(models.Model):
     # contestant
     contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 18728064779427782e4473b9a8c73c5f4dcb27c4
 
 def generate_dataset_filename(instance, filename):
     return "datasets/%s/%s" % (instance.contest.name, filename)
