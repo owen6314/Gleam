@@ -60,6 +60,8 @@ class Team(models.Model):
         through='Membership',
         through_fields=('team', 'contestant'),
     )
+    # team contest
+    contest = models.ForeignKey(Contest)
 
 
 class Membership(models.Model):
@@ -82,6 +84,7 @@ class Contest(models.Model):
     prizes = models.TextField()
     data_description = models.TextField()
     status = models.IntegerField()
+    image = models.ImageField()
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -89,7 +92,16 @@ class Contest(models.Model):
     STATUS_FINISHED = 2
 
 
-def generate_filename(instance, filename):
+def generate_dataset_filename(instance, filename):
+    return "datasets/%s/%s" % (instance.contest.name, filename)
+
+
+class Dataset(models.Model):
+    contest = models.ForeignKey('Contest')
+    dataset = models.FileField(upload_to=generate_dataset_filename)
+
+
+def generate_submission_filename(instance, filename):
     return "submissions/%s/%s" % (instance.contest.name, filename)
 
 
@@ -97,5 +109,5 @@ class Submission(models.Model):
     contest = models.ForeignKey('Contest')
     team = models.ForeignKey('Team')
     score = models.DecimalField(max_digits=4, decimal_places=2)
-    data = models.FileField(upload_to=generate_filename)
+    data = models.FileField(upload_to=generate_submission_filename)
     time = models.DateTimeField()

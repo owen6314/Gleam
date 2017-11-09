@@ -20,7 +20,7 @@ class HomeView(View):
 def msg(request, msgs):
     return render(request, 'msg.html', {'msgs': msgs})
 
-
+'''
 @method_decorator(login_required, name='dispatch')
 class CreateContest(View):
     @staticmethod
@@ -59,8 +59,6 @@ class ContestDetail(View):
         return render(request, 'contest.html',
                       {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
 
-
-'''
     @staticmethod
     def post(request, contest_id):
         contest = get_object_or_404(Contest, pk=contest_id)
@@ -211,6 +209,14 @@ class HomeOrganizerView(View):
     # 显示赛事方主页
     @staticmethod
     def get(request):
+        try:
+            organizer = request.user.profile.organizer_profile
+        except:
+            # 403 permission denied
+            return redirect('index')
+        contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
+        number = len(contests)
+        total_team = sum([len(contest.Team_set.all()) for contest in contests])
         pass
 
 
@@ -218,6 +224,14 @@ class HomeContestantView(View):
     # 显示参赛者主页
     @staticmethod
     def get(request):
+        try:
+            contestant = request.user.profile.contestant_profile
+        except:
+            # 403 permission denied
+            return redirect('index')
+        contests = Contest.objects.filter(status__in=[STATUS_PUBLISH, STATUS_FINISH]).order_by('-submit_end_time')
+        teams = contestant.Team_set.all()
+        my_contests = [team.contest for team in teams]
         pass
 
 
@@ -249,11 +263,24 @@ class CreateContestView(View):
     # 渲染比赛创建页面
     @staticmethod
     def get(request):
+        try:
+            organizer = request.user.profile.organizer_profile
+        except:
+            # 403 permission denied
+            return redirect('index')
+
         pass
 
     # 创建比赛
     @staticmethod
     def post(request):
+        form = ContestForm(request.POST)
+        if form.is_valid():
+            organizer = request.user.profile.organizer_profile
+            contest = form.save(commit=False)
+            contest.organizer = organizer
+            contest.status = Contest.STATUS_SAVED
+            contest.save()
         pass
 
 
@@ -261,6 +288,16 @@ class ContestDetailView(View):
     # 显示当前比赛信息
     @staticmethod
     def get(request):
+        contest = get_object_or_404(Contest, pk=contest_id)
+        contestant = request.user.profile.contestant_profile
+        if not contestant:
+            return render(request, 'contest.html', {'contest': contest})
+        team = contestant.Team_set.filter(contest=contest)
+        if not team:
+            return render(request, 'contest.html', {'contest': contest})
+        submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
+        return render(request, 'contest.html',
+                      {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
         pass
 
 
@@ -268,4 +305,5 @@ class ContestListView(View):
     # 显示比赛列表
     @staticmethod
     def get(request):
+        contests = Contest.objects.filter(status__in=[STATUS_PUBLISH, STATUS_FINISH])
         pass
