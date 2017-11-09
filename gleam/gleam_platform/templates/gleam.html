@@ -45,21 +45,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                        <ul id="myTab1" class="nav nav-tabs bar_tabs" role="tablist">
                             <li role="presentation" class=""><a href="#user-sign-in" id="signin-tab1" role="tab"
-                                                                data-toggle="tab" aria-expanded="true">登陆</a>
+                                                                data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
                             <li role="presentation" class="active"><a href="#user-register" role="tab"
                                                                       id="register-tab1" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
                         </ul>
-                        <div id="myTabContent" class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade active in" id="signin-content1"
+                        <div id="myTabContent1" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="user-sign-in"
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
-                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
@@ -75,32 +75,38 @@
                                                        placeholder="password">
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-2 col-sm-10">
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="checkbox">请记住我
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </form>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="register-content1"
+                            <div role="tabpanel" class="tab-pane fade" id="user-register"
                                  aria-labelledby="register-tab">
-                                <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee
-                                    squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes
-                                    anderson artisan four loko farm-to-table craft beer twee. Qui photo
-                                    booth letterpress, commodo enim craft beer mlkshk aliquip</p>
+                                <br>
+                                <div>
+                                    <form id="register-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="contestant-register-email" name="email"
+                                                       placeholder="example@example.com">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="contestant-register-password" name="password"
+                                                       placeholder="password">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" form="login-contestant-form" class="btn btn-default" >登录</button>
+                    <button type="submit" id="contestant-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -111,22 +117,76 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
 
-                <div class="modal-header">
+               <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title" id="2">举办比赛</h4>
                 </div>
                 <div class="modal-body">
-                    <h4>Text in a modal</h4>
-                    <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel
-                        augue laoreet rutrum faucibus dolor auctor.</p>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque
-                        nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab2" class="nav nav-tabs bar_tabs" role="tablist">
+                            <li role="presentation" class=""><a href="#sponsor-sign-in" id="signin-tab2" role="tab"
+                                                                data-toggle="tab" aria-expanded="true">登录</a>
+                            </li>
+                            <li role="presentation" class="active"><a href="#sponsor-register" role="tab"
+                                                                      id="register-tab2" data-toggle="tab"
+                                                                      aria-expanded="false">注册</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent2" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="sponsor-sign-in"
+                                 aria-labelledby="signin-tab">
+                                <br>
+                                <div>
+                                    <form id="login-orgnizer-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="orgnizer-login-email" name="email"
+                                                       placeholder="example@example.com">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="orgnizer-login-password" name="password"
+                                                       placeholder="password">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="sponsor-register"
+                                 aria-labelledby="register-tab">
+                                <br>
+                                <div>
+                                    <form id="register-orgnizer-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="orgnizer-register-email" name="email"
+                                                       placeholder="example@example.com">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="orgnizer-register-password" name="password"
+                                                       placeholder="password">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" id="orgnizer-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -1176,6 +1236,22 @@
     <script>
         $(function () {
             $(".banner-image").backstretch('/static/images/banner.jpg');
+        });
+        $("#contestant-form").click(function(){
+            if($("#signin-tab1").hasClass("active in"){
+                $("#login-contestant-form).submit();
+                }
+            else{
+                $("#register-contestant-form).submit();
+            }
+        });
+        $("#orgnizer-form").click(function(){
+            if($("#signin-tab2").hasClass("active in"){
+                $("#login-orgnizer-form).submit();
+            }
+            else{
+                $("#register-orgnizer-form).submit();
+            }
         });
     </script>
 {% endblock javascripts %}
