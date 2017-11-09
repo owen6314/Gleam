@@ -75,121 +75,183 @@ class ContestDetail(View):
 '''
 
 
-class OrganizerSignup(View):
-    @staticmethod
-    def get(request):
-        user_form = UserCreationForm()
-        organizer_form = OrganizerForm()
-        return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
-
-    @staticmethod
-    def post(request):
-        user_form = UserCreationForm(request.POST)
-        organizer_form = OrganizerForm(request.POST)
-        if user_form.is_valid() and organizer_form.is_valid():
-            user = user_form.save()
-            profile = get_object_or_404(Profile, user=user)
-            profile.type = 'O'
-            organizer_profile = organizer_form.save()
-            profile.organizer_profile = organizer_profile
-            profile.save()
-            return redirect('login')
-        return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
-
-
-class ContestantSignup(View):
-    @staticmethod
-    def get(request):
-        user_form = UserCreationForm()
-        contestant_form = ContestantForm()
-        return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
-
-    @staticmethod
-    def post(request):
-        user_form = UserCreationForm(request.POST)
-        contestant_form = ContestantForm(request.POST)
-        if user_form.is_valid() and contestant_form.is_valid():
-            user = user_form.save()
-            profile = get_object_or_404(Profile, user=user)
-            profile.type = 'C'
-            contestant_profile = contestant_form.save()
-            profile.contestant_profile = contestant_profile
-            profile.save()
-            return redirect('login')
-        return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
+# class OrganizerSignup(View):
+#     @staticmethod
+#     def get(request):
+#         user_form = UserCreationForm()
+#         organizer_form = OrganizerForm()
+#         return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
+#
+#     @staticmethod
+#     def post(request):
+#         user_form = UserCreationForm(request.POST)
+#         organizer_form = OrganizerForm(request.POST)
+#         if user_form.is_valid() and organizer_form.is_valid():
+#             user = user_form.save()
+#             profile = get_object_or_404(Profile, user=user)
+#             profile.type = 'O'
+#             organizer_profile = organizer_form.save()
+#             profile.organizer_profile = organizer_profile
+#             profile.save()
+#             return redirect('login')
+#         return render(request, 'organizer_signup.html', {'user_form': user_form, 'organizer_form': organizer_form})
 
 
-class LoginView(View):
-    @staticmethod
-    def get(request):
-        return render(request, 'login.html')
-
-    @staticmethod
-    def post(request):
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            return render(request, 'login.html', {'username': username, 'password': password})
-
-
-@method_decorator(login_required, name='dispatch')
-class LogoutView(View):
-    @staticmethod
-    def get(request):
-        auth.logout(request)
-        return redirect('home')
+# class ContestantSignup(View):
+#     @staticmethod
+#     def get(request):
+#         user_form = UserCreationForm()
+#         contestant_form = ContestantForm()
+#         return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
+#
+#     @staticmethod
+#     def post(request):
+#         user_form = UserCreationForm(request.POST)
+#         contestant_form = ContestantForm(request.POST)
+#         if user_form.is_valid() and contestant_form.is_valid():
+#             user = user_form.save()
+#             profile = get_object_or_404(Profile, user=user)
+#             profile.type = 'C'
+#             contestant_profile = contestant_form.save()
+#             profile.contestant_profile = contestant_profile
+#             profile.save()
+#             return redirect('login')
+#         return render(request, 'contestant_signup.html', {'user_form': user_form, 'contestant_form': contestant_form})
 
 
-@method_decorator(login_required, name='dispatch')
-class UserDetailView(View):
-    @staticmethod
-    def get(request):
-        profile = request.user.profile
-        type = profile.type
-        details = dict()
+# class LoginView(View):
+#     @staticmethod
+#     def get(request):
+#         return render(request, 'login.html')
+#
+#     @staticmethod
+#     def post(request):
+#         username = request.POST['username']
+#         password = request.POST['password']
+#
+#         user = authenticate(request, username=username, password=password)
+#
+#         if user is not None:
+#             login(request, user)
+#             return redirect('home')
+#         else:
+#             return render(request, 'login.html', {'username': username, 'password': password})
 
-        # Organizer
-        if type == 'O':
-            details['organization'] = profile.organizer_profile.organization
-            return render(request, 'organizer_detail.html', context=details)
 
-        # Contestant
-        elif type == 'C':
-            details['resident_id'] = profile.contestant_profile.resident_id
-            details['nick_name'] = profile.contestant_profile.nick_name
-            details['school'] = profile.contestant_profile.school
-            details['gender'] = profile.contestant_profile.gender
-            return render(request, 'contestant_detail.html', context=details)
+# @method_decorator(login_required, name='dispatch')
+# class LogoutView(View):
+#     @staticmethod
+#     def get(request):
+#         auth.logout(request)
+#         return redirect('home')
+
+
+# @method_decorator(login_required, name='dispatch')
+# class UserDetailView(View):
+#     @staticmethod
+#     def get(request):
+#         profile = request.user.profile
+#         type = profile.type
+#         details = dict()
+#
+#         # Organizer
+#         if type == 'O':
+#             details['organization'] = profile.organizer_profile.organization
+#             return render(request, 'organizer_detail.html', context=details)
+#
+#         # Contestant
+#         elif type == 'C':
+#             details['resident_id'] = profile.contestant_profile.resident_id
+#             details['nick_name'] = profile.contestant_profile.nick_name
+#             details['school'] = profile.contestant_profile.school
+#             details['gender'] = profile.contestant_profile.gender
+#             return render(request, 'contestant_detail.html', context=details)
 
 
 class SignupOrganizerView(View):
+    # 测试用
+    @staticmethod
+    def get(request):
+        def get(request):
+            return render(request, 'contestant_signup.html')
+
     # 注册赛事方
     # email password
     @staticmethod
     def post(request):
-        pass
+        form = UserAuthForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            # 设置用户类型
+            user.type = 'O'
+
+            # 连接用户类型对应的用户信息表单
+            profile = Organizer.objects.create()
+            user.organizer_profile = profile
+            user.save()
+
+            # 注册完成后，直接登录
+            login(request, user)
+
+            return redirect('home-organizer')
+        return redirect('index')
 
 
 class SignupContestantView(View):
+    # 测试用
+    @staticmethod
+    def get(request):
+        return render(request, 'contestant_signup.html')
+
     # 注册参赛者
     # email password
     @staticmethod
     def post(request):
-        pass
+        form = UserAuthForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+
+            # 设置用户类型
+            user.type = 'C'
+
+            # 连接用户类型对应的用户信息表单
+            profile = Contestant.objects.create()
+            user.contestant_profile = profile
+            user.save()
+
+            # 注册完成后，直接登录
+            login(request, user)
+
+            return redirect('home-contestant')
+
+        # 跳转到index
+        return redirect('index')
 
 
 class LoginOrganizerView(View):
+    # 测试用
+    @staticmethod
+    def get(request):
+        return render(request, 'login.html')
+
     # 赛事方登录
     # email password
     @staticmethod
     def post(request):
-        pass
+        form = UserAuthForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # 验证密码 和 用户类型
+            user = authenticate(request, email=email, password=password)
+            if user is not None and user.type == 'O':
+                login(request, user)
+                # 跳转到主页
+                return redirect('home-organizer')
+
+        # 跳转到index
+        return redirect('index')
 
 
 class LoginContestantView(View):
@@ -197,14 +259,35 @@ class LoginContestantView(View):
     # email password
     @staticmethod
     def post(request):
-        pass
+        form = UserAuthForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # 验证密码 和 用户类型
+            user = authenticate(request, email=email, password=password)
+            if user is not None and user.type == 'C':
+                login(request, user)
+                # 跳转到主页
+                return redirect('home-contestant')
+
+        # 跳转到index
+        return redirect('index')
+
+
+@method_decorator(login_required, name='dispatch')
+class LogoutView(View):
+    # 登出
+    @staticmethod
+    def get(request):
+        auth.logout(request)
+        return redirect('index')
 
 
 class IndexView(View):
     # 渲染主页
     @staticmethod
     def get(request):
-        pass
+        return render(request, 'index.html')
 
 
 class HomeOrganizerView(View):
@@ -225,24 +308,71 @@ class ProfileOrganizerView(View):
     # 显示赛事方信息
     @staticmethod
     def get(request):
-        pass
+        # 如果用户类型不符, 拒绝请求
+        if request.user.type != 'O':
+            return redirect('bad-request-400')
+
+        data = dict()
+        user = request.user
+        profile = user.organizer_profile
+        data['email'] = user.email
+        data['organization'] = profile.organization
+        form = OrganizerDetailForm(data)
+
+        return render(request, 'organizer_detail.html', {'form': form})
 
     # 更新赛事方信息
     @staticmethod
     def post(request):
-        pass
+        # 如果用户类型不符, 拒绝请求
+        if request.user.type != 'O':
+            return redirect('bad-request-400')
+
+        form = OrganizerDetailForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            profile = user.organizer_profile
+            # user.email = form.cleaned_data['email']
+            profile.organization = form.cleaned_data['organization']
+            profile.save()
+        return render(request, 'contestant_detail.html', {'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class ProfileContestantView(View):
     # 显示参赛者信息
     @staticmethod
     def get(request):
-        pass
+        # 如果用户类型不符, 拒绝请求
+        if request.user.type != 'C':
+            return redirect('bad-request-400')
+
+        data = dict()
+        user = request.user
+        profile = user.contestant_profile
+        data['email'] = user.email
+        data['nick_name'] = profile.nick_name
+        data['school'] = profile.school
+        form = ContestantDetailForm(data)
+
+        return render(request, 'contestant_detail.html', {'form': form})
 
     # 更新参赛者信息
     @staticmethod
     def post(request):
-        pass
+        # 如果用户类型不符, 拒绝请求
+        if request.user.type != 'C':
+            return redirect('bad-request-400')
+        form = ContestantDetailForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            profile = user.contestant_profile
+            # user.email = form.cleaned_data['email']
+            profile.nick_name = form.cleaned_data['email']
+            profile.school = form.cleaned_data['school']
+            profile.save()
+
+        return render(request, 'contestant_detail.html', {'form': form})
 
 
 class CreateContestView(View):
@@ -269,3 +399,10 @@ class ContestListView(View):
     @staticmethod
     def get(request):
         pass
+
+
+class BadRequestView(View):
+    # 返回坏请求页面
+    @staticmethod
+    def get(request):
+        return render(request, 'bad_request_400.html')

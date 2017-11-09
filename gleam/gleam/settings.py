@@ -132,3 +132,5 @@ STATIC_URL = '/static/'
 LOGIN_URL = '/index'
 
 AUTHENTICATION_BACKENDS = ['gleam_platform.backends.EmailBackend']
+
+AUTH_USER_MODEL = 'gleam_platform.User'

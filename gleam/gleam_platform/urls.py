@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^signup/contestant', SignupContestantView.as_view(), name='signup-contestant'),
     url(r'^login/organizer', LoginOrganizerView.as_view(), name='login-organizer'),
     url(r'^login/contestant', LoginContestantView.as_view(), name='login-contestant'),
+    url(r'^logout', LogoutView.as_view(), name='logout'),
     url(r'^index', IndexView.as_view(), name='index'),
     url(r'^home/organizer', HomeOrganizerView.as_view(), name='home-organizer'),
     url(r'^home/contestant', HomeContestantView.as_view(), name='home-contestant'),
@@ -24,4 +25,5 @@ urlpatterns = [
     url(r'^create-contest', CreateContestView.as_view(), name='create-contest'),
     url(r'^contest-detail/([1-9][0-9]*)/', ContestDetailView.as_view(), name='contest-detail'),
     url(r'^contest-list', ContestListView.as_view(), name='contest-list'),
+    url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400')
 ]

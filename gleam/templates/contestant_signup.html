@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <title>Contestant Signup</title>
 </head>
-<a href={% url 'home' %}>Home</a>
 <body>
-<form action={% url 'contestant_signup' %} method="POST">
+<form action={% url 'signup-contestant' %} method="POST">
     {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ contestant_form.as_p }}
+    <p><label>email</label><input type="email" value="{{ username }}" name="email"/></p>
+    <p><label>password</label><input type="password" value="{{ password }}" name="password"/></p>
     <p><input type="submit" value="Submit"/></p>
 </form>
 </body>
