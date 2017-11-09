@@ -17,6 +17,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class Organizer(models.Model):
     organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
@@ -24,6 +25,28 @@ class Organizer(models.Model):
 
     class Meta:
         verbose_name = u'Organizer'
+
+
+
+class Contest(models.Model):
+    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+    organizer = models.ForeignKey(Organizer)
+    signup_begin_time = models.DateTimeField()
+    signup_end_time = models.DateTimeField()
+    submit_begin_time = models.DateTimeField()
+    submit_end_time = models.DateTimeField()
+    announcement_time = models.DateTimeField()
+    description = models.TextField()
+    evaluation = models.TextField()
+    prizes = models.TextField()
+    data_description = models.TextField()
+    status = models.IntegerField()
+    image = models.ImageField()
+
+    STATUS_DELETED = -1
+    STATUS_SAVED = 0
+    STATUS_PUBLISHED = 1
+    STATUS_FINISHED = 2
 
 
 class Contestant(models.Model):
@@ -109,25 +132,6 @@ class User(AbstractUser):
 #     if created:
 #         Profile.objects.create(user=instance)
 
-class Contest(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    organizer = models.ForeignKey(Organizer)
-    signup_begin_time = models.DateTimeField()
-    signup_end_time = models.DateTimeField()
-    submit_begin_time = models.DateTimeField()
-    submit_end_time = models.DateTimeField()
-    announcement_time = models.DateTimeField()
-    description = models.TextField()
-    evaluation = models.TextField()
-    prizes = models.TextField()
-    data_description = models.TextField()
-    status = models.IntegerField()
-    image = models.ImageField()
-
-    STATUS_DELETED = -1
-    STATUS_SAVED = 0
-    STATUS_PUBLISHED = 1
-    STATUS_FINISHED = 2
 
 class Team(models.Model):
     # team name

@@ -391,6 +391,7 @@ class ProfileContestantView(View):
         return redirect('profile-contestant')
 
 
+@method_decorator(login_required, name='dispatch')
 class CreateContestView(View):
     # 渲染比赛创建页面
     @staticmethod
@@ -438,8 +439,14 @@ class ContestListView(View):
     # 显示比赛列表
     @staticmethod
     def get(request):
-        contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISH, Contest.STATUS_FINISH])
-
+        contests_published = Contest.objects.filter(status=Contest.STATUS_PUBLISHED)
+        contests_finished = Contest.objects.filter(status=Contest.STATUS_FINISHED)
+        count_published = [len(contest.team_set.all()) for contest in contests_published]
+        count_finished = [len(contest.team_set.all()) for contest in contests_finished]
+        return render(request, 'contest_list.html', {'contests_published': contests_published,
+                                                     'contests_finished': contests_finished,
+                                                     'count_published': count_published,
+                                                     'count_finished': count_finished})
 
 
 class BadRequestView(View):

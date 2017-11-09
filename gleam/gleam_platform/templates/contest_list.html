@@ -1,4 +1,4 @@
-{% extends "app/base_main.html" %}
+{% extends "base_main.html" %}
 
 {% block title %} General Elements {% endblock title %}
 
@@ -35,6 +35,8 @@
                 <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                   <div class="x_content">
                     <ul class="list-unstyled timeline">
+                      
+                      {% for c in contests_published %}
                       <li>
                         <div class="block">
                           <div class="tags">
@@ -44,54 +46,18 @@
                           </div>
                           <div class="block_content">
                             <h2 class="title">
-                                <a>“挑战杯”吃鸡大赛</a>
+                                <a>{{c.name}}</a>
                             </h2>
                             <div class="byline">
-                              <span>2017.10.1 - 2017.12.31</span> by <a>Steam</a>
+                              <span>{{c.submit_begin_time}} - {{c.submit_end_time}}</span> by <a>{{c.organizer.organization}}</a>
                             </div>
-                            <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                            <p class="excerpt">{{c.description}}<a>Read&nbsp;More</a>
                             </p>
                           </div>
                         </div>
                       </li>
-                      <li>
-                        <div class="block">
-                          <div class="tags">
-                            <a href="" class="tag">
-                              <span>Entertainment</span>
-                            </a>
-                          </div>
-                          <div class="block_content">
-                            <h2 class="title">
-                              <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
-                            </h2>
-                            <div class="byline">
-                              <span>13 hours ago</span> by <a>Jane Smith</a>
-                            </div>
-                            <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                            </p>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="block">
-                          <div class="tags">
-                            <a href="" class="tag">
-                              <span>Entertainment</span>
-                            </a>
-                          </div>
-                          <div class="block_content">
-                            <h2 class="title">
-                              <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
-                            </h2>
-                            <div class="byline">
-                              <span>13 hours ago</span> by <a>Jane Smith</a>
-                            </div>
-                            <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                            </p>
-                          </div>
-                        </div>
-                      </li>
+                      {% endfor %}
+
                     </ul>
                   </div>
                 </div>
@@ -171,16 +137,19 @@
                         <th>赛事主页</th>
                       </tr>
                     </thead>
+
                     <tbody>
+                    {% for c in contests_published %}
                       <tr>
-                        <td>"挑战杯“吃鸡大赛</td>
-                        <td>斯第姆</td>
+                        <td>{{c.name}}</td>
+                        <td>{{c.organizer.organization}}</td>
                         <td>233</td>
                         <td>2333</td>
-                        <td>2017/10/1</td>
-                        <td>2017/12/31</td>
+                        <td>{{c.submit_begin_time}}</td>
+                        <td>{{c.submit_end_time}}</td>
                         <td><a href="www.tsinghua.edu.cn">赛事主页</a></td>
                       </tr>
+                    {% endfor %}
                     </tbody>
                   </table>
                 </div>
