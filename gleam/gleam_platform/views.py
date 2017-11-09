@@ -439,10 +439,10 @@ class ContestListView(View):
     def get(request):
         contests_published = Contest.objects.filter(status=Contest.STATUS_PUBLISHED)
         contests_finished = Contest.objects.filter(status=Contest.STATUS_FINISHED)
-        count_published = [len(contest.Team_set) for contest in contests_published]
-        count_finished = [len(contest.Team_set) for contest in contests_finished]
+        count_published = [len(contest.team_set.all()) for contest in contests_published]
+        count_finished = [len(contest.team_set.all()) for contest in contests_finished]
         return render(request, 'contest_list.html', {'contests_published': contests_published,
-                                                     'contest_finished': contests_finished,
+                                                     'contests_finished': contests_finished,
                                                      'count_published': count_published,
                                                      'count_finished': count_finished})
 
