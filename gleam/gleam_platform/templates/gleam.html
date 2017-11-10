@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab1" class="nav nav-tabs bar_tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#user-sign-in" id="signin-tab1" role="tab"
+                            <li role="presentation" class="active"><a id="signin-tab1" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
                             <li role="presentation" class=""><a href="#user-register" role="tab"
@@ -55,11 +55,11 @@
                             </li>
                         </ul>
                         <div id="myTabContent1" class="tab-content">
-                            <div role="tabpanel" class="tab-pane active in" id="user-sign-in"
+                            <div role="tabpanel" class="tab-pane fade in" id="user-sign-in"
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
-                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
@@ -78,7 +78,7 @@
                                     </form>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="user-register"
+                            <div role="tabpanel" class="tab-pane fade in" id="user-register"
                                  aria-labelledby="register-tab">
                                 <br>
                                 <div>
@@ -126,7 +126,7 @@
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab2" class="nav nav-tabs bar_tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#sponsor-sign-in" id="signin-tab2" role="tab"
+                            <li role="presentation" class="active"><a id="signin-tab2" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
                             <li role="presentation" class=""><a href="#sponsor-register" role="tab"
@@ -135,7 +135,7 @@
                             </li>
                         </ul>
                         <div id="myTabContent2" class="tab-content">
-                            <div role="tabpanel" class="tab-pane active in" id="sponsor-sign-in"
+                            <div role="tabpanel" class="tab-pane fade in" id="sponsor-sign-in"
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
@@ -158,7 +158,7 @@
                                     </form>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="sponsor-register"
+                            <div role="tabpanel" class="tab-pane fade in" id="sponsor-register"
                                  aria-labelledby="register-tab">
                                 <br>
                                 <div>
@@ -1236,30 +1236,31 @@
     <script>
         $(function () {
             $(".banner-image").backstretch('/static/images/banner.jpg');
-<<<<<<< HEAD
+            $("#user-sign-in").addClass("active");
+            $("#sponsor-sign-in").addClass("active");
         });
         $("#signin-tab1").click(function(){
-            $("#user-sign-in").addClass("active in");
-            $("#user-register").removeClass("active in");
+            $("#user-sign-in").addClass("active");
+            $("#user-register").removeClass("active");
             $("#contestant-form").text("登录");
         });
         $("#register-tab1").click(function(){
-            $("#user-sign-in").removeClass("active in");
-            $("#user-register").addClass("active in");
+            $("#user-sign-in").removeClass("active");
+            $("#user-register").addClass("active");
             $("#contestant-form").text("注册");
         });
         $("#signin-tab2").click(function(){
-            $("#sponsor-sign-in").removeClass("active in");
-            $("#sponsor-register").addClass("active in");
-            $("#organizer-form").text("注册");
+            $("#sponsor-sign-in").addClass("active");
+            $("#sponsor-register").removeClass("active");
+            $("#organizer-form").text("登录");
         });
         $("#register-tab2").click(function(){
-            $("#sponsor-sign-in").removeClass("active in");
-            $("#sponsor-register").addClass("active in");
+            $("#sponsor-sign-in").removeClass("active");
+            $("#sponsor-register").addClass("active");
             $("#organizer-form").text("注册");
         });
         $("#contestant-form").click(function(){
-            if ($("#user-sign-in").hasClass("active in")){
+            if ($("#user-sign-in").hasClass("active")){
                 $("#login-contestant-form").submit();
             }
             else{
@@ -1267,26 +1268,12 @@
             }
         });
         $("#organizer-form").click(function(){
-            if ($("#sponsor-sign-in").hasClass("active in")){
-=======
-            $("#contestant-form").click(function(){
-            if($("#signin-tab1").hasClass("active in")){
-                $("#login-contestant-form").submit();
-                }
-            else{
-                $("#register-contestant-form").submit();
-            }
-            });
-            $("#organizer-form").click(function(){
-            if($("#signin-tab2").hasClass("active in")){
->>>>>>> ad4ae27f215de8085944f5f7bec07eaf496c3132
+            if ($("#sponsor-sign-in").hasClass("active")){
                 $("#login-organizer-form").submit();
             }
             else{
                 $("#register-organizer-form").submit();
             }
         });
-        });
-
     </script>
 {% endblock javascripts %}
