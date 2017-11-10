@@ -25,17 +25,17 @@ class Organizer(models.Model):
 class Contest(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
     organizer = models.ForeignKey(Organizer)
-    signup_begin_time = models.DateTimeField()
-    signup_end_time = models.DateTimeField()
-    submit_begin_time = models.DateTimeField()
-    submit_end_time = models.DateTimeField()
-    announcement_time = models.DateTimeField()
+    signup_begin_time = models.DateField()
+    signup_end_time = models.DateField()
+    submit_begin_time = models.DateField()
+    submit_end_time = models.DateField()
+    announcement_time = models.DateField()
     description = models.TextField()
-    evaluation = models.TextField(null=True)
+    evaluation = models.TextField(null=True, blank=True)
     prizes = models.TextField()
     data_description = models.TextField()
     status = models.IntegerField()
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, blank=True)
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -161,4 +161,4 @@ class Submission(models.Model):
     team = models.ForeignKey('Team')
     score = models.DecimalField(max_digits=4, decimal_places=2)
     data = models.FileField(upload_to=generate_submission_filename)
-    time = models.DateTimeField()
+    time = models.DateField()
