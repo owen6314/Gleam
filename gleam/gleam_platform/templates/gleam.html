@@ -46,16 +46,16 @@
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab1" class="nav nav-tabs bar_tabs" role="tablist">
-                            <li role="presentation" class=""><a href="#user-sign-in" id="signin-tab1" role="tab"
+                            <li role="presentation" class="active"><a href="#user-sign-in" id="signin-tab1" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
-                            <li role="presentation" class="active"><a href="#user-register" role="tab"
+                            <li role="presentation" class=""><a href="#user-register" role="tab"
                                                                       id="register-tab1" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
                         </ul>
                         <div id="myTabContent1" class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade active in" id="user-sign-in"
+                            <div role="tabpanel" class="tab-pane active in" id="user-sign-in"
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
@@ -126,16 +126,16 @@
                 <div class="modal-body">
                     <div class="" role="tabpanel" data-example-id="togglable-tabs">
                         <ul id="myTab2" class="nav nav-tabs bar_tabs" role="tablist">
-                            <li role="presentation" class=""><a href="#sponsor-sign-in" id="signin-tab2" role="tab"
+                            <li role="presentation" class="active"><a href="#sponsor-sign-in" id="signin-tab2" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
-                            <li role="presentation" class="active"><a href="#sponsor-register" role="tab"
+                            <li role="presentation" class=""><a href="#sponsor-register" role="tab"
                                                                       id="register-tab2" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
                         </ul>
                         <div id="myTabContent2" class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade active in" id="sponsor-sign-in"
+                            <div role="tabpanel" class="tab-pane active in" id="sponsor-sign-in"
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
@@ -1236,6 +1236,39 @@
     <script>
         $(function () {
             $(".banner-image").backstretch('/static/images/banner.jpg');
+<<<<<<< HEAD
+        });
+        $("#signin-tab1").click(function(){
+            $("#user-sign-in").addClass("active in");
+            $("#user-register").removeClass("active in");
+            $("#contestant-form").text("登录");
+        });
+        $("#register-tab1").click(function(){
+            $("#user-sign-in").removeClass("active in");
+            $("#user-register").addClass("active in");
+            $("#contestant-form").text("注册");
+        });
+        $("#signin-tab2").click(function(){
+            $("#sponsor-sign-in").removeClass("active in");
+            $("#sponsor-register").addClass("active in");
+            $("#organizer-form").text("注册");
+        });
+        $("#register-tab2").click(function(){
+            $("#sponsor-sign-in").removeClass("active in");
+            $("#sponsor-register").addClass("active in");
+            $("#organizer-form").text("注册");
+        });
+        $("#contestant-form").click(function(){
+            if ($("#user-sign-in").hasClass("active in")){
+                $("#login-contestant-form").submit();
+            }
+            else{
+                $("#register-contestant-form").submit();
+            }
+        });
+        $("#organizer-form").click(function(){
+            if ($("#sponsor-sign-in").hasClass("active in")){
+=======
             $("#contestant-form").click(function(){
             if($("#signin-tab1").hasClass("active in")){
                 $("#login-contestant-form").submit();
@@ -1246,6 +1279,7 @@
             });
             $("#organizer-form").click(function(){
             if($("#signin-tab2").hasClass("active in")){
+>>>>>>> ad4ae27f215de8085944f5f7bec07eaf496c3132
                 $("#login-organizer-form").submit();
             }
             else{
