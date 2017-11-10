@@ -259,8 +259,8 @@ class LoginContestantView(View):
     def post(request):
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            email = request.POST['email']
-            password = request.POST['password']
+            email = form.cleaned_data['email']
+            password = form.cleaned_dataT['password']
             # 验证密码 和 用户类型
             user = authenticate(request, username=email, password=password)
             if user is not None: # and user.type == 'C':
@@ -383,9 +383,9 @@ class ProfileContestantView(View):
             user = request.user
             profile = user.contestant_profile
             # user.email = form.cleaned_data['email']
-            profile.nick_name = request.POST['nick_name']
-            profile.school = request.POST['school']
-            profile.gender = request.POST['gender']
+            profile.nick_name = form.cleaned_data['nick_name']
+            profile.school = form.cleaned_data['school']
+            profile.gender = form.cleaned_data['gender']
             profile.save()
 
         return redirect('profile-contestant')

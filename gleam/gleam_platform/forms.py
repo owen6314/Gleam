@@ -1,9 +1,6 @@
 from django.db import models
 from django import forms
-from .models import Organizer
 from .models import Contest, Submission, Contestant, Organizer, User
-from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import ugettext_lazy as _
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
@@ -50,25 +47,35 @@ class OrganizerForm(forms.ModelForm):
 
 
 class UserSignupForm(forms.ModelForm):
+    password = forms.CharField(label='Password', max_length=80)
+
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('email',)
+
+    def save(self, commit=True):
+            # Save the provided password in hashed format
+        user = super(UserSignupForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+                user.save()
+        return user
 
 
 class UserLoginForm(forms.Form):
-    email = models.EmailField('email')
-    password = models.CharField('password', max_length=80)
+    email = forms.EmailField()
+    password = forms.CharField()
+
+
 
 
 class ContestantDetailForm(forms.Form):
-    email = models.EmailField('email address', unique=True)
-    nick_name = models.CharField('nick_name', max_length=MAX_NAME_LEN_SHORT)
-    school = models.CharField('school', max_length=MAX_NAME_LEN_LONG)
-
-    GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+    email = forms.EmailField()
+    nick_name = forms.CharField()
+    school = forms.CharField()
+    gender = forms.CharField()
 
 
 class OrganizerDetailForm(forms.Form):
-    email = models.EmailField('email address', unique=True)
-    organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+    email = forms.EmailField()
+    organization = forms.CharField()

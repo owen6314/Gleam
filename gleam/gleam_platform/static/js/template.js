@@ -9,8 +9,8 @@
 
 (function($){
 	$(document).ready(function(){
-	
-		$(".banner-image").backstretch('images/banner.jpg');
+
+		$(".banner-image").backstretch('/static/imagses/banner.jpg');
 		
 		// Fixed header
 		//-----------------------------------------------

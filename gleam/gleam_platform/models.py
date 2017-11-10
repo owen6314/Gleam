@@ -1,8 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import User, UserManager
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
@@ -13,10 +12,6 @@ MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
 
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
-
 
 class Organizer(models.Model):
     organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
@@ -25,7 +20,6 @@ class Organizer(models.Model):
 
     class Meta:
         verbose_name = u'Organizer'
-
 
 
 class Contest(models.Model):
@@ -73,7 +67,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()  # using=self._db)
         return user
 
     def create_user(self, email, password=None, **extra_fields):
@@ -99,7 +93,7 @@ class User(AbstractUser):
     """User model."""
 
     username = None
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), unique=True, max_length=80)
 
     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
@@ -107,14 +101,10 @@ class User(AbstractUser):
     organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
     contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
 
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-
-
-
 
 
 # class Profile(models.Model):

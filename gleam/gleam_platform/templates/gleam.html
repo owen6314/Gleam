@@ -59,7 +59,7 @@
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
-                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
+                                    <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" id="contestant-form" class="btn btn-default" >提交</button>
+                    <button type="submit" form="login-contestant-form" id="contestant-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -139,19 +139,19 @@
                                  aria-labelledby="signin-tab">
                                 <br>
                                 <div>
-                                    <form id="login-orgnizer-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
+                                    <form id="login-organizer-form" class="form-horizontal" role="form" action="{% url 'login-organizer' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="orgnizer-login-email" name="email"
+                                                <input type="text" class="form-control" id="organizer-login-email" name="email"
                                                        placeholder="example@example.com">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="orgnizer-login-password" name="password"
+                                                <input type="text" class="form-control" id="organizer-login-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -162,19 +162,19 @@
                                  aria-labelledby="register-tab">
                                 <br>
                                 <div>
-                                    <form id="register-orgnizer-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+                                    <form id="register-organizer-form" class="form-horizontal" role="form" action="{% url 'signup-organizer' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="orgnizer-register-email" name="email"
+                                                <input type="text" class="form-control" id="organizer-register-email" name="email"
                                                        placeholder="example@example.com">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="orgnizer-register-password" name="password"
+                                                <input type="text" class="form-control" id="organizer-register-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -186,7 +186,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" id="orgnizer-form" class="btn btn-default" >提交</button>
+                    <button type="submit" form="register-organizer-form" id="organizer-form" class="btn btn-default" >提交</button>
                 </div>
 
             </div>
@@ -1236,22 +1236,23 @@
     <script>
         $(function () {
             $(".banner-image").backstretch('/static/images/banner.jpg');
-        });
-        $("#contestant-form").click(function(){
-            if($("#signin-tab1").hasClass("active in"){
-                $("#login-contestant-form).submit();
+            $("#contestant-form").click(function(){
+            if($("#signin-tab1").hasClass("active in")){
+                $("#login-contestant-form").submit();
                 }
             else{
-                $("#register-contestant-form).submit();
+                $("#register-contestant-form").submit();
             }
-        });
-        $("#orgnizer-form").click(function(){
-            if($("#signin-tab2").hasClass("active in"){
-                $("#login-orgnizer-form).submit();
+            });
+            $("#organizer-form").click(function(){
+            if($("#signin-tab2").hasClass("active in")){
+                $("#login-organizer-form").submit();
             }
             else{
-                $("#register-orgnizer-form).submit();
+                $("#register-organizer-form").submit();
             }
         });
+        });
+
     </script>
 {% endblock javascripts %}
