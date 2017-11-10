@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<a href={% url 'home' %}>Home</a>
+{% if user.is_authenticated %}
+    <a href={% url 'logout' %}>Log out</a>
+{% endif %}
+<p>Name: {{ contest.name }}</p>
+<p>Descripiton: {{ contest.description }}</p>
+{% for submission in submissions %}
+    <p>{{ submission.time }} {{ submission.score }}</p>
+{% endfor %}
+</body>

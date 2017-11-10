@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contestant Signup</title>
+</head>
+<body>
+<form action={% url 'signup-contestant' %} method="POST">
+    {% csrf_token %}
+    <p><label>email</label><input type="email" value="{{ username }}" name="email"/></p>
+    <p><label>password</label><input type="password" value="{{ password }}" name="password"/></p>
+    <p><input type="submit" value="Submit"/></p>
+</form>
+</body>
+</html>
