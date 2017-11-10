@@ -288,6 +288,7 @@ class IndexView(View):
     def get(request):
         return render(request, 'gleam.html')
 
+
 @method_decorator(login_required, name='dispatch')
 class HomeOrganizerView(View):
     # 显示赛事方主页
@@ -312,6 +313,7 @@ class HomeOrganizerView(View):
         return render(request, 'organizer_admin.html')
 
 
+@method_decorator(login_required, name='dispatch')
 class HomeContestantView(View):
     # 显示参赛者主页
     @staticmethod
@@ -398,7 +400,7 @@ class ProfileContestantView(View):
         return render(request, 'contestant_detail.html', {'form': form})
 
 
-#@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class CreateContestView(View):
     # 渲染比赛创建页面
     @staticmethod
@@ -406,17 +408,17 @@ class CreateContestView(View):
         try:
             organizer = request.user.organizer_profile
         except:
-            # 403 permission denied
-            return render(request, 'contest_creation.html')
+            return render(request, 'page_403.html')
+        return render(request, 'contest_creation.html')
 
     # 创建比赛
     @staticmethod
     def post(request):
         form = ContestForm(request.POST)
         if form.is_valid():
-            #organizer = request.user.organizer_profile
+            organizer = request.user.organizer_profile
             contest = form.save(commit=False)
-            #contest.organizer = organizer
+            contest.organizer = organizer
             contest.status = Contest.STATUS_SAVED
             contest.save()
         return redirect('home-organizer')

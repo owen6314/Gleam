@@ -31,11 +31,11 @@ class Contest(models.Model):
     submit_end_time = models.DateTimeField()
     announcement_time = models.DateTimeField()
     description = models.TextField()
-    evaluation = models.TextField()
+    evaluation = models.TextField(null=True)
     prizes = models.TextField()
     data_description = models.TextField()
     status = models.IntegerField()
-    image = models.ImageField()
+    image = models.ImageField(null=True)
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0

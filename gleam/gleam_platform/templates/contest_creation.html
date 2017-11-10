@@ -62,7 +62,7 @@
                   </li>
                 </ul>
 
-                  <form class="form-horizontal form-label-left" action="{% url 'create-contest' %}" method="post" id="form-1">
+                  <form class="form-horizontal form-label-left" action={% url 'create-contest' %} method="post" id="form-1">
                     {% csrf_token %}
 
                     <div class="form-group">
