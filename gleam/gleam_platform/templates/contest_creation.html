@@ -1,0 +1,181 @@
+{% extends "base_site.html" %}
+
+{% block title %} 创建比赛 {% endblock title %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+      <div class="clearfix"></div>
+
+      <div class="row">
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>创建新比赛 <small>创建的比赛会首先经过Gleam的审核，审核通过后方可发布</small></h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <!-- Smart Wizard -->
+              <div id="wizard" class="form_wizard wizard_horizontal">
+                <ul class="wizard_steps">
+                  <li>
+                    <a href="#step-1">
+                      <span class="step_no">1</span>
+                      <span class="step_descr">
+                        第一步<br />
+                        <small>比赛信息</small>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#step-2">
+                      <span class="step_no">2</span>
+                      <span class="step_descr">
+                        第二步<br />
+                        <small>比赛流程</small>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#step-3">
+                      <span class="step_no">3</span>
+                      <span class="step_descr">
+                        第三步<br />
+                        <small>奖励方案</small>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#step-4">
+                      <span class="step_no">4</span>
+                      <span class="step_descr">
+                        第四步<br />
+                        <small>主办方资料</small>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+
+                  <form class="form-horizontal form-label-left" action="{% url 'create-contest' %}" method="post" id="form-1">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-name">比赛名称 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="competition-name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-description">比赛概述 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <textarea class="resizable_textarea form-control" name="description" id="competition-description"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">数据集描述 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-12 col-xs-12">
+                        <textarea class="resizable_textarea form-control" name="data_description" id="dataset-description"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">赛事图片 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <p>我还没有弄清楚怎么把那个厉害的图片表单嵌进来</p>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">提交数据集 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <p>我也还没有弄清楚怎么把那个厉害的上传文件嵌进来</p>
+                      </div>
+                    </div>
+
+                  
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="single_cal1">报名开始时间 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="single_cal1" name="signup_begin_time" aria-describedby="inputSuccess2Status">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="single_cal2">报名结束时间 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="single_cal2" name="signup_end_time" aria-describedby="inputSuccess2Status">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="single_cal3">提交开始时间 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="single_cal3" name="submit_begin_time" aria-describedby="inputSuccess2Status">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="single_cal4">提交截止时间 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="single_cal4" name="submit_end_time" aria-describedby="inputSuccess2Status">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="single_cal6">公布结果时间 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                        <input type="text" class="form-control has-feedback-left" id="single_cal6" name="annoucement_time" aria-describedby="inputSuccess2Status">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-name">奖励方案 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-12 col-xs-12">
+                        <textarea class="resizable_textarea form-control" name="data_description" id="dataset-description"></textarea>
+                      </div>
+                    </div>
+
+                    <input type="submit" value="提交">
+                  </form>
+                </div>
+              </div>
+              <!-- End SmartWizard Content -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super}}
+  <script src="/static/vendors/dropzone/dist/min/dropzone.min.js"></script>
+  <!-- jQuery Smart Wizard -->
+  <!-- <script src="/static/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script> -->
+  <script src="/static/vendors/validator/validator.js"></script>
+{% endblock javascripts %}
