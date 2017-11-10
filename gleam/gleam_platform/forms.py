@@ -70,12 +70,12 @@ class UserLoginForm(forms.Form):
 
 
 class ContestantDetailForm(forms.Form):
-    email = forms.EmailField()
+
     nick_name = forms.CharField()
     school = forms.CharField()
     gender = forms.CharField()
 
 
 class OrganizerDetailForm(forms.Form):
-    email = forms.EmailField()
+
     organization = forms.CharField()

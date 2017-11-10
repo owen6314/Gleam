@@ -12,13 +12,13 @@
         </a>
         <ul class="dropdown-menu dropdown-usermenu pull-right">
           <li>
-            <a href="javascript:;">主页</a>
+            <a href={% url 'profile-organizer' %}>主页</a>
           </li>
           <li>
             <a href="javascript:;">设置</a>
           </li>
           <li>
-            <a href="login.html">登出</a>
+            <a href={% url 'logout' %}>登出</a>
           </li>
         </ul>
       </li>

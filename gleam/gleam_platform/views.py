@@ -243,7 +243,7 @@ class LoginOrganizerView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # 验证密码 和 用户类型
-            user = authenticate(request, email=email, password=password)
+            user = authenticate(email=email, password=password)
             if user is not None and user.type == 'O':
                 login(request, user)
                 # 跳转到主页
@@ -263,7 +263,7 @@ class LoginContestantView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # 验证密码 和 用户类型
-            user = authenticate(request, email=email, password=password)
+            user = authenticate(email=email, password=password)
             if user is not None: # and user.type == 'C':
                 login(request, user)
                 # 跳转到主页
@@ -300,17 +300,18 @@ class HomeOrganizerView(View):
             # 403 permission denied
             return redirect('index')
         contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
+        data = dict()
         for contest in contests:
             contest.team_count = len(contest.team_set.all())
-        contests_saved = contests.filter(status=Contest.STATUS_SAVED)
-        contests_finished = contests.filter(status=Contest.STATUS_FINISHED)
-        count_finished = len(contests_finished)
-        contests_ready = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__gte=datetime.datetime.now())
-        contests_online = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__lte=datetime.datetime.now())
-        count_online = len(contests_online)
-        team_count_online = sum(contest.team_count for contest in contests_online)
-        team_count_finished = sum(contest.team_count for contest in contests_finished)
-        return render(request, 'organizer_admin.html')
+        data['contests_saved'] = contests.filter(status=Contest.STATUS_SAVED)
+        data['contests_finished'] = contests.filter(status=Contest.STATUS_FINISHED)
+        data['count_finished'] = len(data['contests_finished'])
+        data['contests_ready'] = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__gte=datetime.datetime.now())
+        data['contests_online'] = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__lte=datetime.datetime.now())
+        data['count_online'] = len(data['contests_online'])
+        data['team_count_online'] = sum(contest.team_count for contest in data['contests_online'])
+        data['team_count_finished'] = sum(contest.team_count for contest in data['contests_finished'])
+        return render(request, 'organizer_admin.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -319,14 +320,14 @@ class HomeContestantView(View):
     @staticmethod
     def get(request):
         try:
-            contestant = request.user.profile.contestant_profile
+            contestant = request.user.contestant_profile
         except:
             # 403 permission denied
             return redirect('index')
         contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISHED, Contest.STATUS_FINISHED]).order_by('-submit_end_time')
         teams = contestant.team_set.all()
         my_contests = [team.contest for team in teams]
-        pass
+        return render(request, 'user_home.html')
 
 
 class ProfileOrganizerView(View):
@@ -342,9 +343,8 @@ class ProfileOrganizerView(View):
         profile = user.organizer_profile
         data['email'] = user.email
         data['organization'] = profile.organization
-        form = OrganizerDetailForm(data)
 
-        return render(request, 'organizer_detail.html', {'form': form})
+        return render(request, 'organizer_info.html', data)
 
     # 更新赛事方信息
     @staticmethod
@@ -360,7 +360,8 @@ class ProfileOrganizerView(View):
             # user.email = form.cleaned_data['email']
             profile.organization = form.cleaned_data['organization']
             profile.save()
-        return render(request, 'contestant_detail.html', {'form': form})
+
+        return ProfileOrganizerView.get(request)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -378,9 +379,9 @@ class ProfileContestantView(View):
         data['email'] = user.email
         data['nick_name'] = profile.nick_name
         data['school'] = profile.school
-        form = ContestantDetailForm(data)
+        data['gender'] = profile.gender
 
-        return render(request, 'contestant_detail.html', {'form': form})
+        return render(request, 'user_admin.html', data)
 
     # 更新参赛者信息
     @staticmethod
@@ -393,11 +394,12 @@ class ProfileContestantView(View):
             user = request.user
             profile = user.contestant_profile
             # user.email = form.cleaned_data['email']
-            profile.nick_name = form.cleaned_data['email']
+            profile.nick_name = form.cleaned_data['nick_name']
             profile.school = form.cleaned_data['school']
+            profile.gender = form.cleaned_data['gender']
             profile.save()
 
-        return render(request, 'contestant_detail.html', {'form': form})
+        return redirect('profile-contestant')
 
 
 @method_decorator(login_required, name='dispatch')

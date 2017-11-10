@@ -6,7 +6,7 @@
 
     <!-- banner start -->
     <!-- ================ -->
-    <div id="banner" class="banner">
+    <div id="home" class="banner">
         <div class="banner-image"></div>
         <div class="banner-caption">
             <div class="container">
@@ -49,7 +49,7 @@
                             <li role="presentation" class="active"><a id="signin-tab1" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
-                            <li role="presentation" class=""><a href="#user-register" role="tab"
+                            <li role="presentation" class=""><a role="tab"
                                                                       id="register-tab1" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
@@ -71,7 +71,7 @@
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="contestant-login-password" name="password"
+                                                <input type="password" class="form-control" id="contestant-login-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="contestant-register-password" name="password"
+                                                <input type="password" class="form-control" id="contestant-register-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" form="login-contestant-form" id="contestant-form" class="btn btn-default" >登录</button>
+                    <button type="submit" id="contestant-form" class="btn btn-default" >登录</button>
                 </div>
 
             </div>
@@ -129,7 +129,7 @@
                             <li role="presentation" class="active"><a id="signin-tab2" role="tab"
                                                                 data-toggle="tab" aria-expanded="true">登录</a>
                             </li>
-                            <li role="presentation" class=""><a href="#sponsor-register" role="tab"
+                            <li role="presentation" class=""><a  role="tab"
                                                                       id="register-tab2" data-toggle="tab"
                                                                       aria-expanded="false">注册</a>
                             </li>
@@ -142,7 +142,7 @@
                                     <form id="login-organizer-form" class="form-horizontal" role="form" action="{% url 'login-organizer' %}" method="POST">
                                         {% csrf_token %}
                                         <div class="form-group">
-                                            <label for="contestant-login-email" class="col-sm-2 control-label">邮箱sss</label>
+                                            <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="organizer-login-email" name="email"
                                                        placeholder="example@example.com">
@@ -151,7 +151,7 @@
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="organizer-login-password" name="password"
+                                                <input type="password" class="form-control" id="organizer-login-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -174,7 +174,7 @@
                                         <div class="form-group">
                                             <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="organizer-register-password" name="password"
+                                                <input type="password" class="form-control" id="organizer-register-password" name="password"
                                                        placeholder="password">
                                             </div>
                                         </div>
@@ -186,7 +186,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="submit" form="register-organizer-form" id="organizer-form" class="btn btn-default" >登录</button>
+                    <button type="submit" id="organizer-form" class="btn btn-default" >登录</button>
                 </div>
 
             </div>
@@ -1240,27 +1240,31 @@
             $("#sponsor-sign-in").addClass("active");
         });
         $("#signin-tab1").click(function(){
-            $("#user-sign-in").addClass("active");
+
             $("#user-register").removeClass("active");
+            $("#user-sign-in").addClass("active");
             $("#contestant-form").text("登录");
         });
         $("#register-tab1").click(function(){
-            $("#user-sign-in").removeClass("active");
-            $("#user-register").addClass("active");
+
             $("#contestant-form").text("注册");
+            $("#user-register").addClass("active");
+            $("#user-sign-in").removeClass("active");
         });
         $("#signin-tab2").click(function(){
+
+            $("#organizer-form").text("登录");
             $("#sponsor-sign-in").addClass("active");
             $("#sponsor-register").removeClass("active");
-            $("#organizer-form").text("登录");
         });
         $("#register-tab2").click(function(){
+
+            $("#organizer-form").text("注册");
             $("#sponsor-sign-in").removeClass("active");
             $("#sponsor-register").addClass("active");
-            $("#organizer-form").text("注册");
         });
         $("#contestant-form").click(function(){
-            if ($("#user-sign-in").hasClass("active")){
+            if ($("#contestant-form").text() == "登录"){
                 $("#login-contestant-form").submit();
             }
             else{
@@ -1268,10 +1272,10 @@
             }
         });
         $("#organizer-form").click(function(){
-            if ($("#sponsor-sign-in").hasClass("active")){
+            if ($("#organizer-form").text() == "登录"){
                 $("#login-organizer-form").submit();
             }
-            else{
+            else {
                 $("#register-organizer-form").submit();
             }
         });
