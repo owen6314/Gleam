@@ -293,14 +293,14 @@ class HomeOrganizerView(View):
     @staticmethod
     def get(request):
         try:
-            organizer = request.user.profile.organizer_profile
+            organizer = request.user.organizer_profile
         except:
             # 403 permission denied
             return redirect('index')
         contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
         number = len(contests)
         total_team = sum([len(contest.Team_set.all()) for contest in contests])
-        return render(request, 'organizer_admin.html')
+        return redirect('home-organizer')
 
 
 class HomeContestantView(View):
