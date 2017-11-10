@@ -260,9 +260,9 @@ class LoginContestantView(View):
         form = UserLoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
-            password = form.cleaned_dataT['password']
+            password = form.cleaned_data['password']
             # 验证密码 和 用户类型
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, email=email, password=password)
             if user is not None: # and user.type == 'C':
                 login(request, user)
                 # 跳转到主页
@@ -287,7 +287,7 @@ class IndexView(View):
     def get(request):
         return render(request, 'gleam.html')
 
-
+@method_decorator(login_required, name='dispatch')
 class HomeOrganizerView(View):
     # 显示赛事方主页
     @staticmethod
@@ -298,8 +298,16 @@ class HomeOrganizerView(View):
             # 403 permission denied
             return redirect('index')
         contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
-        number = len(contests)
-        total_team = sum([len(contest.Team_set.all()) for contest in contests])
+        for contest in contests:
+            contest.team_count = len(contest.team_set.all())
+        contests_saved = contests.filter(status=Contest.STATUS_SAVED)
+        contests_finished = contests.filter(status=Contest.STATUS_FINISHED)
+        count_finished = len(contests_finished)
+        contests_ready = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_start_time__gte=now)
+        contests_online = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_start_time__lte=now)
+        count_online = len(contests_online)
+        team_count_online = sum(contest.team_count for contest in contests_online)
+        team_count_finished = sum(contest.team_count for contest in contests_finished)
         return render(request, 'organizer_admin.html')
 
 
@@ -308,15 +316,14 @@ class HomeContestantView(View):
     @staticmethod
     def get(request):
         try:
-            contestant = request.user.contestant_profile
+            contestant = request.user.profile.contestant_profile
         except:
             # 403 permission denied
             return redirect('index')
         contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISHED, Contest.STATUS_FINISHED]).order_by('-submit_end_time')
         teams = contestant.team_set.all()
         my_contests = [team.contest for team in teams]
-        return render(request, 'user_home.html')
-
+        pass
 
 
 class ProfileOrganizerView(View):
@@ -368,9 +375,9 @@ class ProfileContestantView(View):
         data['email'] = user.email
         data['nick_name'] = profile.nick_name
         data['school'] = profile.school
-        data['gender'] = profile.gender
+        form = ContestantDetailForm(data)
 
-        return render(request, 'user_admin.html', data)
+        return render(request, 'contestant_detail.html', {'form': form})
 
     # 更新参赛者信息
     @staticmethod
@@ -383,12 +390,11 @@ class ProfileContestantView(View):
             user = request.user
             profile = user.contestant_profile
             # user.email = form.cleaned_data['email']
-            profile.nick_name = form.cleaned_data['nick_name']
+            profile.nick_name = form.cleaned_data['email']
             profile.school = form.cleaned_data['school']
-            profile.gender = form.cleaned_data['gender']
             profile.save()
 
-        return redirect('profile-contestant')
+        return render(request, 'contestant_detail.html', {'form': form})
 
 
 #@method_decorator(login_required, name='dispatch')
@@ -401,8 +407,6 @@ class CreateContestView(View):
         except:
             # 403 permission denied
             return render(request, 'contest_creation.html')
-
-        pass
 
     # 创建比赛
     @staticmethod
@@ -427,13 +431,12 @@ class ContestDetailView(View):
         contestant = request.user.profile.contestant_profile
         if not contestant:
             return render(request, 'contest.html', {'contest': contest})
-        team = contestant.Team_set.filter(contest=contest)
+        team = contestant.team_set.filter(contest=contest)
         if not team:
             return render(request, 'contest.html', {'contest': contest})
         submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
         return render(request, 'contest.html',
                       {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
-        pass
 
 
 class ContestListView(View):
@@ -442,12 +445,12 @@ class ContestListView(View):
     def get(request):
         contests_published = Contest.objects.filter(status=Contest.STATUS_PUBLISHED)
         contests_finished = Contest.objects.filter(status=Contest.STATUS_FINISHED)
-        count_published = [len(contest.team_set.all()) for contest in contests_published]
-        count_finished = [len(contest.team_set.all()) for contest in contests_finished]
+        for contest in contests_published:
+            contest.team_count = len(contest.team_count.all())
+        for contest in contests_finished:
+            contest.team_count = len(contest.team_count.all())
         return render(request, 'contest_list.html', {'contests_published': contests_published,
-                                                     'contests_finished': contests_finished,
-                                                     'count_published': count_published,
-                                                     'count_finished': count_finished})
+                                                     'contests_finished': contests_finished)
 
 
 class BadRequestView(View):
