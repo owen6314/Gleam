@@ -9,6 +9,7 @@ import django.utils.timezone as timezone
 from .forms import *
 from .models import *
 import datetime
+import hashlib
 
 
 class HomeView(View):
@@ -463,4 +464,83 @@ class BadRequestView(View):
     @staticmethod
     def get(request):
         return render(request, 'bad_request_400.html')
+
+
+@method_decorator(login_required, name='dispatch')
+class RegisterView(View):
+
+    @staticmethod
+    def post(request, *args):
+        contest_id = args[1]
+        md5 = hashlib.md5()
+        try:
+            contest = Contest.objects.get(pk=contest_id)
+            contestant = request.user.contestant_profile
+        except:
+            # Invalid infomation
+            return redirect('index')
+        team = Team.objects.filter(Contest=contest).filter(members=contestant)
+        if 'hashcode' in request.POST.keys:
+            target_team = Team.objects.filter(hashcode=request.POST['hashcode'])
+            if not target_team:
+                # invalid hashcode
+                return redirect('contest-detail')
+            target_team = target_team[0]
+            if target_team.members.count() >= contest.max_member:
+                # too many members
+                return redirect('contest-detail')
+        if not team:
+            if not target_team:
+                team_name = contestant.name + '_' + contest.name
+                md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                while Team.objects.filter(hashcode=md5.hexdigest):
+                    md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                team = Team(name=team_name, hashcode=md5.hexdigest())
+                team.save()
+                return redirect('contest-detail')
+            else:
+                target_team.add(contestant)
+                md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                while Team.objects.filter(hashcode=md5.hexdigest):
+                    md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                target_team.hashcode = md5.hexdigest()
+                target_team.save()
+                return redirect('contest-detail')
+        else:
+            if target_team:
+                team = team[0]
+                if target_team.members.count() + team.members.count() >= contest.max_member:
+                    # too many members
+                    return redirect('contest-detail')
+                for item in team.members:
+                    target_team.add(contestant)
+                team.delete()
+                md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                while Team.objects.filter(hashcode=md5.hexdigest):
+                    md5.update((target_team.name + datetime.datetime.now).encode('utf-8'))
+                target_team.hashcode = md5.hexdigest()
+                target_team.save()
+                return redirect('contest-detail')
+
+
+@method_decorator(login_required, name='dispatch')
+class QuitTeamView(View):
+    @staticmethod
+    def post(request, *args):
+        contest_id = args[1]
+        try:
+            contest = Contest.objects.get(pk=contest_id)
+            contestant = request.user.contestant_profile
+        except:
+            # Invalid infomation
+            return redirect('index')
+        team = Team.objects.filter(Contest=contest).filter(members=contestant)
+        if not team:
+            # No team
+            return redirect('index')
+        team.members.remove(contestant)
+
+
+
+
 

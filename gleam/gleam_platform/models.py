@@ -36,6 +36,7 @@ class Contest(models.Model):
     data_description = models.TextField()
     status = models.IntegerField()
     image = models.ImageField(null=True, blank=True)
+    max_member = models.IntegerField()
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -134,6 +135,7 @@ class Team(models.Model):
     )
     # team contest
     contest = models.ForeignKey(Contest)
+    hashCode = models.CharField(max_length=128)
 
 
 class Membership(models.Model):
