@@ -4,9 +4,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # max length of name(long version)
-MAX_NAME_LEN_LONG = 80
+MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
-MAX_NAME_LEN_SHORT = 24
+MAX_NAME_LEN_SHORT = 32
 # max length of flag
 MAX_FLAG_LEN = 2
 # max length of resident id number
@@ -14,28 +14,26 @@ MAX_RID_LEN = 18
 
 
 class Organizer(models.Model):
+
     organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
-    # objects = UserManager()
-
     class Meta:
-        verbose_name = u'Organizer'
+        verbose_name = u'Host'
 
 
-class Contest(models.Model):
+class Tournament(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    organizer = models.ForeignKey(Organizer)
-    signup_begin_time = models.DateField()
-    signup_end_time = models.DateField()
-    submit_begin_time = models.DateField()
-    submit_end_time = models.DateField()
-    announcement_time = models.DateField()
+
+    host = models.ForeignKey(Organizer)
+
     description = models.TextField()
-    evaluation = models.TextField(null=True, blank=True)
-    prizes = models.TextField()
-    data_description = models.TextField()
+
     status = models.IntegerField()
+
     image = models.ImageField(null=True, blank=True)
+
+    register_begin_time = models.DateField()
+    register_end_time = models.DateField()
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -43,9 +41,21 @@ class Contest(models.Model):
     STATUS_FINISHED = 2
 
 
+class Contest(models.Model):
+    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+
+    submit_begin_time = models.DateField()
+    submit_end_time = models.DateField()
+    release_time = models.DateField()
+    description = models.TextField()
+
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+
+
 class Contestant(models.Model):
-    # resident id number
-    resident_id = models.CharField(max_length=MAX_RID_LEN)
+
+    # # resident id number
+    # resident_id = models.CharField(max_length=MAX_RID_LEN)
     # nick name
     nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
     # school name
@@ -98,7 +108,7 @@ class User(AbstractUser):
     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
-    organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
+    host_profile = models.ForeignKey(Host, null=True, on_delete=models.CASCADE)
     contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
