@@ -18,13 +18,13 @@ class Organizer(models.Model):
     organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
     class Meta:
-        verbose_name = u'Host'
+        verbose_name = u'Organizer'
 
 
 class Tournament(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
-    host = models.ForeignKey(Organizer)
+    organizer = models.ForeignKey(Organizer)
 
     description = models.TextField()
 
@@ -34,6 +34,8 @@ class Tournament(models.Model):
 
     register_begin_time = models.DateField()
     register_end_time = models.DateField()
+
+    max_team_member_num = models.IntegerField()
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -108,7 +110,7 @@ class User(AbstractUser):
     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
-    host_profile = models.ForeignKey(Host, null=True, on_delete=models.CASCADE)
+    organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
     contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
