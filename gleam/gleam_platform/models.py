@@ -147,7 +147,7 @@ class Team(models.Model):
     )
     # team contest
     contest = models.ForeignKey(Contest)
-    hashCode = models.CharField(max_length=128, unique=True)
+    unique_id = models.CharField(max_length=128, unique=True)
 
 
 class Membership(models.Model):
