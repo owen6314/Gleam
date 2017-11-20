@@ -170,9 +170,7 @@ def generate_submission_filename(instance, filename):
     return "submissions/%s/%s" % (instance.contest.name, filename)
 
 
-class Submission(models.Model):
-    contest = models.ForeignKey('Contest')
+class Record(models.Model):
     team = models.ForeignKey('Team')
     score = models.DecimalField(max_digits=4, decimal_places=2)
-    data = models.FileField(upload_to=generate_submission_filename)
     time = models.DateField()
