@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^profile/organizer', ProfileOrganizerView.as_view(), name='profile-organizer'),
     url(r'^profile/contestant', ProfileContestantView.as_view(), name='profile-contestant'),
     url(r'^create-contest', CreateContestView.as_view(), name='create-contest'),
-    url(r'^contest-detail/([1-9][0-9]*)/', ContestDetailView.as_view(), name='contest-detail'),
-    url(r'^contest-list', ContestListView.as_view(), name='contest-list'),
+    url(r'^contest-detail/([1-9][0-9]*)/', TournamentDetailOrganizerView.as_view(), name='tournament-detail-organizer'),
+    url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
     url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400')
 ]

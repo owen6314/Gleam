@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
   {{ block.super }}
-  <link href="bootstrap-datetimepicker.min.css" rel="stylesheet" />
 {% endblock stylesheets %}
 
 
@@ -13,156 +12,67 @@
     <div class="">
       <div class="page-title">
       <div class="clearfix"></div>
-
       <div class="row">
-
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="x_panel">
             <div class="x_title">
               <h2>创建新比赛 <small>创建的比赛会首先经过Gleam的审核，审核通过后方可发布</small></h2>
-              <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                </li>
-              </ul>
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
-              <!-- Smart Wizard -->
-              <div id="wizard" class="form_wizard wizard_horizontal">
-                <ul class="wizard_steps">
-                  <li>
-                    <a href="#step-1">
-                      <span class="step_no">1</span>
-                      <span class="step_descr">
-                        第一步<br />
-                        <small>比赛信息</small>
-                      </span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#step-2">
-                      <span class="step_no">2</span>
-                      <span class="step_descr">
-                        第二步<br />
-                        <small>比赛流程</small>
-                      </span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#step-3">
-                      <span class="step_no">3</span>
-                      <span class="step_descr">
-                        第三步<br />
-                        <small>奖励方案</small>
-                      </span>
-                    </a>
-                  </li>
-                </ul>
+              <form class="form-horizontal form-label-left" action="{% url 'create-contest' %}" method="post" id="contest-form">
+                {% csrf_token %}
 
-
-                <form class="form-horizontal form-label-left" action="{% url 'create-contest' %}" method="post" id="form-1">
-                  {% csrf_token %}
-
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-name">比赛名称 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="competition-name" name="name" required="required" class="form-control col-md-7 col-xs-12">
-                    </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="competition-name" name="name" required="required" class="form-control col-md-7 col-xs-12">
                   </div>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-description">比赛概述 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <textarea class="resizable_textarea form-control" name="description" id="competition-description"></textarea>
-                    </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description"></textarea>
                   </div>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">数据集描述 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
-                      <textarea class="resizable_textarea form-control" name="data_description" id="dataset-description"></textarea>
-                    </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="dataset-description">赛事图片 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="file" name="image">
                   </div>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">赛事图片 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="file" name="image">
-                    </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time" >
+                    <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dataset-description">提交数据集 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="file" name="dataset">
-                    </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                    <input type="text" class="form-control has-feedback-left" id="register_end_time" name="register_end_time" >
+                    <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
-                
-                  <div class="form-group input-append date form_datetime">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date_form_1">报名开始时间 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="date_form_1" name="signup_begin_time" aria-describedby="inputSuccess2Status">
-                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                    </div>
-                  </div>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date_form_2">报名结束时间 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="date_form_2" name="signup_end_time" aria-describedby="inputSuccess2Status">
-                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                    </div>
-                  </div>
+                <div id="formpart"></div>
+                <div id="form_btn_group" class="pull-right">
+                  <button class="btn btn-primary" id="addform" type="button">添加比赛阶段</button>
+                  <button class="btn btn-primary" id="removeform" type="button">移除比赛阶段</button>
+                  <button class="btn btn-primary" id="submitform" type="submit" form="contest-form">提交审核</button>
+                </div>
 
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date_form_3">提交开始时间 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="date_form_3" name="submit_begin_time" aria-describedby="inputSuccess2Status">
-                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date_form_4">提交截止时间 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="date_form_4" name="submit_end_time" aria-describedby="inputSuccess2Status">
-                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date_form_5">公布结果时间 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="date_form_5" name="announcement_time" aria-describedby="inputSuccess2Status">
-                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                    </div>
-                  </div>
-
-
-                  <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="competition-name">奖励方案 <span class="required">*</span>
-                    </label>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
-                      <textarea class="resizable_textarea form-control" name="prizes" id="dataset-description"></textarea>
-                    </div>
-                  </div>
-
-                  <input type="submit" value="提交">
-                </form>
-
-
-              </div>
-              <!-- End SmartWizard Content -->
+              </form>
             </div>
           </div>
         </div>
@@ -173,8 +83,61 @@
 
 {% block javascripts %}
   {{ block.super}}
-  <script src="/static/vendors/dropzone/dist/min/dropzone.min.js"></script>
-  <script src="/static/vendors/validator/validator.js"></script>
-  <script src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script type="text/javascript">
+    var contest_creation_stage_cnt = 0;
+    $("#addform").click(function(){
+      contest_creation_stage_cnt += 1;
+      var new_stage_form = ' \
+      <div id="stage_form_'+contest_creation_stage_cnt+'"> \
+        <h3>阶段'+contest_creation_stage_cnt+'</h3> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="name_'+contest_creation_stage_cnt+'">阶段名称 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" id="name_'+contest_creation_stage_cnt+'" name="name_'+contest_creation_stage_cnt+'" > \
+            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+          </div> \
+        </div> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="description_'+contest_creation_stage_cnt+'">阶段描述 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" id="description_'+contest_creation_stage_cnt+'" name="description_'+contest_creation_stage_cnt+'" > \
+            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+          </div> \
+        </div> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="submit_begin_time_'+contest_creation_stage_cnt+'">阶段开始时间 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" id="submit_begin_time_'+contest_creation_stage_cnt+'" name="submit_begin_time'+contest_creation_stage_cnt+'" > \
+            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+          </div> \
+        </div> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="submit_end_time_'+contest_creation_stage_cnt+'">阶段结束时间 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" id="submit_end_time_'+contest_creation_stage_cnt+'" name="submit_end_time_'+contest_creation_stage_cnt+'" > \
+            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+          </div> \
+        </div> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="release_time_'+contest_creation_stage_cnt+'">公布阶段结果时间 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" id="release_time_'+contest_creation_stage_cnt+'" name="release_time_'+contest_creation_stage_cnt+'" > \
+            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+          </div> \
+        </div> \
+      </div> \
+      '
+      $("#formpart").before($(new_stage_form));
+    });
+    $("#removeform").click(function(){
+      $("#stage_form_"+contest_creation_stage_cnt).remove();
+      contest_creation_stage_cnt -= 1;
+    });
+  </script>
 {% endblock javascripts %}
 

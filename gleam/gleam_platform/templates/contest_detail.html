@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %} | 主页{% endblock title %}
+
+{% block content %}
+<div class = "container">
+  <div class = "row">
+
+    <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 id="about" class="title text-center">“迁瑞杯”全国吃鸡大赛</h1>
+            <p class="lead text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta officia, aspernatur.</p>
+            <div class="space"></div>
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2">
+                <img src="/static/images/contest_img.jpg" style="width:100%;">
+                <div class="space"></div>
+              </div>
+            </div>
+
+            <div class="container">
+              <div class="" role="tabpanel">
+                <div class="text-center">
+                  <ul class="nav nav-pills">
+                    <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
+                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
+                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_team" data-toggle="tab">我的队伍</a></li>
+                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">讨论区</a></li>
+                  </ul>
+                </div>
+                <div id="contest_tab_panel" class="tab-content">
+                  <div class="tab-pane fade active in" id="tab_info">
+                    <div class="space"></div>
+                    <h2>“迁瑞杯”全国吃鸡大赛</h2>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h3>赛事主办方</h3>
+                        <p>Bluehole</p>
+
+                        <h3>比赛状态</h3>
+                        <p>注册中</p>
+
+                        <h3>注册时间</h3>
+                        <p>2017/11/19 00:00:00 to 2017/11/29 23:59:59</p>
+
+                        <h3>奖金</h3>
+                        <p>$200,000,000</p>
+
+                        <h3>比赛详情</h3>
+                        <p>Vitae dolores quam magnam accusantium nam, voluptatibus expedita delectus, dolorum odio magni ut nemo nihil ex earum pariatur molestias velit eveniet, facere autem saepe aut. Ut minima itaque porro facere. Cumque vitae autem, dignissimos molestiae necessitatibus culpa aliquam deleniti soluta sunt voluptatibus tenetur, unde dolorem eligendi doloribus quibusdam facere totam. Possimus atque deserunt numquam aliquam magnam, facilis officiis illo alias ipsa voluptas laborum, praesentium eveniet nobis velit voluptatem odio eligendi, corporis et iste distinctio! Repellendus, id, ad.</p>
+
+                        <h3>赛制说明</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ducimus explicabo quibusdam temporibus deserunt doloremque pariatur ea, animi a. Delectus similique atque eligendi, enim vel reiciendis deleniti neque aliquid, sit?</p>
+                        <div class="progress progress-striped active" style="height:50px;">
+                          <div class="progress-bar progress-bar-success " role="progressbar"
+                               aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                               style="width: 40%;">
+                            <span style="display:inline-block;line-height:50px;font-size:30px;">预选赛</span>
+                          </div>
+                          <div class="progress-bar progress-bar-info progress-striped active" role="progressbar"
+                               aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                               style="width: 30%;">
+                            <span style="display:inline-block;line-height:50px;font-size:30px;">初赛</span>
+                          </div>
+                          <div class="progress-bar progress-bar-warning progress-striped active" role="progressbar"
+                               aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                               style="width: 20%;">
+                            <span style="display:inline-block;line-height:50px;font-size:30px;">复赛</span>
+                          </div>
+                          <div class="progress-bar progress-bar-danger progress-striped active" role="progressbar"
+                               aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                               style="width: 10%;">
+                            <span style="display:inline-block;line-height:50px;font-size:30px;">决赛</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab_rank">
+                    <div class="space"></div>
+                    <h3>排行榜只显示当前阶段的队伍排名</h3>
+                    <div class="col-md-12">
+                      <div class="x_content">
+                        <table class="table table-hover">
+                          <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Team Name</th>
+                            <th>Team Leader</th>
+                            <th>Score</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>神韦敬致</td>
+                            <td>Godv</td>
+                            <td>97.02</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">2</th>
+                            <td>盒子精</td>
+                            <td>Thornton</td>
+                            <td>96.34</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">3</th>
+                            <td>playerunknow</td>
+                            <td>the Bird</td>
+                            <td>93.40</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab_team">
+                    <div class="space"></div>
+
+                    <form id="team_form" action="" method="post" class="form-horizontal form-label-left">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <label class="control-label col-md-3" for="team_name">队伍名称
+                        </label>
+                        <div class="col-md-6">
+                          <input type="text" id="team_name" name="team_name" value="{{ team_name }}"
+                                 class="form-control col-md-7">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-md-offset-3">
+                          <button type="submit" form="team_form" class="btn btn-success">我要参赛</button>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="row">
+                      <div class="col-md-8 col-md-offset-2">
+                        <h2>我的队伍:盒子精</h2>
+                        <h3>队长: <a>Thornton</a></h3>
+                        <h3>队员: <a>Pycharm</a>，<a>Smith</a></h3>
+                        <h3>指导教师: <a>Anthony</a></h3>
+                        <h3>提交次数：2/5</h3>
+                        <div>
+                          <button class="btn btn-success">提交结果</button>
+                          <button class="btn btn-primary">查看过往提交</button>
+                          <button class="btn btn-warning">我要退赛</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="tab_discuss">
+                    <div class="space"></div>
+                    <table class="table table-striped projects">
+                      <thead>
+                      <tr>
+                        <th style="width: 1%">#</th>
+                        <th >标题</th>
+                        <th >主题</th>
+                        <th >发布者</th>
+                        <th >发布时间</th>
+                        <th >最后回复时间</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <td>#1</td>
+                        <td>
+                          <a>Pesamakini Backend UI</a>
+                        </td>
+                        <td>
+                          <p>流程相关</p>
+                        </td>
+                        <td>
+                          <a>Lanxiaozhi</a>
+                        </td>
+                        <td >
+                          <p>2017/11/19 16:01:01</p>
+                        </td>
+                        <td>
+                          <p>2017/11/19 16:05:01</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>#2</td>
+                        <td>
+                          <a>Pesamakini Backend UI</a>
+                        </td>
+                        <td>
+                          <p>奖金相关</p>
+                        </td>
+                        <td>
+                          <a>Lanxiaozhi</a>
+                        </td>
+                        <td >
+                          <p>2017/11/19 16:01:01</p>
+                        </td>
+                        <td>
+                          <p>2017/11/19 16:05:01</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>#2</td>
+                        <td>
+                          <a>Pesamakini Backend UI</a>
+                        </td>
+                        <td>
+                          <p>流程相关</p>
+                        </td>
+                        <td>
+                          <a>Lanxiaozhi</a>
+                        </td>
+                        <td >
+                          <p>2017/11/19 16:01:01</p>
+                        </td>
+                        <td>
+                          <p>2017/11/19 16:05:01</p>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+{% endblock javascripts %}

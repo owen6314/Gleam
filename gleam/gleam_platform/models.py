@@ -4,9 +4,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # max length of name(long version)
-MAX_NAME_LEN_LONG = 80
+MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
-MAX_NAME_LEN_SHORT = 24
+MAX_NAME_LEN_SHORT = 32
 # max length of flag
 MAX_FLAG_LEN = 2
 # max length of resident id number
@@ -14,28 +14,28 @@ MAX_RID_LEN = 18
 
 
 class Organizer(models.Model):
-    organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
-    # objects = UserManager()
+    organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
     class Meta:
         verbose_name = u'Organizer'
 
 
-class Contest(models.Model):
+class Tournament(models.Model):
     name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+
     organizer = models.ForeignKey(Organizer)
-    signup_begin_time = models.DateField()
-    signup_end_time = models.DateField()
-    submit_begin_time = models.DateField()
-    submit_end_time = models.DateField()
-    announcement_time = models.DateField()
+
     description = models.TextField()
-    evaluation = models.TextField(null=True, blank=True)
-    prizes = models.TextField()
-    data_description = models.TextField()
+
     status = models.IntegerField()
+
     image = models.ImageField(null=True, blank=True)
+
+    register_begin_time = models.DateField()
+    register_end_time = models.DateField()
+
+    max_team_member_num = models.IntegerField()
 
     STATUS_DELETED = -1
     STATUS_SAVED = 0
@@ -43,9 +43,21 @@ class Contest(models.Model):
     STATUS_FINISHED = 2
 
 
+class Contest(models.Model):
+    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+
+    submit_begin_time = models.DateField()
+    submit_end_time = models.DateField()
+    release_time = models.DateField()
+    description = models.TextField()
+
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+
+
 class Contestant(models.Model):
-    # resident id number
-    resident_id = models.CharField(max_length=MAX_RID_LEN)
+
+    # # resident id number
+    # resident_id = models.CharField(max_length=MAX_RID_LEN)
     # nick name
     nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
     # school name
