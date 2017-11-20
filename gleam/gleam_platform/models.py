@@ -31,6 +31,7 @@ class Tournament(models.Model):
     status = models.IntegerField()
 
     image = models.ImageField(null=True, blank=True)
+    max_member = models.IntegerField()
 
     register_begin_time = models.DateField()
     register_end_time = models.DateField()
@@ -146,6 +147,7 @@ class Team(models.Model):
     )
     # team contest
     contest = models.ForeignKey(Contest)
+    hashCode = models.CharField(max_length=128, unique=True)
 
 
 class Membership(models.Model):
