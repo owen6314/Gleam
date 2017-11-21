@@ -154,35 +154,37 @@ class HomeOrganizerView(View):
 
     data = dict()
 
+    data['user'] = request.user
+
     # 参加该主办方主办的所有比赛的所有队伍数
     data['total_team_num'] = 0
     for tournament in tournaments:
       data['total_team_num'] += len(tournament.team_set.all())
 
     # 已保存的比赛
-    data['tournaments_saved'] = tournaments.filter(status=Tournament.STATUS_SAVED)
+    data['tournaments_saved'] = Tournament.objects.filter(status=Tournament.STATUS_SAVED)
 
     # 已结束的比赛
-    data['tournaments_finished'] = tournaments.filter(status=Tournament.STATUS_FINISHED)
+    data['tournaments_finished'] = Tournament.objects.filter(status=Tournament.STATUS_FINISHED)
 
     # 已结束的比赛数目
     data['tournament_finished_num'] = len(data['tournaments_finished'])
 
     # 即将开始的比赛
-    data['tournaments_coming'] = tournaments \
+    data['tournaments_coming'] = Tournament.objects\
       .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
 
     # 即将开始的比赛数目
-    data['tournament_coming_num'] = len(data['tournaments_ongoing'])
+    data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
-    data['tournaments_ongoing'] = tournaments. \
-      filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
+    data['tournaments_ongoing'] = Tournament.objects\
+      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
 
-    return render(request, 'organizer_admin.html', data)
+    return render(request, 'organizer_home.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -310,7 +312,7 @@ class TournamentDetailOrganizerView(View):
   @staticmethod
   def get(request, *args):
 
-    tournament_id = args[1]
+    tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
@@ -322,10 +324,12 @@ class TournamentDetailOrganizerView(View):
       return redirect('bad-request-400')
 
     # 如果比赛不是该主办方主办的
-    if tournament.organizer != request.user:
+    if tournament.organizer != request.user.organizer_profile:
       return redirect('bad-request-400')
 
     data = dict()
+
+    data['tournament_id'] =tournament_id
 
     data['name'] = tournament.name
 
@@ -342,8 +346,11 @@ class TournamentDetailOrganizerView(View):
       contestants.extend(members)
     data['contestant_num'] = len(contestants)
 
-    data['current_contest'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
+    try:
+      data['current_contest'] = Contest.objects.filter(tournament=tournament)\
+        .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')
+    except:
+      data['current_contest'] = None
 
     data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
@@ -351,11 +358,14 @@ class TournamentDetailOrganizerView(View):
     data['contests_finished'] = Contest.objects \
       .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
 
-    data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
-
-    data['update_time'] = data['current_contest'].release_time
-
-    data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+    if data['current_contest']:
+      data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
+      data['update_time'] = data['current_contest'].release_time
+      data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+    else:
+      data['countdown'] = "not begin yet"
+      data['update_time'] = ''
+      data['leaderboard'] = []
 
     return render(request, 'tournament_detail_organizer.html', data)
 

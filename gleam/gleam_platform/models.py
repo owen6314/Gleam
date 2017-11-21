@@ -19,6 +19,9 @@ class Organizer(models.Model):
   class Meta:
     verbose_name = u'Organizer'
 
+  def __str__(self):
+    return '%d %s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+
 
 class Tournament(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
@@ -38,11 +41,16 @@ class Tournament(models.Model):
 
   max_team_member_num = models.IntegerField()
 
+  team_count = models.IntegerField()
+
 
   STATUS_DELETED = -1
   STATUS_SAVED = 0
   STATUS_PUBLISHED = 1
   STATUS_FINISHED = 2
+
+  def __str__(self):
+    return '%s %s' % (self.name, self.organizer.user_set.all()[0].id)
 
 
 class Contest(models.Model):
@@ -68,6 +76,9 @@ class Contestant(models.Model):
   # gender
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
+  def __str__(self):
+    return '%d %s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
 
 
 class UserManager(BaseUserManager):
@@ -120,6 +131,10 @@ class User(AbstractUser):
   REQUIRED_FIELDS = []
 
   objects = UserManager()
+
+
+def __str__(self):
+  return '%d %s' % (self.id, self.email)
 
 
 # class Profile(models.Model):

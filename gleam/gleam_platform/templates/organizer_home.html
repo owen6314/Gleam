@@ -1,6 +1,6 @@
 {% extends "organizer_base.html" %}
 
-{% block title %} {% user.organization %} {% endblock title %}
+{% block title %} {{ user.organization }} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -21,7 +21,7 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
-        <div class="count">{{tournaments_ongoing[0].team_cnt}}</div>
+        <div class="count"></div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 累计举办比赛 </span>

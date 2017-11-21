@@ -1,4 +1,4 @@
-{% extends "base_site.html" %}
+{% extends "organizer_base.html" %}
 
 {% block title %} 划水大赛 - 比赛详情 {% endblock title %}
 
@@ -18,7 +18,7 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
-        <div class="count">{{contestant_num}}}</div>
+        <div class="count">{{contestant_num}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-clock-o"></i> 阶段结束还有 </span>
@@ -72,11 +72,11 @@
                   {% endfor %}
                 </td>
                 <td>{{e.tutor}}</td>
-                <td>{{e.members[0].school}}</td>
+                <td>school</td>
                 <td>{{e.submit_num}}</td>
                 <td>{{e.score}}</td>
               </tr>
-              {% end for %}
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -90,7 +90,7 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
-          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' %}" method="post" id="upload-score-board">
+          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' tournament_id %}" method="post" id="upload-score-board">
             <div class="form-group">
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
