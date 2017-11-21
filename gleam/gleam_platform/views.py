@@ -173,7 +173,7 @@ class HomeOrganizerView(View):
       .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
 
     # 即将开始的比赛数目
-    data['tournament_coming_num'] = len(data['tournaments_ongoing'])
+    data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
     data['tournaments_ongoing'] = tournaments. \

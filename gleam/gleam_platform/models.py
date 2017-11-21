@@ -31,7 +31,7 @@ class Tournament(models.Model):
 
 
   image = models.ImageField(null=True, blank=True)
-  max_member = models.IntegerField()
+  max_member = models.IntegerField(null=True)
 
   register_begin_time = models.DateField()
   register_end_time = models.DateField()
@@ -53,9 +53,9 @@ class Contest(models.Model):
   release_time = models.DateField()
   description = models.TextField()
 
-  tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+  tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
 
-  team_count = models.IntegerField()
+  team_count = models.IntegerField(default=0)
 
 
 class Contestant(models.Model):
@@ -147,9 +147,9 @@ class Team(models.Model):
     through='Membership',
     through_fields=('team', 'contestant'),
   )
-  leader = models.ForeignKey('Contestant', on_delete=models.CASCADE)
+  leader = models.ForeignKey('Contestant', on_delete=models.CASCADE, related_name='my_team', null=True)
   # team contest
-  tournament = models.ForeignKey(Tournament)
+  tournament = models.ForeignKey(Tournament, null=True)
   unique_id = models.CharField(max_length=128, unique=True)
   tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
 
@@ -182,4 +182,4 @@ class Record(models.Model):
   time = models.DateField()
 
   # TODO new add
-  contest = models.ForeignKey('Contest')
+  contest = models.ForeignKey('Contest', null=True)
