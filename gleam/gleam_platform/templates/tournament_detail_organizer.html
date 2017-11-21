@@ -14,7 +14,7 @@
     <div class="row tile_count">
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-home"></i> 当前阶段 </span>
-        <div class="count">初赛</div>
+        <div class="count">{{current_contest.name}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
@@ -37,7 +37,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12" id="stage-on-line">
       <div class="x_panel">
         <div class="x_title">
-          <h2>{{current_contest.name}}阶段排名 <small><i class="fa fa-clock-o"></i>更新于11.19 18:00</small> </h2>
+          <h2>{{current_contest.name}}阶段排名 <small><i class="fa fa-clock-o"></i>更新于 {{update_time}}</small> </h2>
           <ul class="nav navbar-right panel_toolbox">
             <li>
               <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -90,7 +90,7 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
-          <form class="form-horizontal form-label-left" method="post" id="upload-score-board">
+          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' %}" method="post" id="upload-score-board">
             <div class="form-group">
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
