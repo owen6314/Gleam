@@ -71,3 +71,5 @@ configs.json
 # sublime project and workspace
 *.sublime-project
 *.sublime-workspace
+
+autorun.sh
