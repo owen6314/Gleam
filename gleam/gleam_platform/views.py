@@ -12,6 +12,8 @@ from .models import *
 import datetime
 import hashlib
 import csv
+import uuid
+import os
 
 
 class SignupOrganizerView(View):
@@ -170,14 +172,12 @@ class HomeOrganizerView(View):
     data['tournaments_coming'] = tournaments \
       .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
 
-
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_ongoing'])
 
     # 正在进行的比赛
     data['tournaments_ongoing'] = tournaments. \
       filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
-
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -335,24 +335,169 @@ class TournamentDetailOrganizerView(View):
       contestants.extend(members)
     data['contestant_num'] = len(contestants)
 
-    data['current_contest'] = Tournament.objects\
-      .filter(submit_begin_time__lte = datetime.datetime.now()).order_by('-submit_begin_time')[0]
+    data['current_contest'] = Tournament.objects \
+      .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
 
-    data['contests_coming'] = Tournament.objects\
-      .filter(submit_begin_time__gt = datetime.datetime.now()).order_by('submit_begin_time')
+    data['contests_coming'] = Tournament.objects \
+      .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
 
-    data['contests_finished'] = Tournament.objects\
-      .filter(submit_end_time__lt = datetime.datetime.now()).order_by('-submit_end_time')
+    data['contests_finished'] = Tournament.objects \
+      .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
 
     data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
 
     data['update_time'] = data['current_contest'].release_time
 
+    data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+
     return render(request, 'tournament_detail_organizer.html', data)
 
   @staticmethod
-  def post(self):
-    pass
+  def post(request):
+    file = request.FILES['file']
+    file_name = os.path.join('tmp', uuid.uuid4() + '.csv')
+    with open(file_name, 'wb+') as dest:
+      for chunk in file.chunks():
+        dest.write(chunk)
+    TournamentDetailOrganizerView.updataRecord(filename=file_name)
+    return redirect('tournament-detail-organizer')
+
+  @staticmethod
+  def get_leaderboard(contest):
+    records = Record.objects.filter(contest=contest)
+    teams = dict()
+    for record in records:
+      team_id_str = str(record.team_id)
+      if team_id_str not in teams:
+        team_info = dict()
+        team_info['team_name'] = record.team.name
+        team_info['members'] = record.members.all()
+        team_info['submit_num'] = 1
+        team_info['score'] = record.score
+        team_info['tutor'] = record.team.tutor
+        teams[team_id_str] = team_info
+      else:
+        teams[team_id_str]['submit_num'] += 1
+        if record.score > teams[team_id_str]['score']:
+          teams[team_id_str]['score'] = record.score
+    leaderboard = [x[1] for x in teams.items()]
+    leaderboard.sort(key=lambda x: x['score'], reverse=True)
+    if leaderboard:
+      last_score = leaderboard[0]['score']
+      rank = 1
+      for team in leaderboard:
+        if team['score'] > last_score:
+          rank += 1
+          last_score = team['score']
+        team['rank'] = rank
+    return leaderboard
+
+  @staticmethod
+  def updataRecord(filename, header=True, max_times=999):
+    # hashcode, score, time
+    with open(filename) as f:
+      f_csv = csv.reader(f)
+      if header:
+        headers = next(f)
+      for row in f_csv:
+        unique_id = row[0]
+        try:
+          team = Team.objects.get(unique_id=unique_id)
+        except ObjectDoesNotExist:
+          # Invalid unique_id
+          return -1
+        try:
+          time = datetime.strptime(row[2], "%Y/%m/%d %H:%M:%s").date()
+        except ValueError:
+          # Invalid time
+          return -1
+        pre_records = Record.objects.filter(team=team, time=time)
+        if len(pre_records) > max_times:
+          # too many record
+          return -1
+        record = Record(team=team, score=row[1], time=time)
+        record.save()
+        team.score = row[1] if row[1] > team.score else team.score
+
+
+@method_decorator(login_required, name='dispatch')
+class TournamentDetailContestantView(View):
+  # 显示当前比赛信息
+  @staticmethod
+  def get(request, *args):
+
+    tournament_id = args[1]
+    try:
+      tournament = Tournament.objects.get(pk=tournament_id)
+    except:
+      # 错误tournament id
+      return redirect('bad-request-400')
+
+    # 如果用户类型不符, 拒绝请求
+    if request.user.type != 'O':
+      return redirect('bad-request-400')
+
+    # 如果比赛不是该主办方主办的
+    if tournament.organizer != request.user:
+      return redirect('bad-request-400')
+
+    data = dict()
+    data['organization'] = request.user.organizer_profile.organization
+
+    teams = tournament.team_set.all()
+    contestants = list()
+    for team in teams:
+      members = team.members.all()
+      contestants.extend(members)
+    data['contestant_num'] = len(contestants)
+
+    data['current_contest'] = Tournament.objects \
+      .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
+
+    data['contests_coming'] = Tournament.objects \
+      .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
+
+    data['contests_finished'] = Tournament.objects \
+      .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
+
+    data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
+
+    data['update_time'] = data['current_contest'].release_time
+
+    data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+
+    return render(request, 'tournament_detail_contestant.html', data)
+
+
+  @staticmethod
+  def get_leaderboard(contest):
+    records = Record.objects.filter(contest=contest)
+    teams = dict()
+    for record in records:
+      team_id_str = str(record.team_id)
+      if team_id_str not in teams:
+        team_info = dict()
+        team_info['team_name'] = record.team.name
+        team_info['members'] = record.members.all()
+        team_info['submit_num'] = 1
+        team_info['score'] = record.score
+        team_info['tutor'] = record.team.tutor
+        teams[team_id_str] = team_info
+      else:
+        teams[team_id_str]['submit_num'] += 1
+        if record.score > teams[team_id_str]['score']:
+          teams[team_id_str]['score'] = record.score
+    leaderboard = [x[1] for x in teams.items()]
+    leaderboard.sort(key=lambda x: x['score'], reverse=True)
+    if leaderboard:
+      last_score = leaderboard[0]['score']
+      rank = 1
+      for team in leaderboard:
+        if team['score'] > last_score:
+          rank += 1
+          last_score = team['score']
+        team['rank'] = rank
+    return leaderboard
 
 
 class TournamentListView(View):
@@ -361,10 +506,6 @@ class TournamentListView(View):
   def get(request):
     tournaments_published = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)
     tournaments_finished = Tournament.objects.filter(status=Tournament.STATUS_FINISHED)
-    # for tournament in tournaments_published:
-    #     tournament.team_count = len(tournament.team_count.all())
-    # for tournament in tournaments_finished:
-    #     tournament.team_count = len(tournament.team_count.all())
     return render(request, 'contest_list.html', {'tournaments_published': tournaments_published,
                                                  'tournaments_finished': tournaments_finished})
 
@@ -378,7 +519,6 @@ class BadRequestView(View):
 
 @method_decorator(login_required, name='dispatch')
 class RegisterView(View):
-
   @staticmethod
   def post(request, *args):
     tournament_id = args[1]
@@ -460,29 +600,4 @@ class QuitTeamView(View):
     return redirect('index')
 
 
-def updataRecord(filename, header=True, max_times=999):
-  # hashcode, score, time
-  with open(filename) as f:
-    f_csv = csv.reader(f)
-    if header:
-      headers = next(f)
-    for row in f_csv:
-      unique_id = row[0]
-      try:
-        team = Team.objects.get(unique_id=unique_id)
-      except ObjectDoesNotExist:
-        # Invalid unique_id
-        return -1
-      try:
-        time = datetime.strptime(row[2], "%Y/%m/%d %H:%M:%s").date()
-      except ValueError:
-        # Invalid time
-        return -1
-      pre_records = Record.objects.filter(team=team, time=time)
-      if len(pre_records) > max_times:
-        # too many record
-        return -1
-      record = Record(team=team, score=row[1], time=time)
-      record.save()
-      team.score = row[1] if row[1] > team.score else team.score
 
