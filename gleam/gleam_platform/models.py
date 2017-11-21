@@ -147,12 +147,11 @@ class Team(models.Model):
     through='Membership',
     through_fields=('team', 'contestant'),
   )
+  leader = models.ForeignKey('Contestant', on_delete=models.CASCADE)
   # team contest
   tournament = models.ForeignKey(Tournament)
   unique_id = models.CharField(max_length=128, unique=True)
-
   tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
-
 
 
 class Membership(models.Model):
