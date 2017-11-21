@@ -39,24 +39,22 @@
                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="online">
                       <div class="x_content">
                         <ul class="list-unstyled timeline">
-                          
-                          {% for c in contests_published %}
+                          {% for c in tournaments_online %}
                           <li>
                             <div class="block">
                               <div class="tags">
                                 <a class="tag">
-                                  <span>{{c.team_count}}</span>
+                                  <span><i class="fa fa-fire"></i>{{c.current_contest.team_cnt}}</span>
                                 </a>
                               </div>
                               <div class="block_content">
                                 <h2 class="title">
-                                    <a>{{c.name}}</a>
+                                  <a href="{% url 'tournament-detail-contestant' c.id %}">{{c.name}}</a>
                                 </h2>
                                 <div class="byline">
-                                  <span>{{c.submit_begin_time}} - {{c.submit_end_time}}</span> by <a>{{c.organizer.organization}}</a>
+                                  <span>{{c.current_contest.submit_begin_time}} - {{c.current_contest.submit_end_time}}</span> by <a>{{c.organizer.organization}}</a>
                                 </div>
-                                <p class="excerpt">{{c.description}}<a>Read&nbsp;More</a>
-                                </p>
+                                <p class="excerpt">{{c.description}}</p>
                               </div>
                             </div>
                           </li>
@@ -68,63 +66,26 @@
                     <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="ongoing">
                       <div class="x_content">
                         <ul class="list-unstyled timeline">
+                          {% for c in tournaments_registering %}
                           <li>
                             <div class="block">
                               <div class="tags">
                                 <a class="tag">
-                                  <span><i class="fa fa-fire"></i> 233</span>
+                                  <span><i class="fa fa-fire"></i>{{c.current_contest.team_cnt}}</span>
                                 </a>
                               </div>
                               <div class="block_content">
                                 <h2 class="title">
-                                    <a>“挑战杯”吃鸡大赛</a>
+                                  <a href="{% url 'tournament-detail-contestant' c.id %}">{{c.name}}</a>
                                 </h2>
                                 <div class="byline">
-                                  <span>2017.10.1 - 2017.12.31</span> by <a>Steam</a>
+                                  <span>{{c.current_contest.submit_begin_time}} - {{c.current_contest.submit_end_time}}</span> by <a>{{c.organizer.organization}}</a>
                                 </div>
-                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                                </p>
+                                <p class="excerpt">{{c.description}}</p>
                               </div>
                             </div>
                           </li>
-                          <li>
-                            <div class="block">
-                              <div class="tags">
-                                <a href="" class="tag">
-                                  <span><i class="fa fa-fire"></i> 233</span>
-                                </a>
-                              </div>
-                              <div class="block_content">
-                                <h2 class="title">
-                                  <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
-                                </h2>
-                                <div class="byline">
-                                  <span>13 hours ago</span> by <a>Jane Smith</a>
-                                </div>
-                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div class="block">
-                              <div class="tags">
-                                <a href="" class="tag">
-                                  <span><i class="fa fa-fire"></i> 233</span>
-                                </a>
-                              </div>
-                              <div class="block_content">
-                                <h2 class="title">
-                                  <a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a>
-                                </h2>
-                                <div class="byline">
-                                  <span>13 hours ago</span> by <a>Jane Smith</a>
-                                </div>
-                                <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                                </p>
-                              </div>
-                            </div>
-                          </li>
+                          {% endfor %}
                         </ul>
                       </div>
                     </div>
@@ -135,23 +96,20 @@
                             <th>比赛名称</th>
                             <th>主办方</th>
                             <th>参赛人数</th>
-                            <th>奖金</th>
                             <th>开始时间</th>
                             <th>结束时间</th>
                             <th>赛事主页</th>
                           </tr>
                         </thead>
-
                         <tbody>
                         {% for c in contests_published %}
                           <tr>
                             <td>{{c.name}}</td>
                             <td>{{c.organizer.organization}}</td>
-                            <td>233</td>
-                            <td>2333</td>
+                            <td>{{c.current_contest.team_cnt}}</td>
                             <td>{{c.submit_begin_time}}</td>
                             <td>{{c.submit_end_time}}</td>
-                            <td><a href="www.tsinghua.edu.cn">赛事主页</a></td>
+                            <td><a href="{% url 'tournament-detail-contestant' c.id %}">赛事主页</a></td>
                           </tr>
                         {% endfor %}
                         </tbody>
