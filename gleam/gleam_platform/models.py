@@ -14,110 +14,108 @@ MAX_RID_LEN = 18
 
 
 class Organizer(models.Model):
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
 
-    organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
-
-    class Meta:
-        verbose_name = u'Organizer'
+  class Meta:
+    verbose_name = u'Organizer'
 
 
 class Tournament(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+  name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
-    organizer = models.ForeignKey(Organizer)
+  organizer = models.ForeignKey(Organizer)
 
-    description = models.TextField()
+  description = models.TextField()
 
-    status = models.IntegerField()
+  status = models.IntegerField()
 
-    image = models.ImageField(null=True, blank=True)
-    max_member = models.IntegerField()
+  image = models.ImageField(null=True, blank=True)
+  max_member = models.IntegerField()
 
-    register_begin_time = models.DateField()
-    register_end_time = models.DateField()
+  register_begin_time = models.DateField()
+  register_end_time = models.DateField()
 
-    max_team_member_num = models.IntegerField()
+  max_team_member_num = models.IntegerField()
 
-    STATUS_DELETED = -1
-    STATUS_SAVED = 0
-    STATUS_PUBLISHED = 1
-    STATUS_FINISHED = 2
+  STATUS_DELETED = -1
+  STATUS_SAVED = 0
+  STATUS_PUBLISHED = 1
+  STATUS_FINISHED = 2
 
 
 class Contest(models.Model):
-    name = models.CharField(max_length=MAX_NAME_LEN_LONG)
+  name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
-    submit_begin_time = models.DateField()
-    submit_end_time = models.DateField()
-    release_time = models.DateField()
-    description = models.TextField()
+  submit_begin_time = models.DateField()
+  submit_end_time = models.DateField()
+  release_time = models.DateField()
+  description = models.TextField()
 
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+  tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
 
 class Contestant(models.Model):
-
-    # # resident id number
-    # resident_id = models.CharField(max_length=MAX_RID_LEN)
-    # nick name
-    nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
-    # school name
-    school = models.CharField(max_length=MAX_NAME_LEN_LONG)
-    # gender
-    GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+  # # resident id number
+  # resident_id = models.CharField(max_length=MAX_RID_LEN)
+  # nick name
+  nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+  # school name
+  school = models.CharField(max_length=MAX_NAME_LEN_LONG)
+  # gender
+  GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
+  gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
 
 class UserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
+  """Define a model manager for User model with no username field."""
 
-    use_in_migrations = True
+  use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save()  # using=self._db)
-        return user
+  def _create_user(self, email, password, **extra_fields):
+    """Create and save a User with the given email and password."""
+    if not email:
+      raise ValueError('The given email must be set')
+    email = self.normalize_email(email)
+    user = self.model(email=email, **extra_fields)
+    user.set_password(password)
+    user.save()  # using=self._db)
+    return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+  def create_user(self, email, password=None, **extra_fields):
+    """Create and save a regular User with the given email and password."""
+    extra_fields.setdefault('is_staff', False)
+    extra_fields.setdefault('is_superuser', False)
+    return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        """Create and save a SuperUser with the given email and password."""
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+  def create_superuser(self, email, password, **extra_fields):
+    """Create and save a SuperUser with the given email and password."""
+    extra_fields.setdefault('is_staff', True)
+    extra_fields.setdefault('is_superuser', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+    if extra_fields.get('is_staff') is not True:
+      raise ValueError('Superuser must have is_staff=True.')
+    if extra_fields.get('is_superuser') is not True:
+      raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+    return self._create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
-    """User model."""
+  """User model."""
 
-    username = None
-    email = models.EmailField(_('email address'), unique=True, max_length=80)
+  username = None
+  email = models.EmailField(_('email address'), unique=True, max_length=80)
 
-    TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
-    type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
+  TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
+  type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
-    organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
-    contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
+  organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
+  contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+  USERNAME_FIELD = 'email'
+  REQUIRED_FIELDS = []
 
-    objects = UserManager()
+  objects = UserManager()
 
 
 # class Profile(models.Model):
@@ -137,40 +135,47 @@ class User(AbstractUser):
 
 
 class Team(models.Model):
-    # team name
-    name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
-    # team members
-    members = models.ManyToManyField(
-        Contestant,
-        through='Membership',
-        through_fields=('team', 'contestant'),
-    )
-    # team contest
-    contest = models.ForeignKey(Contest)
-    unique_id = models.CharField(max_length=128, unique=True)
+  # team name
+  name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+  # team members
+  members = models.ManyToManyField(
+    Contestant,
+    through='Membership',
+    through_fields=('team', 'contestant'),
+  )
+  # team contest
+  tournament = models.ForeignKey(Tournament)
+  unique_id = models.CharField(max_length=128, unique=True)
+
+  tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
 
 
 class Membership(models.Model):
-    # team
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    # contestant
-    contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
+  # team
+  team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
+  # contestant
+  contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
 
 
 def generate_dataset_filename(instance, filename):
-    return "datasets/%s/%s" % (instance.contest.name, filename)
+  return "datasets/%s/%s" % (instance.contest.name, filename)
 
 
 class Dataset(models.Model):
-    contest = models.ForeignKey('Contest')
-    dataset = models.FileField(upload_to=generate_dataset_filename)
+  contest = models.ForeignKey('Contest')
+  dataset = models.FileField(upload_to=generate_dataset_filename)
 
 
 def generate_submission_filename(instance, filename):
-    return "submissions/%s/%s" % (instance.contest.name, filename)
+  return "submissions/%s/%s" % (instance.contest.name, filename)
 
 
 class Record(models.Model):
-    team = models.ForeignKey('Team')
-    score = models.DecimalField(max_digits=4, decimal_places=2)
-    time = models.DateField()
+  team = models.ForeignKey('Team')
+  score = models.DecimalField(max_digits=4, decimal_places=2)
+
+  # TODO datetime
+  time = models.DateField()
+
+  # TODO new add
+  contest = models.ForeignKey('Contest')
