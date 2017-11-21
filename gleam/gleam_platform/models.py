@@ -31,7 +31,6 @@ class Tournament(models.Model):
     status = models.IntegerField()
 
     image = models.ImageField(null=True, blank=True)
-    max_member = models.IntegerField()
 
     register_begin_time = models.DateField()
     register_end_time = models.DateField()
@@ -51,6 +50,7 @@ class Contest(models.Model):
     submit_end_time = models.DateField()
     release_time = models.DateField()
     description = models.TextField()
+    max_submit_num = models.IntegerField()
 
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
@@ -145,9 +145,12 @@ class Team(models.Model):
         through='Membership',
         through_fields=('team', 'contestant'),
     )
+    leader = models.ForeignKey('Contestant', on_delete=models.CASCADE)
     # team contest
-    contest = models.ForeignKey(Contest)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     unique_id = models.CharField(max_length=128, unique=True)
+    score = models.DecimalField(max_digits=4, decimal_places=2)
+    tutor = models.CharField(null=True)
 
 
 class Membership(models.Model):
@@ -171,6 +174,7 @@ def generate_submission_filename(instance, filename):
 
 
 class Record(models.Model):
-    team = models.ForeignKey('Team')
+    team = models.ForeignKey('Team', on_delete=models.CASCADE)
+    contest = models.ForeignKey('Contest', on_delete=models.CASCADE)
     score = models.DecimalField(max_digits=4, decimal_places=2)
     time = models.DateField()

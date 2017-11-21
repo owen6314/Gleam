@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^create-contest', CreateContestView.as_view(), name='create-contest'),
     url(r'^contest-detail/([1-9][0-9]*)/', TournamentDetailOrganizerView.as_view(), name='tournament-detail-organizer'),
     url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
-    url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400')
+    url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400'),
+    url(r'^register', RegisterView.as_view(), name='register'),
 ]
