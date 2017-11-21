@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from .models import Contest, Submission, Contestant, Organizer, User
+from .models import *
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80

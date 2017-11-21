@@ -29,6 +29,7 @@ class Tournament(models.Model):
 
   status = models.IntegerField()
 
+
   image = models.ImageField(null=True, blank=True)
   max_member = models.IntegerField()
 
@@ -36,6 +37,7 @@ class Tournament(models.Model):
   register_end_time = models.DateField()
 
   max_team_member_num = models.IntegerField()
+
 
   STATUS_DELETED = -1
   STATUS_SAVED = 0
@@ -148,6 +150,7 @@ class Team(models.Model):
   unique_id = models.CharField(max_length=128, unique=True)
 
   tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
+
 
 
 class Membership(models.Model):

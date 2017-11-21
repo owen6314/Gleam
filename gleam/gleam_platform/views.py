@@ -170,12 +170,14 @@ class HomeOrganizerView(View):
     data['tournaments_coming'] = tournaments \
       .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
 
+
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_ongoing'])
 
     # 正在进行的比赛
     data['tournaments_ongoing'] = tournaments. \
       filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
+
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -376,6 +378,7 @@ class BadRequestView(View):
 
 @method_decorator(login_required, name='dispatch')
 class RegisterView(View):
+
   @staticmethod
   def post(request, *args):
     tournament_id = args[1]
@@ -482,3 +485,4 @@ def updataRecord(filename, header=True, max_times=999):
       record = Record(team=team, score=row[1], time=time)
       record.save()
       team.score = row[1] if row[1] > team.score else team.score
+

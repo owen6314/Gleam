@@ -72,3 +72,4 @@ configs.json
 *.sublime-project
 *.sublime-workspace
 
+autorun.sh
