@@ -326,7 +326,14 @@ class TournamentDetailOrganizerView(View):
       return redirect('bad-request-400')
 
     data = dict()
+
+    data['name'] = tournament.name
+
     data['organization'] = request.user.organizer_profile.organization
+
+    data['register_begin_time'] = tournament.register_begin_time
+
+    data['register_end_time'] = tournament.register_end_time
 
     teams = tournament.team_set.all()
     contestants = list()
@@ -335,13 +342,13 @@ class TournamentDetailOrganizerView(View):
       contestants.extend(members)
     data['contestant_num'] = len(contestants)
 
-    data['current_contest'] = Tournament.objects \
+    data['current_contest'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
 
-    data['contests_coming'] = Tournament.objects \
+    data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
 
-    data['contests_finished'] = Tournament.objects \
+    data['contests_finished'] = Contest.objects \
       .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
 
     data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
@@ -442,6 +449,9 @@ class TournamentDetailContestantView(View):
       return redirect('bad-request-400')
 
     data = dict()
+
+    data['name'] = tournament.name
+
     data['organization'] = request.user.organizer_profile.organization
 
     teams = tournament.team_set.all()
@@ -451,13 +461,17 @@ class TournamentDetailContestantView(View):
       contestants.extend(members)
     data['contestant_num'] = len(contestants)
 
-    data['current_contest'] = Tournament.objects \
+    data['register_begin_time'] = tournament.register_begin_time
+
+    data['register_end_time'] = tournament.register_end_time
+
+    data['current_contest'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
 
-    data['contests_coming'] = Tournament.objects \
+    data['contests_coming'] = Contest.objects.filter(tournament=tournament)\
       .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
 
-    data['contests_finished'] = Tournament.objects \
+    data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
 
     data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
@@ -465,6 +479,23 @@ class TournamentDetailContestantView(View):
     data['update_time'] = data['current_contest'].release_time
 
     data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+
+    data['team'] = None
+    try:
+      team = Team.objects.get(tournament=tournament, membership__contestant=request.user)
+    except:
+      team = None
+
+    if team:
+      data['team']['name'] = team.name
+      all_members = team.members.all()
+      data['team']['leader'] = all_members[0]
+      if len(all_members) > 1:
+        data['team']['members'] = team.members.all()[1:]
+      else:
+        data['team']['members'] = []
+      data['team']['tutor'] = team.tutor
+      data['team']['submit_num'] = len(Record.objects.filter(contest=data['current_contest'], team=team))
 
     return render(request, 'tournament_detail_contestant.html', data)
 
@@ -504,10 +535,24 @@ class TournamentListView(View):
   # 显示比赛列表
   @staticmethod
   def get(request):
-    tournaments_published = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)
-    tournaments_finished = Tournament.objects.filter(status=Tournament.STATUS_FINISHED)
-    return render(request, 'contest_list.html', {'tournaments_published': tournaments_published,
-                                                 'tournaments_finished': tournaments_finished})
+
+    all_contests = Contest.objects.all()
+
+    all_tournaments = Tournament.objects.all()
+
+    tournaments_online = Tournament.objects\
+      .filter(register_end_time__gt=datetime.datetime.now(), contest__submit_end_time__lte=datetime.datetime.now())
+
+    tournaments_registering = Tournament.objects.filter(register_end_time__lte=datetime.datetime.now())
+
+    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gt=datetime.datetime.now())
+
+    data = dict()
+    data['tournaments_online'] = tournaments_online
+    data['tournaments_registering'] = tournaments_registering
+    data['tournaments_offline'] = tournaments_offline
+
+    return render(request, 'tournament_list.html', data)
 
 
 class BadRequestView(View):

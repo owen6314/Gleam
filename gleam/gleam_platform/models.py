@@ -55,6 +55,8 @@ class Contest(models.Model):
 
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
+  team_count = models.IntegerField()
+
 
 class Contestant(models.Model):
   # # resident id number
