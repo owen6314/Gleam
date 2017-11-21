@@ -13,31 +13,31 @@
 
     <div class="row tile_count">
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-home"></i> 当前阶段</span>
-        <div class="count">初赛</div>
+        <span class="count_top"><i class="fa fa-home"></i> 当前阶段 </span>
+        <div class="count">{{current_contest.name}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> 参赛人数</span>
-        <div class="count">2333</div>
+        <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
+        <div class="count">{{contestant_num}}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-clock-o"></i> 阶段结束还有 </span>
-        <div class="count">12 天</div>
+        <div class="count" id="days-till-end">{{count_down}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-calendar-o"></i> 阶段截止日期 </span>
-        <div class="count">12.31</div>
+        <div class="count">{{current_contest.submit_end_time}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-calendar-o"></i> 成绩发布日期 </span>
-        <div class="count">1.1</div>
+        <div class="count">{{current_contest.release_time}}</div>
       </div>
     </div>
 
     <div class="col-md-12 col-sm-12 col-xs-12" id="stage-on-line">
       <div class="x_panel">
         <div class="x_title">
-          <h2>初赛阶段排名 <small><i class="fa fa-clock-o"></i>更新于11.19 18:00</small> </h2>
+          <h2>{{current_contest.name}}阶段排名 <small><i class="fa fa-clock-o"></i>更新于 {{update_time}}</small> </h2>
           <ul class="nav navbar-right panel_toolbox">
             <li>
               <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -62,17 +62,21 @@
               </tr>
             </thead>
             <tbody>
+              {% for e in leaderboard %}
               <tr>
-                <td>1</td>
-                <td>咸鱼 - 让你的数据游起来</td>
+                <td>{{e.rank}}</td>
+                <td>{{e.team_name}}</td>
                 <td>
-                  奥观海 五五开 易烊千玺
+                  {% for m in e.members %}
+                    {{m.nick_name}}
+                  {% endfor %}
                 </td>
-                <td>奥特曼</td>
-                <td>清华大学硬件学院</td>
-                <td>23333</td>
-                <td>0.69</td>
+                <td>{{e.tutor}}</td>
+                <td>{{e.members[0].school}}</td>
+                <td>{{e.submit_num}}</td>
+                <td>{{e.score}}</td>
               </tr>
+              {% end for %}
             </tbody>
           </table>
         </div>
@@ -86,7 +90,7 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
-          <form class="form-horizontal form-label-left" method="post" id="upload-score-board">
+          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' %}" method="post" id="upload-score-board">
             <div class="form-group">
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
@@ -117,13 +121,15 @@
               </tr>
             </thead>
             <tbody>
+              {% for c in contests_coming %}
               <tr>
-                <td>全球总决赛</td>
-                <td>2018.10.01</td>
-                <td>2018.10.31</td>
-                <td>2018.10.31</td>
+                <td>{{c.name}}</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submit_end_time}}</td>
+                <td>{{c.release_time}}</td>
                 <td><a href="#">编辑</a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -149,14 +155,16 @@
               </tr>
             </thead>
             <tbody>
+              {% for c in contests_coming %}
               <tr>
-                <td>海选</td>
-                <td>2333</td>
-                <td>2017.10.01</td>
-                <td>2017.10.31</td>
-                <td>2017.10.31</td>
+                <td>{{c.name}}</td>
+                <td>不知道</td>
+                <td>{{c.submit_begin_time}}</td>
+                <td>{{c.submit_end_time}}</td>
+                <td>{{c.release_time}}</td>
                 <td><a href="#">得分表</a></td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
