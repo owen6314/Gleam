@@ -962,6 +962,8 @@ function init_autosize() {
 
 };
 
+/* PARSLEY */
+
 /* INPUTS */
 
 function onAddTag(tag) {

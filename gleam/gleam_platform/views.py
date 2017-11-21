@@ -4,13 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.core.exceptions import ObjectDoesNotExist
 
 import django.utils.timezone as timezone
 from .forms import *
 from .models import *
 import datetime
+import hashlib
+import csv
 
-
+'''
 class HomeView(View):
     @staticmethod
     def get(request):
@@ -21,7 +24,7 @@ class HomeView(View):
 def msg(request, msgs):
     return render(request, 'msg.html', {'msgs': msgs})
 
-'''
+
 @method_decorator(login_required, name='dispatch')
 class CreateContest(View):
     @staticmethod
@@ -243,7 +246,7 @@ class LoginOrganizerView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # 验证密码 和 用户类型
-            user = authenticate(email=email, password=password)
+            user = authenticate(username=email, password=password)
             if user is not None and user.type == 'O':
                 login(request, user)
                 # 跳转到主页
@@ -263,8 +266,8 @@ class LoginContestantView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             # 验证密码 和 用户类型
-            user = authenticate(email=email, password=password)
-            if user is not None: # and user.type == 'C':
+            user = authenticate(username=email, password=password)
+            if user is not None:  # and user.type == 'C':
                 login(request, user)
                 # 跳转到主页
                 return redirect('home-contestant')
@@ -299,18 +302,40 @@ class HomeOrganizerView(View):
         except:
             # 403 permission denied
             return redirect('index')
-        contests = Contest.objects.filter(organizer=organizer).order_by('-submit_end_time')
+
+        # 该主办方创建的所有比赛，按比赛开始注册时间逆序排列
+        tournaments = Tournament.objects.filter(organizer=organizer).order_by('-register_begin_time')
+
         data = dict()
-        for contest in contests:
-            contest.team_count = len(contest.team_set.all())
-        data['contests_saved'] = contests.filter(status=Contest.STATUS_SAVED)
-        data['contests_finished'] = contests.filter(status=Contest.STATUS_FINISHED)
-        data['count_finished'] = len(data['contests_finished'])
-        data['contests_ready'] = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__gte=datetime.datetime.now())
-        data['contests_online'] = contests.filter(status=Contest.STATUS_PUBLISHED).filter(submit_begin_time__lte=datetime.datetime.now())
-        data['count_online'] = len(data['contests_online'])
-        data['team_count_online'] = sum(contest.team_count for contest in data['contests_online'])
-        data['team_count_finished'] = sum(contest.team_count for contest in data['contests_finished'])
+
+        # 参加该主办方主办的所有比赛的所有队伍数
+        data['total_team_num'] = 0
+        for tournament in tournaments:
+            data['total_team_num'] += len(tournament.team_set.all())
+
+        # 已保存的比赛
+        data['tournaments_saved'] = tournaments.filter(status=Tournament.STATUS_SAVED)
+
+        # 已结束的比赛
+        data['tournaments_finished'] = tournaments.filter(status=Tournament.STATUS_FINISHED)
+
+        # 已结束的比赛数目
+        data['tournament_finished_num'] = len(data['tournaments_finished'])
+
+        # 即将开始的比赛
+        data['tournaments_coming'] = tournaments \
+            .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
+
+        # 即将开始的比赛数目
+        data['tournament_coming_num'] = len(data['tournaments_ongoing'])
+
+        # 正在进行的比赛
+        data['tournaments_ongoing'] = tournaments. \
+            filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
+
+        # 正在进行的比赛数目
+        data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
+
         return render(request, 'organizer_admin.html', data)
 
 
@@ -324,9 +349,16 @@ class HomeContestantView(View):
         except:
             # 403 permission denied
             return redirect('index')
-        contests = Contest.objects.filter(status__in=[Contest.STATUS_PUBLISHED, Contest.STATUS_FINISHED]).order_by('-submit_end_time')
-        teams = contestant.team_set.all()
-        my_contests = [team.contest for team in teams]
+
+        # 当前所有发布的锦标赛，按注册时间倒序排列
+        tournaments = Tournament.objects\
+            .filter(status__in=[Tournament.STATUS_PUBLISHED, Tournament.STATUS_FINISHED])\
+            .order_by('-register_begin_time')
+
+        # TODO 这是啥？
+        # teams = contestant.team_set.all()
+        # my_contests = [team.contest for team in teams]
+
         return render(request, 'user_home.html')
 
 
@@ -426,36 +458,36 @@ class CreateContestView(View):
         return redirect('home-organizer')
 
 
-
-class ContestDetailView(View):
+class TournamentDetailOrganizerView(View):
     # 显示当前比赛信息
     @staticmethod
     def get(request, *args):
-        contest_id = args[1]
-        contest = get_object_or_404(Contest, pk=contest_id)
-        contestant = request.user.profile.contestant_profile
-        if not contestant:
-            return render(request, 'contest.html', {'contest': contest})
-        team = contestant.team_set.filter(contest=contest)
-        if not team:
-            return render(request, 'contest.html', {'contest': contest})
-        submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
-        return render(request, 'contest.html',
-                      {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
+        pass
+        # tournament_id = args[1]
+        # tournament = get_object_or_404(Tournament, pk=tournament_id)
+        # contestant = request.user.profile.contestant_profile
+        # if not contestant:
+        #     return render(request, 'contest.html', {'tournament': tournament})
+        # team = contestant.team_set.filter(tournament=tournament)
+        # if not team:
+        #     return render(request, 'contest.html', {'tournament': tournament})
+        # submissions = Submission.objects.filter(contest=contest, team=team).order_by('-time')
+        # return render(request, 'contest.html',
+        #               {'contest': contest, 'submissions': submissions[:10], 'form': UploadFileForm()})
 
 
-class ContestListView(View):
+class TournamentListView(View):
     # 显示比赛列表
     @staticmethod
     def get(request):
-        contests_published = Contest.objects.filter(status=Contest.STATUS_PUBLISHED)
-        contests_finished = Contest.objects.filter(status=Contest.STATUS_FINISHED)
-        for contest in contests_published:
-            contest.team_count = len(contest.team_count.all())
-        for contest in contests_finished:
-            contest.team_count = len(contest.team_count.all())
-        return render(request, 'contest_list.html', {'contests_published': contests_published,
-                                                     'contests_finished': contests_finished})
+        tournaments_published = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)
+        tournaments_finished = Tournament.objects.filter(status=Tournament.STATUS_FINISHED)
+        # for tournament in tournaments_published:
+        #     tournament.team_count = len(tournament.team_count.all())
+        # for tournament in tournaments_finished:
+        #     tournament.team_count = len(tournament.team_count.all())
+        return render(request, 'contest_list.html', {'tournaments_published': tournaments_published,
+                                                     'tournaments_finished': tournaments_finished})
 
 
 class BadRequestView(View):
@@ -463,4 +495,116 @@ class BadRequestView(View):
     @staticmethod
     def get(request):
         return render(request, 'bad_request_400.html')
+
+
+@method_decorator(login_required, name='dispatch')
+class RegisterView(View):
+
+    @staticmethod
+    def post(request, *args):
+        tournament_id = args[1]
+        md5 = hashlib.md5()
+        try:
+            tournament = Tournament.objects.get(pk=tournament_id)
+            contestant = request.user.contestant_profile
+        except:
+            # Invalid infomation
+            return redirect('index')
+        team = Team.objects.filter(tournament=tournament).filter(members__in=contestant)
+        if 'unique_id' in request.POST.keys():
+            try:
+                target_team = Team.objects.get(unique_id=request.POST['unique_id'])
+            except ObjectDoesNotExist:
+                target_team = None
+            if not target_team:
+                # invalid unique_id
+                return redirect('contest-detail')
+            if target_team.members.count() >= tournament.max_team_member_num:
+                # too many members
+                return redirect('contest-detail')
+        if not team:
+            if not target_team:
+                team_name = contestant.name + '_' + tournament.name
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                md5.update((target_team.name + now).encode('utf-8'))
+                while Team.objects.filter(unique_id=md5.hexdigest()):
+                    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    md5.update((target_team.name + now).encode('utf-8'))
+                team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest())
+                team.save()
+                return redirect('contest-detail')
+            else:
+                target_team.add(contestant)
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                md5.update((target_team.name + now).encode('utf-8'))
+                while Team.objects.filter(unique_id=md5.hexdigest()):
+                    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    md5.update((target_team.name + now).encode('utf-8'))
+                target_team.unique_id = md5.hexdigest()
+                target_team.save()
+                return redirect('contest-detail')
+        else:
+            if target_team:
+                team = team[0]
+                if target_team.members.count() + team.members.count() >= tournament.max_team_member_num:
+                    # too many members
+                    return redirect('contest-detail')
+                for item in team.members:
+                    target_team.add(item)
+                team.delete()
+                now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                md5.update((target_team.name + now).encode('utf-8'))
+                while Team.objects.filter(unique_id=md5.hexdigest()):
+                    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    md5.update((target_team.name + now).encode('utf-8'))
+                target_team.unique_id = md5.hexdigest()
+                target_team.save()
+                return redirect('contest-detail')
+
+
+@method_decorator(login_required, name='dispatch')
+class QuitTeamView(View):
+    @staticmethod
+    def post(request, *args):
+        tournament_id = args[1]
+        try:
+            tournament = Tournament.objects.get(pk=tournament_id)
+            contestant = request.user.contestant_profile
+        except:
+            # Invalid infomation
+            return redirect('index')
+        team = Team.objects.filter(tournament=tournament).filter(members__in=contestant)
+        if not team:
+            # No team
+            return redirect('index')
+        team.members.remove(contestant)
+        return redirect('index')
+
+
+def updataRecord(filename, header=True, max_times=999):
+    # hashcode, score, time
+    with open(filename) as f:
+        f_csv = csv.reader(f)
+        if header:
+            headers = next(f)
+        for row in f_csv:
+            unique_id = row[0]
+            try:
+                team = Team.objects.get(unique_id=unique_id)
+            except ObjectDoesNotExist:
+                # Invalid unique_id
+                return -1
+            try:
+                time = datetime.strptime(row[2], "%Y/%m/%d %H:%M:%s").date()
+            except ValueError:
+                # Invalid time
+                return -1
+            pre_records = Record.objects.filter(team=team, time=time)
+            if len(pre_records) > max_times:
+                # too many record
+                return -1
+            record = Record(team=team, score=row[1], time=time)
+            record.save()
+            team.score = row[1] if row[1] > team.score else team.score
+
 
