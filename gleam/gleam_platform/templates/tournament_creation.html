@@ -1,9 +1,11 @@
-{% extends "base_site.html" %}
+{% extends "organizer_base.html" %}
 
 {% block title %} 创建比赛 {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 {% endblock stylesheets %}
 
 
@@ -42,7 +44,7 @@
                   <label class="control-label col-md-3" for="dataset-description">赛事图片 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="file" name="image">
+                    <input type="file" name="image" id="tournament-image">
                   </div>
                 </div>
 
@@ -50,7 +52,7 @@
                   <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time" >
+                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
@@ -82,7 +84,22 @@
 
 {% block javascripts %}
   {{ block.super}}
+  <script type="text/javascript" src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
+
   <script type="text/javascript">
+
+    $(document).ready(function() {
+      $('#register_begin_time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+      });
+      $('#register_end_time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+      });
+      $("#tournament-image").fileinput();
+    })
+
+    // for dynamic form
     var contest_creation_stage_cnt = 0;
     $("#addform").click(function(){
       contest_creation_stage_cnt += 1;
@@ -109,7 +126,7 @@
           <label class="control-label col-md-3" for="submit_begin_time_'+contest_creation_stage_cnt+'">阶段开始时间 <span class="required">*</span> \
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
-            <input type="text" class="form-control has-feedback-left" id="submit_begin_time_'+contest_creation_stage_cnt+'" name="submit_begin_time'+contest_creation_stage_cnt+'" > \
+            <input type="text" class="form-control has-feedback-left" id="submit_begin_time_'+contest_creation_stage_cnt+'" name="submit_begin_time_'+contest_creation_stage_cnt+'" > \
             <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
@@ -132,11 +149,21 @@
       </div> \
       '
       $("#formpart").before($(new_stage_form));
+      $('#"submit_begin_time_'+contest_creation_stage_cnt+'"').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+      });
+      $('#"submit_end_time_'+contest_creation_stage_cnt+'"').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+      });
+      $('#"release_time_'+contest_creation_stage_cnt+'"').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+      });
     });
     $("#removeform").click(function(){
       $("#stage_form_"+contest_creation_stage_cnt).remove();
       contest_creation_stage_cnt -= 1;
     });
+
   </script>
 {% endblock javascripts %}
 
