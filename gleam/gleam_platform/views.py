@@ -281,7 +281,7 @@ class ProfileContestantView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateContestView(View):
+class CreateTournamentView(View):
   # 渲染比赛创建页面
   @staticmethod
   def get(request):
@@ -294,13 +294,27 @@ class CreateContestView(View):
   # 创建比赛
   @staticmethod
   def post(request):
-    form = ContestForm(request.POST)
-    if form.is_valid():
-      organizer = request.user.organizer_profile
-      contest = form.save(commit=False)
-      contest.organizer = organizer
-      contest.status = Contest.STATUS_SAVED
-      contest.save()
+    name = request.POST['name']
+    description = request.POST['description']
+    image = request.POST['image']
+    register_begin_time = request.POST['register_begin_time']
+    register_end_time = request.POST['register_end_time']
+    organizer = request.user.organizer_profile
+    # ToDo: max_team_member_num
+    tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
+                            register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
+                            max_team_member_num=3)
+    tournament.save()
+    for i in range(100):
+      if 'name_' + str(i) in request.POST.keys():
+        contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_']+str(i),
+                          submit_begin_time=request.POST['submit_begin_time_'+str(i)],
+                          submit_end_time=request.POST['submit_end_time_'+str(i)],
+                          release_time=request.POST['release_time_'+str(i)],
+                          tournament=tournament, team_count=0)
+        contest.save()
+      else:
+        break
     return redirect('home-organizer')
 
 
@@ -310,7 +324,7 @@ class TournamentDetailOrganizerView(View):
   @staticmethod
   def get(request, *args):
 
-    tournament_id = args[1]
+    tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
@@ -419,12 +433,13 @@ class TournamentDetailOrganizerView(View):
           # Invalid time
           return -1
         pre_records = Record.objects.filter(team=team, time=time)
-        if len(pre_records) > max_times:
+        if pre_records.count() > max_times:
           # too many record
           return -1
-        record = Record(team=team, score=row[1], time=time)
+        contest = team.contests.order('-sumbit_begin_time')[0]
+        record = Record(team=team, score=row[1], time=time, contest=contest)
         record.save()
-        team.score = row[1] if row[1] > team.score else team.score
+        # team.score = row[1] if row[1] > team.score else team.score
 
 
 @method_decorator(login_required, name='dispatch')
@@ -433,7 +448,7 @@ class TournamentDetailContestantView(View):
   @staticmethod
   def get(request, *args):
 
-    tournament_id = args[1]
+    tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
@@ -566,7 +581,7 @@ class BadRequestView(View):
 class RegisterView(View):
   @staticmethod
   def post(request, *args):
-    tournament_id = args[1]
+    tournament_id = int(args[0])
     md5 = hashlib.md5()
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
@@ -575,8 +590,7 @@ class RegisterView(View):
       # Invalid infomation
       return redirect('index')
     team = Team.objects.filter(tournament=tournament).filter(members__in=contestant)
-    target_name = None
-    if 'unique_id' in request.POST.keys() and request.POST['unique_id']:
+    if 'unique_id' in request.POST.keys():
       try:
         target_team = Team.objects.get(unique_id=request.POST['unique_id'])
       except ObjectDoesNotExist:
@@ -595,8 +609,9 @@ class RegisterView(View):
         while Team.objects.filter(unique_id=md5.hexdigest()):
           now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
           md5.update((target_team.name + now).encode('utf-8'))
+        contest = tournament.contest_set.order('submit_begin_time').first()
         team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest())
-        team.members.add(contestant)
+        team.contests.add(contest)
         team.save()
         return redirect('contest-detail')
       else:
@@ -615,8 +630,8 @@ class RegisterView(View):
         if target_team.members.count() + team.members.count() >= tournament.max_team_member_num:
           # too many members
           return redirect('contest-detail')
-        for member in team.members:
-          target_team.members.add(member)
+        for item in team.members:
+          target_team.add(item)
         team.delete()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
@@ -630,18 +645,9 @@ class RegisterView(View):
 
 @method_decorator(login_required, name='dispatch')
 class QuitTeamView(View):
-    @staticmethod
-        if team.members.count() == 1:
-            team.delete()
-        else:
-            team.members.remove(contestant)
-            if team.leader == contestant:
-                team.leader = team.members.first()
-        return redirect('index')
-
   @staticmethod
   def post(request, *args):
-    tournament_id = args[1]
+    tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
       contestant = request.user.contestant_profile
@@ -652,12 +658,15 @@ class QuitTeamView(View):
     if not team:
       # No team
       return redirect('index')
-    if team.members.count() == 1:
-      team.delete()
-    else:
-      team.members.remove(contestant)
-      if team.leader == contestant:
-        team.leader = team.members.first()
+    team.members.remove(contestant)
     return redirect('index')
+
+
+def promote(team):
+  tournament = team.tournament.contest_set.order('submit_begin_time')
+  order = team.contests.count()
+  contest = tournament[order]
+  team.contests.add(contest)
+  team.save()
 
 
