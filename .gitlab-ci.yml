@@ -44,4 +44,4 @@ test:
   # run unit tests in django project 
   # - python gleam/manage.py test
   # run flake8 to check coding style
-  - flake8 gleam/gleam_platform --ignore F401
+  - flake8 gleam/gleam_platform --ignore F401,E501,E111
