@@ -37,7 +37,7 @@ class UploadFileForm(forms.ModelForm):
 class ContestantForm(forms.ModelForm):
     class Meta:
         model = Contestant
-        fields = ('resident_id', 'nick_name', 'school')
+        fields = ('nick_name', 'school')
 
 
 class OrganizerForm(forms.ModelForm):
