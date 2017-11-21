@@ -326,12 +326,12 @@ class HomeOrganizerView(View):
         data['tournaments_coming'] = tournaments \
             .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
 
-        # 即将开始的比赛数目
-        data['tournament_coming_num'] = len(data['tournaments_ongoing'])
-
         # 正在进行的比赛
         data['tournaments_ongoing'] = tournaments. \
             filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
+        
+        # 即将开始的比赛数目
+        data['tournament_coming_num'] = len(data['tournaments_ongoing'])
 
         # 正在进行的比赛数目
         data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -511,7 +511,8 @@ class RegisterView(View):
             # Invalid infomation
             return redirect('index')
         team = Team.objects.filter(tournament=tournament).filter(members__in=contestant)
-        if 'unique_id' in request.POST.keys():
+        target_team = None
+        if 'unique_id' in request.POST.keys() and request.POST['unique_id']:
             try:
                 target_team = Team.objects.get(unique_id=request.POST['unique_id'])
             except ObjectDoesNotExist:
@@ -530,7 +531,8 @@ class RegisterView(View):
                 while Team.objects.filter(unique_id=md5.hexdigest()):
                     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     md5.update((target_team.name + now).encode('utf-8'))
-                team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest())
+                team = Team(name=team_name, leader=contestant, tournament=tournament, unique_id=md5.hexdigest())
+                team.members.add(contestant)
                 team.save()
                 return redirect('contest-detail')
             else:
@@ -549,8 +551,8 @@ class RegisterView(View):
                 if target_team.members.count() + team.members.count() >= tournament.max_team_member_num:
                     # too many members
                     return redirect('contest-detail')
-                for item in team.members:
-                    target_team.add(item)
+                for member in team.members:
+                    target_team.members.add(member)
                 team.delete()
                 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 md5.update((target_team.name + now).encode('utf-8'))
@@ -577,11 +579,16 @@ class QuitTeamView(View):
         if not team:
             # No team
             return redirect('index')
-        team.members.remove(contestant)
+        if team.members.count() == 1:
+            team.delete()
+        else:
+            team.members.remove(contestant)
+            if team.leader == contestant:
+                team.leader = team.members.first()
         return redirect('index')
 
 
-def updataRecord(filename, header=True, max_times=999):
+def updataRecord(filename, header=True):
     # hashcode, score, time
     with open(filename) as f:
         f_csv = csv.reader(f)
@@ -599,8 +606,14 @@ def updataRecord(filename, header=True, max_times=999):
             except ValueError:
                 # Invalid time
                 return -1
+            tournament = team.tournament
+            contest = tournament.contest_set.filter(submit_begin_time__date__lte=time)\
+                .filter(submit_end_time__date__gte=time)
+            if not contest or contest.count() != 1:
+                # Invalid time?
+                return -1
             pre_records = Record.objects.filter(team=team, time=time)
-            if len(pre_records) > max_times:
+            if len(pre_records) > contest[0].max_submit_num:
                 # too many record
                 return -1
             record = Record(team=team, score=row[1], time=time)
