@@ -6,7 +6,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
 
-import django.utils.timezone as timezone
+from django.utils import timezone
 from .forms import *
 from .models import *
 import datetime
@@ -172,14 +172,14 @@ class HomeOrganizerView(View):
 
     # 即将开始的比赛
     data['tournaments_coming'] = Tournament.objects\
-      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=datetime.datetime.now())
+      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=timezone.now())
 
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
     data['tournaments_ongoing'] = Tournament.objects\
-      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=datetime.datetime.now())
+      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=timezone.now())
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -216,7 +216,7 @@ class ProfileOrganizerView(View):
   def get(request):
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'O':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     data = dict()
     user = request.user
@@ -231,7 +231,7 @@ class ProfileOrganizerView(View):
   def post(request):
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'O':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     form = OrganizerDetailForm(request.POST)
     if form.is_valid():
@@ -251,7 +251,7 @@ class ProfileContestantView(View):
   def get(request):
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'C':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     data = dict()
     user = request.user
@@ -268,7 +268,7 @@ class ProfileContestantView(View):
   def post(request):
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'C':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
     form = ContestantDetailForm(request.POST)
     if form.is_valid():
       user = request.user
@@ -331,15 +331,15 @@ class TournamentDetailOrganizerView(View):
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
       # 错误tournament id
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'O':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     # 如果比赛不是该主办方主办的
     if tournament.organizer != request.user.organizer_profile:
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     data = dict()
 
@@ -362,18 +362,18 @@ class TournamentDetailOrganizerView(View):
 
     try:
       data['current_contest'] = Contest.objects.filter(tournament=tournament)\
-        .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')
+        .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
     except:
       data['current_contest'] = None
 
     data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
+      .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
 
     data['contests_finished'] = Contest.objects \
-      .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
+      .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
     if data['current_contest']:
-      data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
+      data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
       data['update_time'] = data['current_contest'].release_time
       data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
     else:
@@ -463,15 +463,15 @@ class TournamentDetailContestantView(View):
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
       # 错误tournament id
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'O':
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     # 如果比赛不是该主办方主办的
     if tournament.organizer != request.user:
-      return redirect('bad-request-400')
+      return redirect('permission-denied-403')
 
     data = dict()
 
@@ -491,15 +491,15 @@ class TournamentDetailContestantView(View):
     data['register_end_time'] = tournament.register_end_time
 
     data['current_contest'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_begin_time__lte=datetime.datetime.now()).order_by('-submit_begin_time')[0]
+      .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
 
     data['contests_coming'] = Contest.objects.filter(tournament=tournament)\
-      .filter(submit_begin_time__gt=datetime.datetime.now()).order_by('submit_begin_time')
+      .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
 
     data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_end_time__lt=datetime.datetime.now()).order_by('-submit_end_time')
+      .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
-    data['countdown'] = data['current_contest'].submit_end_time - datetime.datetime.now()
+    data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
 
     data['update_time'] = data['current_contest'].release_time
 
@@ -566,11 +566,11 @@ class TournamentListView(View):
     all_tournaments = Tournament.objects.all()
 
     tournaments_online = Tournament.objects\
-      .filter(register_end_time__gt=datetime.datetime.now(), contest__submit_end_time__lte=datetime.datetime.now())
+      .filter(register_end_time__gt=timezone.now(), contest__submit_end_time__lte=timezone.now())
 
-    tournaments_registering = Tournament.objects.filter(register_end_time__lte=datetime.datetime.now())
+    tournaments_registering = Tournament.objects.filter(register_end_time__lte=timezone.now())
 
-    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gt=datetime.datetime.now())
+    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gt=timezone.now())
 
     data = dict()
     data['tournaments_online'] = tournaments_online
@@ -586,6 +586,11 @@ class BadRequestView(View):
   def get(request):
     return render(request, 'bad_request_400.html')
 
+class PermissionDeniedView(View):
+  # 返回拒绝页面
+  @staticmethod
+  def get(request):
+    return render(request, 'page_403.html')
 
 @method_decorator(login_required, name='dispatch')
 class RegisterView(View):
@@ -614,10 +619,10 @@ class RegisterView(View):
     if not team:
       if not target_team:
         team_name = contestant.name + '_' + tournament.name
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
         while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
           md5.update((target_team.name + now).encode('utf-8'))
         contest = tournament.contest_set.order('submit_begin_time').first()
         team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest())
@@ -626,10 +631,10 @@ class RegisterView(View):
         return redirect('contest-detail')
       else:
         target_team.add(contestant)
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
         while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
           md5.update((target_team.name + now).encode('utf-8'))
         target_team.unique_id = md5.hexdigest()
         target_team.save()
@@ -643,10 +648,10 @@ class RegisterView(View):
         for item in team.members:
           target_team.add(item)
         team.delete()
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
         while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
           md5.update((target_team.name + now).encode('utf-8'))
         target_team.unique_id = md5.hexdigest()
         target_team.save()
