@@ -2,46 +2,27 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-4">
-
-				<!-- header-left start -->
-				<!-- ================ -->
 				<div class="header-left clearfix">
 
-					<!-- logo -->
 					<div class="logo smooth-scroll">
 						<a href="#contest"><img id="logo" src="/static/images/gleam-logo.png" style="width:60px;height:60px;"></a>
 					</div>
-
-					<!-- name-and-slogan -->
 					<div class="site-name-and-slogan smooth-scroll">
 						<div class="site-name"><a href="#userinfo">Gleam</a></div>
 						<div class="site-slogan">专为大学生设计的大数据竞赛平台</div>
 					</div>
-
 				</div>
-				<!-- header-left end -->
-
 			</div>
 			<div class="col-md-8">
-
-				<!-- header-right start -->
-				<!-- ================ -->
 				<div class="header-right clearfix">
-
-					<!-- main-navigation start -->
-					<!-- ================ -->
 					<div class="main-navigation animated">
-
-						<!-- navbar start -->
-						<!-- ================ -->
 						<nav class="navbar navbar-default" role="navigation">
 							<div class="container-fluid">
-								<!-- Collect the nav links, forms, and other content for toggling -->
 								<div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
 									<ul class="nav navbar-nav navbar-right">
 										<li><input placeholder="Search"/></li>
 										<li><a href="#search"><i class="fa fa-search"></i> </a></li>
-										<li><a href="">竞赛</a></li>
+										<li><a href="{% url 'tournament-list' %}">竞赛</a></li>
 										<li><a href="#discuss">讨论</a></li>
 										<li class="dropdown">
 											<a href="#" data-toggle="dropdown">
@@ -65,14 +46,8 @@
 								</div>
 							</div>
 						</nav>
-						<!-- navbar end -->
-
 					</div>
-					<!-- main-navigation end -->
-
 				</div>
-				<!-- header-right end -->
-
 			</div>
 		</div>
 	</div>
