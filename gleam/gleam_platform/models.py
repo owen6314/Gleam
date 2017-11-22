@@ -41,7 +41,7 @@ class Tournament(models.Model):
 
   max_team_member_num = models.IntegerField()
 
-  team_count = models.IntegerField()
+  team_count = models.IntegerField(default=0)
 
 
   STATUS_DELETED = -1

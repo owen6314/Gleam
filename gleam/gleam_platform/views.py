@@ -303,6 +303,7 @@ class CreateTournamentView(View):
     register_end_time = request.POST['register_end_time']
     organizer = request.user.organizer_profile
     # ToDo: max_team_member_num
+
     tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
                             register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
                             max_team_member_num=3)
@@ -466,18 +467,14 @@ class TournamentDetailContestantView(View):
       return redirect('permission-denied-403')
 
     # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'O':
-      return redirect('permission-denied-403')
-
-    # 如果比赛不是该主办方主办的
-    if tournament.organizer != request.user:
+    if request.user.type != 'C':
       return redirect('permission-denied-403')
 
     data = dict()
 
     data['name'] = tournament.name
 
-    data['organization'] = request.user.organizer_profile.organization
+    data['organization'] = tournament.organizer.organization
 
     teams = tournament.team_set.all()
     contestants = list()
@@ -490,8 +487,12 @@ class TournamentDetailContestantView(View):
 
     data['register_end_time'] = tournament.register_end_time
 
-    data['current_contest'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
+    try:
+      data['current_contest'] = Contest.objects.filter(tournament=tournament)\
+        .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
+    except:
+      data['current_contest'] = None
+
 
     data['contests_coming'] = Contest.objects.filter(tournament=tournament)\
       .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
@@ -499,11 +500,14 @@ class TournamentDetailContestantView(View):
     data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
-    data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
-
-    data['update_time'] = data['current_contest'].release_time
-
-    data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+    if data['current_contest']:
+      data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
+      data['update_time'] = data['current_contest'].release_time
+      data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+    else:
+      data['countdown'] = "not begin yet"
+      data['update_time'] = ''
+      data['leaderboard'] = []
 
     data['team'] = None
     try:
