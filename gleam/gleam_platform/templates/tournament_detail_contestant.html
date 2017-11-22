@@ -69,84 +69,74 @@
                         </div>
                       </div>
                       <div id="contest_tab" class="tab-content">
-                        {% for contest in contest_list %}
-                        <div id="contest_detail" class="tab-pane fade active in">
-                          <h2>{{ contest.name }}</h2>
+                        <div id="contest_finished_detail" class="tab-pane fade active in">
+                          <table class="table table-added table-bordered">
+                            <thead>
+                            <tr>
+                              <th>阶段赛名称</th>
+                              <th>提交开始时间</th>
+                              <th>提交结束时间</th>
+                              <th>结果公布时间</th>
+                              <th>阶段赛详情</th>
+                              <th>每日最大提交数</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for contest in contests_finished %}
+                            <tr>
+                              <td>{{ contest.name }}</td>
+                              <td>{{ contest.submit_begin_time }}</td>
+                              <td>{{ contest.submit_end_time }}</td>
+                              <td>{{ contest.release_time }}</td>
+                              <td>{{ contest.description }}</td>
+                              <td>{{ contest.max_submit_num }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                          </table>
+                        <div id="contest_on_detail" class="tab-pane fade in">
+                          <h2>{{ current_contest.name }}</h2>
                           <div class="row">
                             <div class="col-md-12">
-                              <h3>比赛状态</h3>
-                              <p>{{ contest.status }}</p>
-
                               <h3>提交时间</h3>
-                              <p>{{ contest.submit_begin_end }} to {{ contest.submit_end_time }}</p>
+                              <p>{ current_contest.submit_begin_end } to { current_contest.submit_end_time }</p>
 
                               <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{{ contest.release_time }}</p>
+                              <p><b>Before: </b>{ current_contest.release_time }</p>
 
                               <h3>阶段赛详情</h3>
-                              <p>{{ contest.description }}</p>
-
-                              <h3>每日最大提交数</h3>
-                              <p>{{ contest.max_submit_num }}</p>
+                              <p>{ current_contest.description }</p>
                             </div>
                           </div>
                         </div>
-                        {% endfor %}
-                        <!--  <div id="contest_detail_2" class="tab-pane fade in">
-                            <h2>{{ contest.name }}</h2>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <h3>比赛状态</h3>
-                                <p>{ tournament.status }</p>
+                        <div id="contest_detail_coming" class="tab-pane fade in">
+                          <table class="table table-added table-bordered">
+                            <thead>
+                            <tr>
+                              <th>阶段赛名称</th>
+                              <th>提交开始时间</th>
+                              <th>提交结束时间</th>
+                              <th>结果公布时间</th>
+                              <th>阶段赛详情</th>
+                              <th>每日最大提交数</th>
+                            </tr>
+                            </thead>
 
-                                <h3>提交时间</h3>
-                                <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                                <h3>结果公布时间</h3>
-                                <p><b>Before: </b>{ contest.release_time }</p>
-
-                                <h3>阶段赛详情</h3>
-                                <p>{ contest.description }</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div id="contest_detail_3" class="tab-pane fade in">
-                            <h2>{ contest.name }</h2>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <h3>比赛状态</h3>
-                                <p>{ contest.status }</p>
-
-                                <h3>提交时间</h3>
-                                <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                                <h3>结果公布时间</h3>
-                                <p><b>Before: </b>{ contest.release_time }</p>
-
-                                <h3>阶段赛详情</h3>
-                                <p>{ contest.description }</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div id="contest_detail_4" class="tab-pane fade in">
-                            <h2>{ contest.name }</h2>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <h3>比赛状态</h3>
-                                <p>{ contest.status }</p>
-
-                                <h3>提交时间</h3>
-                                <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                                <h3>结果公布时间</h3>
-                                <p><b>Before: </b>{ contest.release_time }</p>
-
-                                <h3>阶段赛详情</h3>
-                                <p>{ contest.description }</p>
-                              </div>
-                            </div>
-                          </div>
-                        -->
+                            <tbody>
+                            {% for contest in contests_coming %}
+                            <tr>
+                              <td>{{ contest.name }}</td>
+                              <td>{{ contest.submit_begin_time }}</td>
+                              <td>{{ contest.submit_end_time }}</td>
+                              <td>{{ contest.release_time }}</td>
+                              <td>{{ contest.description }}</td>
+                              <td>{{ contest.max_submit_num }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
