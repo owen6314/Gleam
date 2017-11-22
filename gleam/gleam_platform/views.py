@@ -207,7 +207,10 @@ class HomeContestantView(View):
     # teams = contestant.team_set.all()
     # my_contests = [team.contest for team in teams]
 
-    return render(request, 'user_home.html')
+    data = dict()
+    data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile])
+
+    return render(request, 'user_home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -307,7 +310,9 @@ class CreateTournamentView(View):
     tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
                             register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
                             max_team_member_num=3)
+    tournament.overall_end_time = request.POST['overall_end_time']
     tournament.save()
+
     for i in range(1, 100):
       if 'name_' + str(i) in request.POST.keys():
         contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
@@ -374,11 +379,12 @@ class TournamentDetailOrganizerView(View):
       .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
     if data['current_contest']:
-      data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
+
+      data['countdown'] = (data['current_contest'].submit_end_time - timezone.now()).days
       data['update_time'] = data['current_contest'].release_time
       data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
     else:
-      data['countdown'] = "not begin yet"
+      data['countdown'] = 'N/A'
       data['update_time'] = ''
       data['leaderboard'] = []
 
@@ -474,6 +480,8 @@ class TournamentDetailContestantView(View):
 
     data['tournament_id'] = tournament_id
 
+    data['description'] = tournament.description
+
     data['name'] = tournament.name
 
     data['organization'] = tournament.organizer.organization
@@ -503,11 +511,11 @@ class TournamentDetailContestantView(View):
       .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
     if data['current_contest']:
-      data['countdown'] = data['current_contest'].submit_end_time - timezone.now()
+      data['countdown'] = (data['current_contest'].submit_end_time - timezone.now()).days
       data['update_time'] = data['current_contest'].release_time
       data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
     else:
-      data['countdown'] = "not begin yet"
+      data['countdown'] = 'N/A'
       data['update_time'] = ''
       data['leaderboard'] = []
 
@@ -520,7 +528,7 @@ class TournamentDetailContestantView(View):
     if team:
       data['team_status'] = 1
       data['team'] = dict()
-      data['team']['name'] = team.name
+      data['team']['team_name'] = team.name
       all_members = team.members.all()
       data['team']['leader'] = team.leader
       data['team']['members'] = team.members.all()
@@ -529,7 +537,7 @@ class TournamentDetailContestantView(View):
       if request.user.contestant_profile == team.leader:
         data['team']['unique_id'] = team.unique_id
       else:
-        data['team']['unique_id'] = ''
+        data['team']['unique_id'] = '0'
     else:
       data['team_status'] = 0
 
