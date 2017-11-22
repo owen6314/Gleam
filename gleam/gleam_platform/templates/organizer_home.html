@@ -21,7 +21,7 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 参赛人数 </span>
-        <div class="count"></div>
+        <div class="count">0</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> 累计举办比赛 </span>
@@ -180,7 +180,6 @@
                 <td>{{c.overall_end_time}}</td>
                 <td>{{c.team_count}}</td>
                 <td><a href="{% url 'tournament-detail-organizer' c.id %}">{{c.name}}</a></td>
-                <td><a href="#"><i class="fa fa-wrench"></i></a></td>
               </tr>
               {% endfor %}
             </tbody>
