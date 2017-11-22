@@ -9,7 +9,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <h1 id="tournament_name" class="title text-center">{ name }</h1>
+            <h1 id="tournament_name" class="title text-center">{{ name }}</h1>
             <p class="lead text-center">该锦标赛包含多个阶段赛，请留意各阶段相关时间.</p>
             <div class="space"></div>
             <div class="row">
@@ -314,7 +314,7 @@
 
                       <h3>队员:
                         {% for contestant in team.members %}
-                        <a>{{ contestant.name }}</a>
+                        <a>{{ contestant.nick_name }}</a>
                         {%  endfor %}
                       </h3>
                       <h3>指导教师: <a>{{ team.tutor }}</a></h3>
