@@ -20,7 +20,7 @@ class Organizer(models.Model):
     verbose_name = u'Organizer'
 
   def __str__(self):
-    return '%d %s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
 
 
 class Tournament(models.Model):
@@ -36,12 +36,12 @@ class Tournament(models.Model):
   image = models.ImageField(null=True, blank=True)
   max_member = models.IntegerField(null=True)
 
-  register_begin_time = models.DateField()
-  register_end_time = models.DateField()
+  register_begin_time = models.DateTimeField()
+  register_end_time = models.DateTimeField()
 
   max_team_member_num = models.IntegerField()
 
-  team_count = models.IntegerField()
+  team_count = models.IntegerField(default=0)
 
 
   STATUS_DELETED = -1
@@ -50,20 +50,23 @@ class Tournament(models.Model):
   STATUS_FINISHED = 2
 
   def __str__(self):
-    return '%s %s' % (self.name, self.organizer.user_set.all()[0].id)
+    return 'name:%s orgid:%s' % (self.name, self.organizer.user_set.all()[0].id)
 
 
 class Contest(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
-  submit_begin_time = models.DateField()
-  submit_end_time = models.DateField()
-  release_time = models.DateField()
+  submit_begin_time = models.DateTimeField()
+  submit_end_time = models.DateTimeField()
+  release_time = models.DateTimeField()
   description = models.TextField()
 
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
 
   team_count = models.IntegerField(default=0)
+
+  def __str__(self):
+    return 'name:%s' % (self.name, )
 
 
 class Contestant(models.Model):
@@ -78,7 +81,7 @@ class Contestant(models.Model):
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
   def __str__(self):
-    return '%d %s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
 
 
 class UserManager(BaseUserManager):
@@ -133,8 +136,8 @@ class User(AbstractUser):
   objects = UserManager()
 
 
-def __str__(self):
-  return '%d %s' % (self.id, self.email)
+  def __str__(self):
+    return 'id:%d email:%s' % (self.id, self.email)
 
 
 # class Profile(models.Model):
@@ -157,44 +160,35 @@ class Team(models.Model):
   # team name
   name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   # team members
-  members = models.ManyToManyField(
-    Contestant,
-    through='Membership',
-    through_fields=('team', 'contestant'),
-  )
+  members = models.ManyToManyField(Contestant)
   leader = models.ForeignKey('Contestant', on_delete=models.CASCADE, related_name='my_team', null=True)
   # team contest
   tournament = models.ForeignKey(Tournament, null=True)
+  contests = models.ManyToManyField(Contest)
   unique_id = models.CharField(max_length=128, unique=True)
   tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
 
-
-class Membership(models.Model):
-  # team
-  team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-  # contestant
-  contestant = models.ForeignKey(Contestant, on_delete=models.CASCADE, null=True)
+  def __str__(self):
+    return "name:%s" % (self.name, )
 
 
-def generate_dataset_filename(instance, filename):
-  return "datasets/%s/%s" % (instance.contest.name, filename)
-
-
-class Dataset(models.Model):
-  contest = models.ForeignKey('Contest')
-  dataset = models.FileField(upload_to=generate_dataset_filename)
-
-
-def generate_submission_filename(instance, filename):
-  return "submissions/%s/%s" % (instance.contest.name, filename)
+# def generate_dataset_filename(instance, filename):
+#   return "datasets/%s/%s" % (instance.contest.name, filename)
+#
+#
+# class Dataset(models.Model):
+#   contest = models.ForeignKey('Contest')
+#   dataset = models.FileField(upload_to=generate_dataset_filename)
+#
+#
+# def generate_submission_filename(instance, filename):
+#   return "submissions/%s/%s" % (instance.contest.name, filename)
 
 
 class Record(models.Model):
   team = models.ForeignKey('Team')
   score = models.DecimalField(max_digits=4, decimal_places=2)
 
-  # TODO datetime
-  time = models.DateField()
+  time = models.DateTimeField()
 
-  # TODO new add
   contest = models.ForeignKey('Contest', null=True)

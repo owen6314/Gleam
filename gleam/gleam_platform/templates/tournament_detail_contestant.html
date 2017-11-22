@@ -9,7 +9,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <h1 id="tournament_name" class="title text-center">{ name }</h1>
+            <h1 id="tournament_name" class="title text-center">{{ name }}</h1>
             <p class="lead text-center">该锦标赛包含多个阶段赛，请留意各阶段相关时间.</p>
             <div class="space"></div>
             <div class="row">
@@ -39,7 +39,7 @@
                       <p>{{ status }}</p>
 
                       <h3>注册时间</h3>
-                      <p>{{ register_begin_end}} to {{ register_end_time }}</p>
+                      <p>{{ register_begin_time}} to {{ register_end_time }}</p>
 
                       <h3>比赛详情</h3>
                       <p>{{ description }}</p>
@@ -69,84 +69,74 @@
                         </div>
                       </div>
                       <div id="contest_tab" class="tab-content">
-                        {% for contest in contest_list %}
-                        <div id="contest_detail" class="tab-pane fade active in">
-                          <h2>{{ contest.name }}</h2>
+                        <div id="contest_finished_detail" class="tab-pane fade active in">
+                          <table class="table table-added table-bordered">
+                            <thead>
+                            <tr>
+                              <th>阶段赛名称</th>
+                              <th>提交开始时间</th>
+                              <th>提交结束时间</th>
+                              <th>结果公布时间</th>
+                              <th>阶段赛详情</th>
+                              <th>每日最大提交数</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for contest in contests_finished %}
+                            <tr>
+                              <td>{{ contest.name }}</td>
+                              <td>{{ contest.submit_begin_time }}</td>
+                              <td>{{ contest.submit_end_time }}</td>
+                              <td>{{ contest.release_time }}</td>
+                              <td>{{ contest.description }}</td>
+                              <td>{{ contest.max_submit_num }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                          </table>
+                        <div id="contest_on_detail" class="tab-pane fade in">
+                          <h2>{{ current_contest.name }}</h2>
                           <div class="row">
                             <div class="col-md-12">
-                              <h3>比赛状态</h3>
-                              <p>{{ contest.status }}</p>
-
                               <h3>提交时间</h3>
-                              <p>{{ contest.submit_begin_end }} to {{ contest.submit_end_time }}</p>
+                              <p>{ current_contest.submit_begin_end } to { current_contest.submit_end_time }</p>
 
                               <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{{ contest.release_time }}</p>
+                              <p><b>Before: </b>{ current_contest.release_time }</p>
 
                               <h3>阶段赛详情</h3>
-                              <p>{{ contest.description }}</p>
-
-                              <h3>每日最大提交数</h3>
-                              <p>{{ contest.max_submit_num }}</p>
+                              <p>{ current_contest.description }</p>
                             </div>
                           </div>
                         </div>
-                        {% endfor %}
-                      <!--  <div id="contest_detail_2" class="tab-pane fade in">
-                          <h2>{{ contest.name }}</h2>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <h3>比赛状态</h3>
-                              <p>{ tournament.status }</p>
+                        <div id="contest_detail_coming" class="tab-pane fade in">
+                          <table class="table table-added table-bordered">
+                            <thead>
+                            <tr>
+                              <th>阶段赛名称</th>
+                              <th>提交开始时间</th>
+                              <th>提交结束时间</th>
+                              <th>结果公布时间</th>
+                              <th>阶段赛详情</th>
+                              <th>每日最大提交数</th>
+                            </tr>
+                            </thead>
 
-                              <h3>提交时间</h3>
-                              <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                              <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{ contest.release_time }</p>
-
-                              <h3>阶段赛详情</h3>
-                              <p>{ contest.description }</p>
-                            </div>
-                          </div>
+                            <tbody>
+                            {% for contest in contests_coming %}
+                            <tr>
+                              <td>{{ contest.name }}</td>
+                              <td>{{ contest.submit_begin_time }}</td>
+                              <td>{{ contest.submit_end_time }}</td>
+                              <td>{{ contest.release_time }}</td>
+                              <td>{{ contest.description }}</td>
+                              <td>{{ contest.max_submit_num }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                          </table>
                         </div>
-                        <div id="contest_detail_3" class="tab-pane fade in">
-                          <h2>{ contest.name }</h2>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <h3>比赛状态</h3>
-                              <p>{ contest.status }</p>
-
-                              <h3>提交时间</h3>
-                              <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                              <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{ contest.release_time }</p>
-
-                              <h3>阶段赛详情</h3>
-                              <p>{ contest.description }</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div id="contest_detail_4" class="tab-pane fade in">
-                          <h2>{ contest.name }</h2>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <h3>比赛状态</h3>
-                              <p>{ contest.status }</p>
-
-                              <h3>提交时间</h3>
-                              <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
-
-                              <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{ contest.release_time }</p>
-
-                              <h3>阶段赛详情</h3>
-                              <p>{ contest.description }</p>
-                            </div>
-                          </div>
-                        </div>
-                      -->
                       </div>
                     </div>
                   </div>
@@ -181,7 +171,7 @@
                         <tr>
                           <th scope="row">{{ item.rank }}</th>
                           <td>{{ item.team_name }}</td>
-                          <td>{{ item.members[0] }}</td>
+                          <td>{{ item.leader}}</td>
                           <td>{{ team.tutor }}</td>
                           <td>{{ team.score }}</td>
                           <td>{{ team.submit_num }}</td>
@@ -291,13 +281,13 @@
                 <div class="tab-pane fade" id="tab_team">
                   <div class="space"></div>
                   {% if team_status == 0 %}
-                  <form id="team_form" action=""  method="post" class="form-horizontal form-label-left">
+                  <form id="team_form" action="{% url 'register' tournament_id %}"  method="post" class="form-horizontal form-label-left">
                     {% csrf_token %}
                     <div class="form-group">
                       <label class="control-label col-md-3" for="unique_id">队伍id
                       </label>
                       <div class="col-md-6">
-                        <input type="text" id="unique_id" name="team_id" value="{{ unique_id }}"
+                        <input type="text" id="unique_id" name="unique_id" value="{{ unique_id }}"
                                class="form-control col-md-7">
                       </div>
                     </div>
@@ -311,10 +301,13 @@
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                       <h2>我的队伍: {{ team.team_name }}</h2>
-
+                      {% if team.unique_id != "0" %}
+                      <h3>Team id: {{ team.unique_id }}
+                      </h3>
+                      {% endif %}
                       <h3>队员:
                         {% for contestant in team.members %}
-                        <a>{{ contestant.name }}</a>
+                        <a>{{ contestant.nick_name }}</a>
                         {%  endfor %}
                       </h3>
                       <h3>指导教师: <a>{{ team.tutor }}</a></h3>
