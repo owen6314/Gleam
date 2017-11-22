@@ -91,10 +91,10 @@
 
     $(document).ready(function() {
       $('#register_begin_time').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss'
+        format: 'yyyy-mm-dd hh:ii'
       });
       $('#register_end_time').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss'
+        format: 'yyyy-mm-dd hh:ii'
       });
       $("#tournament-image").fileinput();
     })
@@ -111,7 +111,6 @@
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
             <input type="text" class="form-control has-feedback-left" id="name_'+contest_creation_stage_cnt+'" name="name_'+contest_creation_stage_cnt+'" > \
-            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
         <div class="form-group"> \
@@ -119,7 +118,6 @@
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
             <input type="text" class="form-control has-feedback-left" id="description_'+contest_creation_stage_cnt+'" name="description_'+contest_creation_stage_cnt+'" > \
-            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
         <div class="form-group"> \
@@ -149,14 +147,14 @@
       </div> \
       '
       $("#formpart").before($(new_stage_form));
-      $('#"submit_begin_time_'+contest_creation_stage_cnt+'"').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss'
+      $("#submit_begin_time_"+contest_creation_stage_cnt).datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
       });
-      $('#"submit_end_time_'+contest_creation_stage_cnt+'"').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss'
+      $("#submit_end_time_"+contest_creation_stage_cnt).datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
       });
-      $('#"release_time_'+contest_creation_stage_cnt+'"').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss'
+      $("#release_time_"+contest_creation_stage_cnt).datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
       });
     });
     $("#removeform").click(function(){
