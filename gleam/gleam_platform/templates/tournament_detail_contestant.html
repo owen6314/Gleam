@@ -181,7 +181,7 @@
                         <tr>
                           <th scope="row">{{ item.rank }}</th>
                           <td>{{ item.team_name }}</td>
-                          <td>{{ item.members[0] }}</td>
+                          <td>{{ item.leader}}</td>
                           <td>{{ team.tutor }}</td>
                           <td>{{ team.score }}</td>
                           <td>{{ team.submit_num }}</td>
@@ -291,7 +291,7 @@
                 <div class="tab-pane fade" id="tab_team">
                   <div class="space"></div>
                   {% if team_status == 0 %}
-                  <form id="team_form" action=""  method="post" class="form-horizontal form-label-left">
+                  <form id="team_form" action="{% url 'register' tournament_id %}"  method="post" class="form-horizontal form-label-left">
                     {% csrf_token %}
                     <div class="form-group">
                       <label class="control-label col-md-3" for="unique_id">队伍id

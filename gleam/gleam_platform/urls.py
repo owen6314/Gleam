@@ -24,8 +24,9 @@ urlpatterns = [
   url(r'^profile/contestant', ProfileContestantView.as_view(), name='profile-contestant'),
   url(r'^create-contest', CreateTournamentView.as_view(), name='create-contest'),
   url(r'^tournament-detail/organizer/([1-9][0-9]*)/', TournamentDetailOrganizerView.as_view(), name='tournament-detail-organizer'),
-  url(r'^tournament-detail/contestant/([1-9][0-9]*)/', TournamentDetailContestantView.as_view(), name='tournament-detail-contest'),
+  url(r'^tournament-detail/contestant/([1-9][0-9]*)/', TournamentDetailContestantView.as_view(), name='tournament-detail-contestant'),
   url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
   url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400'),
   url(r'^permission-denied-403', PermissionDeniedView.as_view(), name='permission-denied-403'),
+  url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register')
 ]
