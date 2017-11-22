@@ -33,16 +33,16 @@
                   <div class="row">
                     <div class="col-md-12">
                       <h3>赛事主办方</h3>
-                      <p>{ organization }</p>
+                      <p>{{ organization }}</p>
 
                       <h3>比赛状态</h3>
-                      <p>{ status }</p>
+                      <p>{{ status }}</p>
 
                       <h3>注册时间</h3>
-                      <p>{ register_begin_end} to { register_end_time }</p>
+                      <p>{{ register_begin_end}} to {{ register_end_time }}</p>
 
                       <h3>比赛详情</h3>
-                      <p>{ description }</p>
+                      <p>{{ description }}</p>
 
                       <h3>赛制说明</h3>
                       <p>该锦标赛包含以下几个阶段赛组成，点击各阶段以查看阶段赛详情</p>
@@ -71,29 +71,29 @@
                       <div id="contest_tab" class="tab-content">
                         {% for contest in contest_list %}
                         <div id="contest_detail" class="tab-pane fade active in">
-                          <h2>{ contest.name }</h2>
+                          <h2>{{ contest.name }}</h2>
                           <div class="row">
                             <div class="col-md-12">
                               <h3>比赛状态</h3>
-                              <p>{ contest.status }</p>
+                              <p>{{ contest.status }}</p>
 
                               <h3>提交时间</h3>
-                              <p>{ contest.submit_begin_end} to { contest.submit_end_time }</p>
+                              <p>{{ contest.submit_begin_end }} to {{ contest.submit_end_time }}</p>
 
                               <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{ contest.release_time }</p>
+                              <p><b>Before: </b>{{ contest.release_time }}</p>
 
                               <h3>阶段赛详情</h3>
-                              <p>{ contest.description }</p>
+                              <p>{{ contest.description }}</p>
 
                               <h3>每日最大提交数</h3>
-                              <p>{ contest.max_submit_num }</p>
+                              <p>{{ contest.max_submit_num }}</p>
                             </div>
                           </div>
                         </div>
                         {% endfor %}
-                        <div id="contest_detail_2" class="tab-pane fade in">
-                          <h2>{ contest.name2 }</h2>
+                      <!--  <div id="contest_detail_2" class="tab-pane fade in">
+                          <h2>{{ contest.name }}</h2>
                           <div class="row">
                             <div class="col-md-12">
                               <h3>比赛状态</h3>
@@ -146,6 +146,7 @@
                             </div>
                           </div>
                         </div>
+                      -->
                       </div>
                     </div>
                   </div>
@@ -178,12 +179,12 @@
                         <tbody>
                         {% for item in leaderboard %}
                         <tr>
-                          <th scope="row">{ item.rank }</th>
-                          <td>{ item.team_name}</td>
-                          <td>{ item.members[0] }</td>
-                          <td>{ team.tutor }</td>
-                          <td>{ team.score }</td>
-                          <td>{ team.submit_num }</td>
+                          <th scope="row">{{ item.rank }}</th>
+                          <td>{{ item.team_name }}</td>
+                          <td>{{ item.members[0] }}</td>
+                          <td>{{ team.tutor }}</td>
+                          <td>{{ team.score }}</td>
+                          <td>{{ team.submit_num }}</td>
                         </tr>
                         {% endfor %}
                         </tbody>
@@ -309,15 +310,15 @@
                   {% else %}
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                      <h2>我的队伍: { team.team_name }</h2>
+                      <h2>我的队伍: {{ team.team_name }}</h2>
 
                       <h3>队员:
                         {% for contestant in team.members %}
-                        <a>contestant</a>
+                        <a>{{ contestant.name }}</a>
                         {%  endfor %}
                       </h3>
-                      <h3>指导教师: <a>{ team.tutor }</a></h3>
-                      <h3>提交次数：{ team.submit_num }</h3>
+                      <h3>指导教师: <a>{{ team.tutor }}</a></h3>
+                      <h3>提交次数：{{ team.submit_num }}</h3>
                       <div>
                         <button class="btn btn-success">提交结果</button>
                         <button class="btn btn-primary">查看过往提交</button>
