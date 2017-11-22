@@ -95,47 +95,48 @@
                             {% endfor %}
                             </tbody>
                           </table>
-                        <div id="contest_on_detail" class="tab-pane fade in">
-                          <h2>{{ current_contest.name }}</h2>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <h3>提交时间</h3>
-                              <p>{ current_contest.submit_begin_end } to { current_contest.submit_end_time }</p>
+                          <div id="contest_on_detail" class="tab-pane fade in">
+                            <h2>{{ current_contest.name }}</h2>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <h3>提交时间</h3>
+                                <p>{ current_contest.submit_begin_end } to { current_contest.submit_end_time }</p>
 
-                              <h3>结果公布时间</h3>
-                              <p><b>Before: </b>{ current_contest.release_time }</p>
+                                <h3>结果公布时间</h3>
+                                <p><b>Before: </b>{ current_contest.release_time }</p>
 
-                              <h3>阶段赛详情</h3>
-                              <p>{ current_contest.description }</p>
+                                <h3>阶段赛详情</h3>
+                                <p>{ current_contest.description }</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div id="contest_detail_coming" class="tab-pane fade in">
-                          <table class="table table-added table-bordered">
-                            <thead>
-                            <tr>
-                              <th>阶段赛名称</th>
-                              <th>提交开始时间</th>
-                              <th>提交结束时间</th>
-                              <th>结果公布时间</th>
-                              <th>阶段赛详情</th>
-                              <th>每日最大提交数</th>
-                            </tr>
-                            </thead>
+                          <div id="contest_detail_coming" class="tab-pane fade in">
+                            <table class="table table-added table-bordered">
+                              <thead>
+                              <tr>
+                                <th>阶段赛名称</th>
+                                <th>提交开始时间</th>
+                                <th>提交结束时间</th>
+                                <th>结果公布时间</th>
+                                <th>阶段赛详情</th>
+                                <th>每日最大提交数</th>
+                              </tr>
+                              </thead>
 
-                            <tbody>
-                            {% for contest in contests_coming %}
-                            <tr>
-                              <td>{{ contest.name }}</td>
-                              <td>{{ contest.submit_begin_time }}</td>
-                              <td>{{ contest.submit_end_time }}</td>
-                              <td>{{ contest.release_time }}</td>
-                              <td>{{ contest.description }}</td>
-                              <td>{{ contest.max_submit_num }}</td>
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                          </table>
+                              <tbody>
+                              {% for contest in contests_coming %}
+                              <tr>
+                                <td>{{ contest.name }}</td>
+                                <td>{{ contest.submit_begin_time }}</td>
+                                <td>{{ contest.submit_end_time }}</td>
+                                <td>{{ contest.release_time }}</td>
+                                <td>{{ contest.description }}</td>
+                                <td>{{ contest.max_submit_num }}</td>
+                              </tr>
+                              {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
                     </div>
