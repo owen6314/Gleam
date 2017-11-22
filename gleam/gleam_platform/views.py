@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 
 from django.utils import timezone
 from .forms import *
@@ -14,6 +15,7 @@ import hashlib
 import csv
 import uuid
 import os
+import json
 
 
 class SignupOrganizerView(View):
@@ -391,14 +393,25 @@ class TournamentDetailOrganizerView(View):
     return render(request, 'tournament_detail_organizer.html', data)
 
   @staticmethod
-  def post(request):
-    file = request.FILES['file']
-    file_name = os.path.join('tmp', uuid.uuid4() + '.csv')
+  def post(request, *args):
+    tournament_id = args[0]
+    file = request.FILES['ranking_csv']
+    # file_name = os.path.join('tmp', str(uuid.uuid4()) + '.csv')
+    file_name = str(uuid.uuid4()) + '.csv'
     with open(file_name, 'wb+') as dest:
       for chunk in file.chunks():
         dest.write(chunk)
-    TournamentDetailOrganizerView.updataRecord(filename=file_name)
-    return redirect('tournament-detail-organizer')
+
+    tournament = Tournament.objects.get(id=tournament_id)
+    try:
+      current_contest = Contest.objects.filter(tournament=tournament) \
+        .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
+    except:
+      current_contest = None
+
+    TournamentDetailOrganizerView.updataRecord(filename=file_name, current_contest=current_contest)
+    response_data = {}
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
   @staticmethod
   def get_leaderboard(contest):
@@ -409,7 +422,7 @@ class TournamentDetailOrganizerView(View):
       if team_id_str not in teams:
         team_info = dict()
         team_info['team_name'] = record.team.name
-        team_info['members'] = record.members.all()
+        team_info['members'] = record.team.members.all()
         team_info['submit_num'] = 1
         team_info['score'] = record.score
         team_info['tutor'] = record.team.tutor
@@ -431,7 +444,7 @@ class TournamentDetailOrganizerView(View):
     return leaderboard
 
   @staticmethod
-  def updataRecord(filename, header=True, max_times=999):
+  def updataRecord(filename, current_contest, header=False, max_times=999):
     # hashcode, score, time
     with open(filename) as f:
       f_csv = csv.reader(f)
@@ -445,7 +458,7 @@ class TournamentDetailOrganizerView(View):
           # Invalid unique_id
           return -1
         try:
-          time = datetime.strptime(row[2], "%Y/%m/%d %H:%M:%s").date()
+          time = datetime.datetime.strptime(row[2], "%Y/%m/%d %H:%M")
         except ValueError:
           # Invalid time
           return -1
@@ -453,8 +466,9 @@ class TournamentDetailOrganizerView(View):
         if pre_records.count() > max_times:
           # too many record
           return -1
-        contest = team.contests.order_by('-sumbit_begin_time')[0]
-        record = Record(team=team, score=row[1], time=time, contest=contest)
+
+
+        record = Record(team=team, score=row[1], time=time, contest=current_contest)
         record.save()
         # team.score = row[1] if row[1] > team.score else team.score
 
@@ -586,11 +600,11 @@ class TournamentListView(View):
     all_tournaments = Tournament.objects.all()
 
     tournaments_online = Tournament.objects\
-      .filter(register_end_time__gt=timezone.now(), contest__submit_end_time__lte=timezone.now())
+      .filter(register_end_time__lt=timezone.now(), contest__submit_end_time__gte=timezone.now()).distinct()
 
-    tournaments_registering = Tournament.objects.filter(register_end_time__lte=timezone.now())
+    tournaments_registering = Tournament.objects.filter(register_end_time__gte=timezone.now()).distinct()
 
-    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gt=timezone.now())
+    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gte=timezone.now()).distinct()
 
     data = dict()
     data['tournaments_online'] = tournaments_online
