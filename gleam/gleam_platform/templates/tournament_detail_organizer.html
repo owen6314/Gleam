@@ -1,6 +1,6 @@
 {% extends "organizer_base.html" %}
 
-{% block title %} 划水大赛 - 比赛详情 {% endblock title %}
+{% block title %} 比赛详情 {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -22,7 +22,7 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-clock-o"></i> 阶段结束还有 </span>
-        <div class="count" id="days-till-end">{{count_down}}</div>
+        <div class="count" id="days-till-end">{{countdown}}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-calendar-o"></i> 阶段截止日期 </span>
@@ -96,7 +96,7 @@
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input id="upload-score-board-input" type="file" name="new-score-board">
+                <input id="upload-score-board-input" type="file" name="ranking_csv">
               </div>
             </div>
           </form>
