@@ -297,7 +297,7 @@
                       <label class="control-label col-md-3" for="unique_id">队伍id
                       </label>
                       <div class="col-md-6">
-                        <input type="text" id="unique_id" name="team_id" value="{{ unique_id }}"
+                        <input type="text" id="unique_id" name="unique_id" value="{{ unique_id }}"
                                class="form-control col-md-7">
                       </div>
                     </div>
@@ -311,8 +311,8 @@
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                       <h2>我的队伍: {{ team.team_name }}</h2>
-                      {% if team.id != "0" %}
-                      <h3>Team id: {{ team.id }}
+                      {% if team.unique_id != "0" %}
+                      <h3>Team id: {{ team.unique_id }}
                       </h3>
                       {% endif %}
                       <h3>队员:
