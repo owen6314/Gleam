@@ -291,7 +291,7 @@ class CreateTournamentView(View):
       organizer = request.user.organizer_profile
     except:
       return render(request, 'page_403.html')
-    return render(request, 'contest_creation.html')
+    return render(request, 'tournament_creation.html')
 
   # 创建比赛
   @staticmethod
