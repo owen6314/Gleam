@@ -96,7 +96,7 @@
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input id="upload-score-board-input" type="file" name="ranking_csv">
+                <input action="{% url 'create-contest' %}" id="upload-score-board-input" type="file" name="ranking_csv">
               </div>
             </div>
           </form>
