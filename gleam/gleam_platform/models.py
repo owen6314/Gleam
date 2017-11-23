@@ -67,7 +67,7 @@ class Contest(models.Model):
 
   team_count = models.IntegerField(default=0)
 
-  last_csv_upload_time = models.DateTimeField()
+  last_csv_upload_time = models.DateTimeField(null=True)
 
   def __str__(self):
     return 'name:%s' % (self.name, )

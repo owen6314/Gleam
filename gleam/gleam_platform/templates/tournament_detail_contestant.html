@@ -55,12 +55,12 @@
                         <div class="progress-bar progress-bar-success progress-striped active" role="progressbar"
                              aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
                              style="width: 40%;">
-                          <a href="#contest_detail" data-toggle="tab" style="display:inline-block;line-height:50px;font-size:30px;color:white;">正在进行</a>
+                          <a href="#current_contest_detail" data-toggle="tab" style="display:inline-block;line-height:50px;font-size:30px;color:white;">正在进行</a>
                         </div>
                         <div class="progress-bar progress-bar-info progress-striped active" role="progressbar"
                              aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
                              style="width: 30%;">
-                          <a href="#contest_coming_detail" data-toggle="tab" style="display:inline-block;line-height:50px;font-size:30px;color:white;">即将到来</a>
+                          <a href="#contest_detail_coming" data-toggle="tab" style="display:inline-block;line-height:50px;font-size:30px;color:white;">即将到来</a>
                         </div>
                       </div>
                       <div id="contest_tab" class="tab-content">
@@ -90,7 +90,8 @@
                             {% endfor %}
                             </tbody>
                           </table>
-                          <div id="contest_on_detail" class="tab-pane fade in">
+                        </div>
+                          <div id="current_contest_detail" class="tab-pane fade">
                             <h2>{{ current_contest.name }}</h2>
                             <div class="row">
                               <div class="col-md-12">
@@ -105,7 +106,7 @@
                               </div>
                             </div>
                           </div>
-                          <div id="contest_detail_coming" class="tab-pane fade in">
+                          <div id="contest_detail_coming" class="tab-pane fade">
                             <table class="table table-added table-bordered">
                               <thead>
                               <tr>
@@ -136,8 +137,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                </div>
                 <div class="tab-pane fade" id="tab_rank">
                   <div class="space"></div>
                     <h3>当前显示的是
@@ -318,6 +317,7 @@
                   </div>
                 </div>
                 {% endif %}
+              </div>
                 <div class="tab-pane fade" id="tab_discuss">
                   <div class="space"></div>
                   <table class="table table-striped projects">

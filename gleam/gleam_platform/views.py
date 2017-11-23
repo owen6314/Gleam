@@ -210,7 +210,7 @@ class HomeContestantView(View):
     # my_contests = [team.contest for team in teams]
 
     data = dict()
-    data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile])
+    data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile]).distinct()
 
     return render(request, 'user_home.html', data)
 
@@ -303,7 +303,7 @@ class CreateTournamentView(View):
   def post(request):
     name = request.POST['name']
     description = request.POST['description']
-    image = request.POST['image']
+    image = request.FILES['image']
     register_begin_time = request.POST['register_begin_time']
     register_end_time = request.POST['register_end_time']
     organizer = request.user.organizer_profile
@@ -640,7 +640,7 @@ class RegisterView(View):
       return redirect('index')
     team = Team.objects.filter(tournament=tournament).filter(members__in=[contestant])
     target_team = None
-    if 'unique_id' in request.POST.keys():
+    if 'unique_id' in request.POST.keys() and request.POST['unique_id']:
       try:
         target_team = Team.objects.get(unique_id=request.POST['unique_id'])
       except ObjectDoesNotExist:
