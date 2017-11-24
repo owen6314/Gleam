@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from .models import Contest, Submission, Contestant, Organizer, User
+from .models import *
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
@@ -37,7 +37,7 @@ class UploadFileForm(forms.ModelForm):
 class ContestantForm(forms.ModelForm):
     class Meta:
         model = Contestant
-        fields = ('resident_id', 'nick_name', 'school')
+        fields = ('nick_name', 'school')
 
 
 class OrganizerForm(forms.ModelForm):

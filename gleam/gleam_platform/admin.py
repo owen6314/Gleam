@@ -1,17 +1,18 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
-from .models import Organizer, Contestant, Team, Membership, Contest
+
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import User, Contest, Organizer
+from .models import *
 
 
+admin.site.register(Tournament)
 admin.site.register(Contest)
 admin.site.register(Organizer)
+admin.site.register(Contestant)
+admin.site.register(Record)
+admin.site.register(Team)
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     """Define admin model for custom User model with no email field."""
