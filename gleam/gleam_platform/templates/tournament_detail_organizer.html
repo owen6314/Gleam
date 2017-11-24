@@ -90,13 +90,12 @@
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
-          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' tournament_id %}" method="post" id="upload-score-board">
-            {% csrf_token %}
+          <form class="form-horizontal form-label-left" action="{% url 'tournament-detail-organizer' tournament_id %}" method="post" id="upload-score-board" enctype="multipart/form-data">
             <div class="form-group">
               <label class="control-label col-md-3" for="upload-score-board-input"> 提交成绩单
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input action="{% url 'create-contest' %}" id="upload-score-board-input" type="file" name="ranking_csv">
+                <input id="upload-score-board-input" type="file" name="ranking_csv">
               </div>
             </div>
           </form>
@@ -190,7 +189,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $("#upload-score-board-input").fileinput();
+      $("#upload-score-board-input").fileinput({
+        uploadUrl: 'tournament-detail-organizer',
+        uploadExtraData: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+      });
     })
   </script>
 {% endblock javascripts %}

@@ -14,7 +14,7 @@ MAX_RID_LEN = 18
 
 
 class Organizer(models.Model):
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织')
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default='常凯申')
 
   class Meta:
     verbose_name = u'Organizer'
@@ -38,6 +38,8 @@ class Tournament(models.Model):
 
   register_begin_time = models.DateTimeField()
   register_end_time = models.DateTimeField()
+
+  overall_end_time = models.DateTimeField()
 
   max_team_member_num = models.IntegerField()
 
@@ -65,6 +67,8 @@ class Contest(models.Model):
 
   team_count = models.IntegerField(default=0)
 
+  last_csv_upload_time = models.DateTimeField(null=True)
+
   def __str__(self):
     return 'name:%s' % (self.name, )
 
@@ -73,7 +77,7 @@ class Contestant(models.Model):
   # # resident id number
   # resident_id = models.CharField(max_length=MAX_RID_LEN)
   # nick name
-  nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+  nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice')
   # school name
   school = models.CharField(max_length=MAX_NAME_LEN_LONG)
   # gender
@@ -166,10 +170,10 @@ class Team(models.Model):
   tournament = models.ForeignKey(Tournament, null=True)
   contests = models.ManyToManyField(Contest)
   unique_id = models.CharField(max_length=128, unique=True)
-  tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, null=True)
+  tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='蛤')
 
   def __str__(self):
-    return "name:%s" % (self.name, )
+    return "id:%s" % (self.id, )
 
 
 # def generate_dataset_filename(instance, filename):

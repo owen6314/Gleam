@@ -10,6 +10,8 @@ from .models import *
 admin.site.register(Tournament)
 admin.site.register(Contest)
 admin.site.register(Organizer)
+admin.site.register(Contestant)
+admin.site.register(Record)
 admin.site.register(Team)
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
