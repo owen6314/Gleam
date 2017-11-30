@@ -13,8 +13,22 @@ MAX_FLAG_LEN = 2
 MAX_RID_LEN = 18
 
 
+
 class Organizer(models.Model):
+
+  avatar = models.ForeignKey('Image', null=True)
+
   organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default='常凯申')
+
+  biography = models.TextField(null=True)
+
+  description = models.TextField(null=True)
+
+  location = models.TextField(null=True)
+
+  field = models.CharField(max_length=256, null=True)
+
+  website = models.URLField(null=True)
 
   class Meta:
     verbose_name = u'Organizer'
@@ -26,14 +40,13 @@ class Organizer(models.Model):
 class Tournament(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
-  organizer = models.ForeignKey(Organizer)
+  organizer = models.ForeignKey('Organizer')
 
   description = models.TextField()
 
   status = models.IntegerField()
 
-
-  image = models.ImageField(null=True, blank=True)
+  image = models.ImageField(null=True, blank=True, upload_to='tournament_images')
   max_member = models.IntegerField(null=True)
 
   register_begin_time = models.DateTimeField()
@@ -44,7 +57,6 @@ class Tournament(models.Model):
   max_team_member_num = models.IntegerField()
 
   team_count = models.IntegerField(default=0)
-
 
   STATUS_DELETED = -1
   STATUS_SAVED = 0
@@ -70,10 +82,12 @@ class Contest(models.Model):
   last_csv_upload_time = models.DateTimeField(null=True)
 
   def __str__(self):
-    return 'name:%s' % (self.name, )
+    return 'name:%s' % (self.name,)
 
 
 class Contestant(models.Model):
+
+  avatar = models.ForeignKey('Image', null=True)
   # # resident id number
   # resident_id = models.CharField(max_length=MAX_RID_LEN)
   # nick name
@@ -128,6 +142,9 @@ class User(AbstractUser):
   username = None
   email = models.EmailField(_('email address'), unique=True, max_length=80)
 
+  # avatar = image = models.ImageField(null=True, blank=True, upload_to='avatars')
+
+
   TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
   type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
@@ -139,25 +156,8 @@ class User(AbstractUser):
 
   objects = UserManager()
 
-
   def __str__(self):
     return 'id:%d email:%s' % (self.id, self.email)
-
-
-# class Profile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#
-#     TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
-#     type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
-#
-#     organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
-#     contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
-#
-#
-# @receiver(post_save, sender=User)
-# def create_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
 
 
 class Team(models.Model):
@@ -173,20 +173,7 @@ class Team(models.Model):
   tutor = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='蛤')
 
   def __str__(self):
-    return "id:%s" % (self.id, )
-
-
-# def generate_dataset_filename(instance, filename):
-#   return "datasets/%s/%s" % (instance.contest.name, filename)
-#
-#
-# class Dataset(models.Model):
-#   contest = models.ForeignKey('Contest')
-#   dataset = models.FileField(upload_to=generate_dataset_filename)
-#
-#
-# def generate_submission_filename(instance, filename):
-#   return "submissions/%s/%s" % (instance.contest.name, filename)
+    return "id:%s" % (self.id,)
 
 
 class Record(models.Model):
@@ -196,3 +183,15 @@ class Record(models.Model):
   time = models.DateTimeField()
 
   contest = models.ForeignKey('Contest', null=True)
+
+class Image(models.Model):
+  TYPE_CHOICES = (('P', 'public'), ('C', 'Confidential'))
+  type = models.CharField(default='P', max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
+  image = models.ImageField()
+  accesses = models.ManyToManyField('User')
+
+  def __str__(self):
+    return "%s" % (self.image)
+
+
+
