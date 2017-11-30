@@ -28,7 +28,7 @@
                   <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="text" id="competition-name" maxlength="128" name="name" class="form-control col-md-7 col-xs-12" placeholder="{{ tournament.name }}">
+                    <input type="text" id="competition-name" maxlength="128" name="name" class="form-control col-md-7 col-xs-12" value="{{ tournament.name }}">
                   </div>
                 </div>
 
@@ -36,7 +36,7 @@
                   <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" placeholder="{{ tournament.description }}"></textarea>
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" value="{{ tournament.description }}"></textarea>
                   </div>
                 </div>
 
@@ -52,7 +52,7 @@
                   <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time" placeholder="{{ tournament.register_begin_time }}">
+                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time" value="{{ tournament.register_begin_time }}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
@@ -61,7 +61,7 @@
                   <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="register_end_time" name="register_end_time" placeholder="{{ tournament.register_end_time }}">
+                    <input type="text" class="form-control has-feedback-left" id="register_end_time" name="register_end_time" value="{{ tournament.register_end_time }}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
