@@ -8,7 +8,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 {% endblock stylesheets %}
 
-
 {% block content %}
   <div class="right_col" role="main">
     <div class="">
@@ -21,14 +20,15 @@
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
-              <form class="form-horizontal form-label-left" action="{% url 'create-contest' %}" method="post" id="contest-form" enctype="multipart/form-data">
+              <form class="form-horizontal form-label-left" role="form" data-toggle="validator" action="{% url 'create-contest' %}" method="post" id="contest-form" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="form-group">
                   <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="text" id="competition-name" name="name" required="required" class="form-control col-md-7 col-xs-12">
+                    <input type="text" id="competition-name" name="name" maxlength="128" class="form-control col-md-7 col-xs-12" required>
+                    <div class="help-block with-errors"></div>
                   </div>
                 </div>
 
@@ -36,7 +36,7 @@
                   <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <textarea class="resizable_textarea form-control" name="description" id="competition-description"></textarea>
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" required="required"></textarea>
                   </div>
                 </div>
 
@@ -44,7 +44,7 @@
                   <label class="control-label col-md-3" for="dataset-description">赛事图片 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="file" name="image" required="required" id="tournament-image">
+                    <input type="file" name="image" required="required" id="tournament-image" required="required" accept=".jpg,.png">
                   </div>
                 </div>
 
@@ -95,6 +95,7 @@
   {{ block.super}}
   <script type="text/javascript" src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
 
   <script type="text/javascript">
 
@@ -109,7 +110,10 @@
         format: 'yyyy-mm-dd hh:ii'
       });
       $("#tournament-image").fileinput({
-          showUpload: false
+          showUpload: false,
+          maxFileSize: 1024,
+          maxFileCount: 1,
+          minFileCount: 1,
       });
     })
 
@@ -124,7 +128,7 @@
           <label class="control-label col-md-3" for="name_'+contest_creation_stage_cnt+'">阶段名称 <span class="required">*</span> \
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
-            <input type="text" class="form-control has-feedback-left" required="required" id="name_'+contest_creation_stage_cnt+'" name="name_'+contest_creation_stage_cnt+'" > \
+            <input type="text" maxlength="128" class="form-control has-feedback-left" required="required" id="name_'+contest_creation_stage_cnt+'" name="name_'+contest_creation_stage_cnt+'" > \
             <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
@@ -176,7 +180,6 @@
       $("#stage_form_"+contest_creation_stage_cnt).remove();
       contest_creation_stage_cnt -= 1;
     });
-
   </script>
 {% endblock javascripts %}
 
