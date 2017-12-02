@@ -18,7 +18,7 @@ class Organizer(models.Model):
 
   avatar = models.ForeignKey('Image', null=True)
 
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default='常凯申')
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'Organizer', default='Chiang Kai-shek')
 
   biography = models.TextField(null=True)
 

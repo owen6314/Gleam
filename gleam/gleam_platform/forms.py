@@ -1,6 +1,8 @@
 from django.db import models
 from django import forms
+
 from .models import *
+
 
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
@@ -16,7 +18,18 @@ MAX_RID_LEN = 18
 class ContestForm(forms.ModelForm):
   class Meta:
     model = Contest
-    exclude = ['organizer', 'status']
+    exclude = ['tournament', 'team_count', 'last_csv_upload_time']
+
+  def clean(self):
+    cleaned_data = super(ContestForm, self).clean()
+    submit_begin_time = cleaned_data.get('submit_begin_time')
+    submit_end_time = cleaned_data.get('submit_end_time')
+    release_time = cleaned_data.get('release_time')
+    if submit_begin_time and submit_end_time and release_time:
+      if submit_begin_time <= submit_end_time and submit_end_time <= release_time:
+        pass
+      else:
+        raise forms.ValidationError("Invalid time order")
 
 
 class UploadImageForm(forms.ModelForm):

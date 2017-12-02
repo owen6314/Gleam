@@ -5,8 +5,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-
 from django.utils import timezone
 from .forms import *
 from .models import *
@@ -291,22 +289,35 @@ class CreateTournamentView(View):
     register_end_time = request.POST['register_end_time']
     organizer = request.user.organizer_profile
     # ToDo: max_team_member_num
-
     tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
                             register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
                             max_team_member_num=3)
     tournament.overall_end_time = request.POST['overall_end_time']
     tournament.save()
-
-    for i in range(1, 100):
-      if 'name_' + str(i) in request.POST.keys():
-        contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
-                          submit_begin_time=request.POST['submit_begin_time_'+str(i)],
-                          submit_end_time=request.POST['submit_end_time_'+str(i)],
-                          release_time=request.POST['release_time_'+str(i)],
-                          tournament=tournament, team_count=0)
+    form_len = 3
+    for i in range(1, form_len + 1):
+      data = {
+        'name': request.POST['name_'+str(i)],
+        'description': request.POST['description_'+str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'submit_end_time': request.POST['submit_end_time_' + str(i)],
+        'release_time': request.POST['release_time_' + str(i)],
+      }
+      form = ContestForm(data)
+      if form.is_valid():
+        contest = form.save(commit=False)
+        contest.tournament = tournament
+        contest.team_count = 0
         contest.save()
+      #if 'name_' + str(i) in request.POST.keys():
+      #  contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
+      #                    submit_begin_time=request.POST['submit_begin_time_'+str(i)],
+      #                    submit_end_time=request.POST['submit_end_time_'+str(i)],
+      #                    release_time=request.POST['release_time_'+str(i)],
+      #                    tournament=tournament, team_count=0)
+      #  contest.save()
       else:
+        # form validate fail
         break
     return redirect('home-organizer')
 
