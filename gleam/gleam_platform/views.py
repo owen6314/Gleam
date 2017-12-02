@@ -153,7 +153,8 @@ class HomeOrganizerView(View):
     data['tournaments_saved'] = Tournament.objects.filter(status=Tournament.STATUS_SAVED)
 
     # 已结束的比赛
-    data['tournaments_finished'] = Tournament.objects.filter(overall_end_time__gte=timezone.now())
+    data['tournaments_finished'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
+                                                             overall_end_time__lte=timezone.now())
 
     # 已结束的比赛数目
     data['tournament_finished_num'] = len(data['tournaments_finished'])
@@ -296,7 +297,7 @@ class CreateTournamentView(View):
                             max_team_member_num=3)
     tournament.overall_end_time = request.POST['overall_end_time']
     tournament.save()
-    form_len = 3
+    form_len = (len(request.POST) - 6) // 5
     for i in range(1, form_len + 1):
       data = {
         'name': request.POST['name_'+str(i)],
