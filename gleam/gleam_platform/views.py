@@ -214,7 +214,7 @@ class ProfileOrganizerView(View):
     data['email'] = user.email
     data['organization'] = profile.organization
 
-    return render(request, 'organizer_info.html', data)
+    return render(request, 'organizer_profile.html', data)
 
   # 更新赛事方信息
   @staticmethod
@@ -719,7 +719,7 @@ class ProfileEditOrganizerView(View):
     fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
     data = tool.get_model_data(request.user.organizer_profile, fields)
     form = ProfileOrganizerForm(initial=data)
-    return render(request, 'test.html', {'form': form})
+    return render(request, 'organizer_profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):

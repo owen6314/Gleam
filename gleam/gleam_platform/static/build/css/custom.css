@@ -2533,7 +2533,7 @@ span.tag a {
 }
 ul.bar_tabs {
     overflow: visible;
-    background: #F5F7FA;
+    background: #FFFFFF;
     height: 25px;
     margin: 21px 0 14px;
     padding-left: 14px;
@@ -2558,7 +2558,7 @@ ul.bar_tabs>li.active {
 }
 ul.bar_tabs>li a {
     padding: 10px 17px;
-    background: #F5F7FA;
+    background: #FFFFFF;
     margin: 0;
     border-top-right-radius: 0
 }
