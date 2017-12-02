@@ -123,7 +123,7 @@ class IndexView(View):
   # 渲染主页
   @staticmethod
   def get(request):
-    return render(request, 'gleam.html')
+    return render(request, 'index.html')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -195,7 +195,7 @@ class HomeContestantView(View):
     data = dict()
     data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile]).distinct()
 
-    return render(request, 'user_home.html', data)
+    return render(request, 'contestant_home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -249,7 +249,7 @@ class ProfileContestantView(View):
     data['school'] = profile.school
     data['gender'] = profile.gender
 
-    return render(request, 'user_admin.html', data)
+    return render(request, 'contestant_profile.html', data)
 
   # 更新参赛者信息
   @staticmethod
