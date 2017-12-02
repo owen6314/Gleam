@@ -4,9 +4,7 @@
 
 {% block stylesheets %}
   {{ block.super }}
-  <!-- cdn -->
-  <link href="https://cdn.bootcss.com/datatables/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet">
-  <!-- local -->
+  <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
   <link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
 {% endblock stylesheets %}
 
@@ -69,8 +67,6 @@
 
 {% block javascripts %}
   {{ block.super}}
-  <!-- cdn -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
-  <!-- local -->
+  <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 {% endblock javascripts %}

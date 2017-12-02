@@ -13,17 +13,23 @@
       <title>Gleam | Admin</title>
 
       {% block stylesheets %}
-        <!-- cdn -->
-        <link href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
-        <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/flat/green.css" rel="stylesheet">
-        <link href="https://cdn.bootcss.com/jqvmap/1.5.1/jqvmap.min.css" rel="stylesheet">
-
-        <!-- local -->
-        <link href="/static/build/css/custom.css" rel="stylesheet">
-
+        <!-- Bootstrap -->
+        <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+        <!-- bootstrap-daterangepicker -->
+        <link href="/static/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="/static/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+        <!-- bootstrap-progressbar -->
+        <link href="/static/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+        <!-- JQVMap -->
+        <link href="/static/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
       {% endblock stylesheets %}
+      <!-- Custom Theme Style -->
+      <link href="/static/build/css/custom.css" rel="stylesheet">
     {% endblock head %}
   </head>
 
@@ -51,23 +57,42 @@
       </div>
 
       {% block javascripts %}
-        <!-- cdn -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-        <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
-        <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
-        <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
-        <script src="https://cdn.bootcss.com/select2/4.0.6-rc.1/js/i18n/zh-CN.js"></script>
-        <script src="https://cdn.bootcss.com/parsley.js/2.8.0/parsley.min.js"></script>
-        <script src="https://cdn.bootcss.com/autosize.js/4.0.0/autosize.min.js"></script>
-        <script src="https://cdn.bootcss.com/jquery.devbridge-autocomplete/1.4.5/jquery.autocomplete.min.js"></script>
-
-        <!-- local -->
+        <!-- jQuery -->
+        <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- FastClick -->
+        <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+        <!-- NProgress -->
+        <script src="/static/vendors/nprogress/nprogress.js"></script>
+        <!-- bootstrap-progressbar -->
+        <script src="/static/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+        <!-- iCheck -->
+        <script src="/static/vendors/iCheck/icheck.min.js"></script>
+        <!-- bootstrap-daterangepicker -->
+        <script src="/static/vendors/moment/min/moment.min.js"></script>
+        <script src="/static/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+        <!-- bootstrap-wysiwyg -->
+        <script src="/static/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+        <script src="/static/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+        <script src="/static/vendors/google-code-prettify/src/prettify.js"></script>
+        <!-- jQuery Tags Input -->
+        <script src="/static/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+        <!-- Switchery -->
+        <script src="/static/vendors/switchery/dist/switchery.min.js"></script>
+        <!-- Select2 -->
+        <script src="/static/vendors/select2/dist/js/select2.full.min.js"></script>
+        <!-- Parsley -->
+        <script src="/static/vendors/parsleyjs/dist/parsley.min.js"></script>
+        <!-- Autosize -->
+        <script src="/static/vendors/autosize/dist/autosize.min.js"></script>
+        <!-- jQuery autocomplete -->
         <script src="/static/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+        <!-- starrr -->
         <script src="/static/vendors/starrr/dist/starrr.js"></script>
-        <script src="/static/build/js/custom.js"></script>
-
       {% endblock %}
+      <!-- Custom Theme Scripts -->
+      <script src="/static/build/js/custom.js"></script>
     {% endblock body %}
   </body>
 </html>
