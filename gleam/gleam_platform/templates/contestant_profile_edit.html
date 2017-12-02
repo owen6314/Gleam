@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %} | 个人信息{% endblock title %}
+
+{% block content %}
+<div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title" style="text-align: center" >
+              <h2>修改个人信息
+                <small>请谨慎修改</small>
+              </h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <br/>
+              <form id="profile—form" action="{% url 'profile-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">用户名
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="user_name" name="user_name" value="{{ user_name }}"
+                           class="form-control col-md-7 col-xs-12" disabled="disabled">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">邮箱
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="email" class="form-control col-md-7 col-xs-12"
+                           name="email" value="{{ email }}" placeholder="" type="text">
+                    <a href="">获取验证码</a>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">验证码
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ack-num" class="form-control col-md-7 col-xs-12"
+                           name="ack-num" placeholder="请输入收到的验证码" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">昵称
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="nick_name" name="nick_name" value="{{ nick_name }}"
+                           class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">头像</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="file" name="avatar" id="contestant-avatar" accept=".jpg,.png">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">性别</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div id="gender" class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-primary" data-toggle-class="btn-primary"
+                             data-toggle-passive-class="btn-default">
+                        <input type="radio" name="gender" value="M"> &nbsp; 男 &nbsp;
+                      </label>
+                      <label class="btn btn-primary" data-toggle-class="btn-primary"
+                             data-toggle-passive-class="btn-default">
+                        <input type="radio" name="gender" value="F"> &nbsp; 女 &nbsp;
+                      </label>
+                      <label class="btn btn-primary" data-toggle-class="btn-primary"
+                             data-toggle-passive-class="btn-default">
+                        <input type="radio" name="gender" value="O"> &nbsp; O &nbsp;
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">所属学校
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="school" class="form-control col-md-7 col-xs-12"
+                           name="school" value="{{ school }}" placeholder="清华大学" type="text">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">个人简介
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="introduction" name="introduction" value="{{ introduction }}"
+                           class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-success">提交</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+{% endblock javascripts %}
