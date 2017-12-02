@@ -68,7 +68,17 @@ class ProfileContestantForm(forms.Form):
   gender = forms.CharField()
 
 
-class ProfileOrganizerForm(forms.ModelForm):
-  class Meta:
-    model = Organizer
-    fields = '__all__'
+class ProfileOrganizerForm(forms.Form):
+  avatar = forms.ImageField()
+
+  organization = forms.CharField(max_length=MAX_NAME_LEN_LONG,)
+
+  biography = forms.CharField()
+
+  description = forms.CharField()
+
+  location = forms.CharField()
+
+  field = forms.CharField(max_length=256,)
+
+  website = forms.URLField()

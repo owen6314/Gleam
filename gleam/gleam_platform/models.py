@@ -188,6 +188,7 @@ class Image(models.Model):
   TYPE_CHOICES = (('P', 'public'), ('C', 'Confidential'))
   type = models.CharField(default='P', max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
   image = models.ImageField()
+  owner = models.ForeignKey('User', related_name='owned_images')
   accesses = models.ManyToManyField('User')
 
   def __str__(self):

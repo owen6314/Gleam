@@ -17,6 +17,8 @@ import uuid
 import os
 import json
 
+import gleam_platform.tools as tool
+
 class SignupOrganizerView(View):
 
   # 注册赛事方
@@ -710,5 +712,36 @@ def promote(team):
   contest = tournament[order]
   team.contests.add(contest)
   team.save()
+
+class ProfileEditOrganizerView(View):
+  @staticmethod
+  def get(request):
+    fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
+    data = tool.get_model_data(request.user.organizer_profile, fields)
+    form = ProfileOrganizerForm(initial=data)
+    return render(request, 'test.html', {'form': form})
+
+  @staticmethod
+  def post(request):
+    form = ProfileOrganizerForm(request.POST, request.FILES)
+    if form.is_valid():
+      # 保存除avatar之外的所有field
+      fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
+      tool.post_model_data(request.user.organizer_profile, form, fields)
+
+      # 保存avatar
+      avatar = Image()
+      avatar.image = form.cleaned_data['avatar']
+      avatar.type = 'P'
+      avatar.owner = request.user
+      avatar.save()
+      request.user.organizer_profile.avatar = avatar
+      request.user.organizer_profile.save()
+
+      return redirect('profile-organizer')
+    else:
+      return render(request, 'test.html', {'form': form})
+
+
 
 

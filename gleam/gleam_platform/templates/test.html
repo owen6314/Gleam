@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试表单</title>
+</head>
+<body>
+<form action="{% url 'profile-edit-organizer' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.avatar.errors }}
+    <p><label for="id_avatar">Avatar:</label> <input type="file" name="avatar" id="id_avatar"
+                                                     value="{{ form.avatar.value }}"/></p>
+    {{ form.organization.errors }}
+    <p><label for="id_organization">Organization:</label> <input type="text" name="organization" maxlength="80"
+                                                                 id="id_organization"
+                                                                 value="{{ form.organization.value }}"/></p>
+    {{ form.biography.errors }}
+    <p><label for="id_biography">Biography:</label> <input type="text" name="biography" id="id_biography"
+                                                           value="{{ form.biography.value }}"/></p>
+    {{ form.description.errors }}
+    <p><label for="id_description">Description:</label> <input type="text" name="description"
+                                                               id="id_description"
+                                                               value="{{ form.description.value }}"/></p>
+    {{ form.location.errors }}
+    <p><label for="id_location">Location:</label> <input type="text" name="location" id="id_location"
+                                                         value="{{ form.location.value }}"/></p>
+    {{ form.field.errors }}
+    <p><label for="id_field">Field:</label> <input type="text" name="field" maxlength="256" id="id_field"
+                                                   value="{{ form.field.value }}"/></p>
+    {{ form.website.errors }}
+    <p><label for="id_website">Website:</label> <input type="url" name="website" id="id_website"
+                                                       value="{{ form.website.value }}"/></p>
+    <input type="submit" value="OK">
+</form>
+</body>
+</html>
