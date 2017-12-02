@@ -153,7 +153,7 @@ class HomeOrganizerView(View):
     data['tournaments_saved'] = Tournament.objects.filter(status=Tournament.STATUS_SAVED)
 
     # 已结束的比赛
-    data['tournaments_finished'] = Tournament.objects.filter(status=Tournament.STATUS_FINISHED)
+    data['tournaments_finished'] = Tournament.objects.filter(overall_end_time__gte=timezone.now())
 
     # 已结束的比赛数目
     data['tournament_finished_num'] = len(data['tournaments_finished'])
@@ -188,7 +188,7 @@ class HomeContestantView(View):
 
     # 当前所有发布的锦标赛，按注册时间倒序排列
     tournaments = Tournament.objects \
-      .filter(status__in=[Tournament.STATUS_PUBLISHED, Tournament.STATUS_FINISHED]) \
+      .filter(status__in=[Tournament.STATUS_PUBLISHED]) \
       .order_by('-register_begin_time')
 
 
@@ -334,7 +334,7 @@ class TournamentDetailOrganizerView(View):
 
     data = dict()
 
-    data['tournament_id'] =tournament_id
+    data['tournament_id'] = tournament_id
 
     data['name'] = tournament.name
 

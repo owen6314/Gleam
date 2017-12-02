@@ -47,7 +47,6 @@ class Tournament(models.Model):
   status = models.IntegerField()
 
   image = models.ImageField(null=True, blank=True, upload_to='tournament_images')
-  max_member = models.IntegerField(null=True)
 
   register_begin_time = models.DateTimeField()
   register_end_time = models.DateTimeField()
@@ -58,10 +57,8 @@ class Tournament(models.Model):
 
   team_count = models.IntegerField(default=0)
 
-  STATUS_DELETED = -1
   STATUS_SAVED = 0
   STATUS_PUBLISHED = 1
-  STATUS_FINISHED = 2
 
   def __str__(self):
     return 'name:%s orgid:%s' % (self.name, self.organizer.user_set.all()[0].id)
