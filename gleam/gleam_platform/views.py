@@ -341,11 +341,11 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name_' + str(i): request.POST['name_' + str(i)],
-        'description_' + str(i): request.POST['description_' + str(i)],
-        'submit_begin_time_' + str(i): request.POST['submit_begin_time_' + str(i)],
-        'submit_end_time_' + str(i): request.POST['submit_end_time_' + str(i)],
-        'release_time_' + str(i): request.POST['release_time_' + str(i)],
+        'name_' + str(i): contest.name,
+        'description_' + str(i): contest.description,
+        'submit_begin_time_' + str(i): contest.submit_begin_time,
+        'submit_end_time_' + str(i): contest.submit_end_time,
+        'release_time_' + str(i): contest.release_time,
       }
       forms.append(ContestForm(data))
     return render(request, 'tournament_edit.html', {'tournament': tournament, 'contests': contests, 'forms': forms})
