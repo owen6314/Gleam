@@ -1,0 +1,162 @@
+{% extends "organizer_base.html" %}
+
+{% block title %} 修改比赛 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+{% endblock stylesheets %}
+
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>修改比赛信息 <small>创建的比赛会首先经过Gleam的审核，审核通过后方可发布</small></h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <form class="form-horizontal form-label-left" action="#" method="post" id="contest-form" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="competition-name" maxlength="128" name="name" class="form-control col-md-7 col-xs-12" value="{{ tournament.name }}">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description">{{ tournament.description }}</textarea>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="dataset-description">赛事图片 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="file" accept=".jpg,.png" name="image" id="tournament-image">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                    <input type="text" class="form-control has-feedback-left" id="register_begin_time" name="register_begin_time" value="{{ tournament.register_begin_time }}">
+                    <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                    <input type="text" class="form-control has-feedback-left" id="register_end_time" name="register_end_time" value="{{ tournament.register_end_time }}">
+                    <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                  </div>
+                </div>
+
+                {% for c in contests %}
+                <div id="stage_form_">
+                  <h3>{{c.name}}</h3>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="name_{{ c.id }}">阶段名称
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="name_{{ c.id }}" name="name_{{ c.id }}" value="{{ c.name }}">
+                      <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="description_{{ c.id }}">阶段描述
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <textarea class="resizable_textarea form-control" name="description_{{ c.id }}" id="description_{{ c.id }}">{{c.description}}</textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="submit_begin_time_{{ c.id }}">阶段开始时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ c.id }}" name="submit_begin_time_{{ c.id }}" value="{{c.submit_begin_time}}">
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="submit_end_time_{{ c.id }}">阶段结束时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ c.id }}" name="submit_end_time_{{ c.id }}" value="{{c.submit_end_time}}>
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="release_time_{{ c.id }}">公布阶段结果时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ c.id }}" name="release_time_{{ c.id }}"  value="{{c.release_time}}>
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+
+                <div id="form_btn_group" class="pull-right">
+                  <button class="btn btn-primary" id="submitform" type="submit" form="contest-form">提交审核</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super}}
+  <script type="text/javascript" src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#register_begin_time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
+      });
+      $('#register_end_time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
+      });
+      $('#overall_end_time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'
+      });
+      {% for c in contests %}
+        $('#submit_begin_time_{{ c.id }}').datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+        $('#submit_end_time_{{ c.id }}').datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+        $('#release_time_{{ c.id }}').datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+      {% endfor %}
+      $("#tournament-image").fileinput({
+          showUpload: false,
+          maxFileSize: 1024
+      });
+    })
+  </script>
+{% endblock javascripts %}
+

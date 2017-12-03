@@ -73,3 +73,5 @@ configs.json
 *.sublime-workspace
 
 autorun.sh
+migrations/
+media/

@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from django.contrib import admin
 from .views import *
+import gleam.settings as settings
+from .image_manage import serve_image
 
 urlpatterns = [
   # url(r'^signup/organizer', OrganizerSignup.as_view(), name='organizer_signup'),
@@ -28,5 +30,7 @@ urlpatterns = [
   url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
   url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400'),
   url(r'^permission-denied-403', PermissionDeniedView.as_view(), name='permission-denied-403'),
-  url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register')
+  url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register'),
+  url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),
+  url(r'^profile-edit/organizer', ProfileEditOrganizerView.as_view(), name='profile-edit-organizer')
 ]

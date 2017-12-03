@@ -17,13 +17,9 @@ import uuid
 import os
 import json
 
+import gleam_platform.tools as tool
 
 class SignupOrganizerView(View):
-  # 测试用
-  @staticmethod
-  def get(request):
-    def get(request):
-      return render(request, 'contestant_signup.html')
 
   # 注册赛事方
   # email password
@@ -49,10 +45,6 @@ class SignupOrganizerView(View):
 
 
 class SignupContestantView(View):
-  # 测试用
-  @staticmethod
-  def get(request):
-    return render(request, 'contestant_signup.html')
 
   # 注册参赛者
   # email password
@@ -80,10 +72,6 @@ class SignupContestantView(View):
 
 
 class LoginOrganizerView(View):
-  # 测试用
-  @staticmethod
-  def get(request):
-    return render(request, 'login.html')
 
   # 赛事方登录
   # email password
@@ -205,9 +193,6 @@ class HomeContestantView(View):
       .filter(status__in=[Tournament.STATUS_PUBLISHED, Tournament.STATUS_FINISHED]) \
       .order_by('-register_begin_time')
 
-    # TODO 这是啥？
-    # teams = contestant.team_set.all()
-    # my_contests = [team.contest for team in teams]
 
     data = dict()
     data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile]).distinct()
@@ -238,7 +223,7 @@ class ProfileOrganizerView(View):
     if request.user.type != 'O':
       return redirect('permission-denied-403')
 
-    form = OrganizerDetailForm(request.POST)
+    form = ProfileOrganizerForm(request.POST)
     if form.is_valid():
       user = request.user
       profile = user.organizer_profile
@@ -274,11 +259,11 @@ class ProfileContestantView(View):
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'C':
       return redirect('permission-denied-403')
-    form = ContestantDetailForm(request.POST)
+    form = ProfileContestantForm(request.POST, request.FILES)
     if form.is_valid():
       user = request.user
+      user.profile_image = form.cleaned_data['profile_image']
       profile = user.contestant_profile
-      # user.email = form.cleaned_data['email']
       profile.nick_name = form.cleaned_data['nick_name']
       profile.school = form.cleaned_data['school']
       profile.gender = form.cleaned_data['gender']
@@ -727,5 +712,36 @@ def promote(team):
   contest = tournament[order]
   team.contests.add(contest)
   team.save()
+
+class ProfileEditOrganizerView(View):
+  @staticmethod
+  def get(request):
+    fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
+    data = tool.get_model_data(request.user.organizer_profile, fields)
+    form = ProfileOrganizerForm(initial=data)
+    return render(request, 'test.html', {'form': form})
+
+  @staticmethod
+  def post(request):
+    form = ProfileOrganizerForm(request.POST, request.FILES)
+    if form.is_valid():
+      # 保存除avatar之外的所有field
+      fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
+      tool.post_model_data(request.user.organizer_profile, form, fields)
+
+      # 保存avatar
+      avatar = Image()
+      avatar.image = form.cleaned_data['avatar']
+      avatar.type = 'P'
+      avatar.owner = request.user
+      avatar.save()
+      request.user.organizer_profile.avatar = avatar
+      request.user.organizer_profile.save()
+
+      return redirect('profile-organizer')
+    else:
+      return render(request, 'test.html', {'form': form})
+
+
 
 
