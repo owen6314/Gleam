@@ -1,0 +1,92 @@
+{% extends "organizer_base.html" %}
+
+{% block title %} 资料修改 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-2">
+    <div class="clearfix"></div>
+    <div class="row">
+      <div class="col-md-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2> 密码修改 </h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <br />
+            <form class="form-horizontal form-label-left" role="form" data-toggle="validator" action="#" method="post" id="pwd-form" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="form-group">
+                {{ form.old_pwd.errors }}
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="old_pwd"> 旧密码 <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="password" maxlength="140" id="old_pwd" name="old_pwd" required="required" class="form-control col-md-7 col-xs-12" >
+                </div>
+              </div>
+
+              <div class="form-group">
+                {{ form.new_pwd.errors }}
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="new_pwd"> 旧密码 <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="password" maxlength="140" id="new_pwd" name="new_pwd" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div>
+
+              <div class="form-group">
+                {{ form.new_pwd_again.errors }}
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="new_pwd_again"> 旧密码 <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="password" maxlength="140" id="new_pwd_again" name="new_pwd_again" required="required" class="form-control col-md-7 col-xs-12">
+                </div>
+              </div>
+
+              <div class="ln_solid"></div>
+              <div class="form-group" class="pull-right">
+                <div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-5">
+                  <button type="submit" class="btn btn-success">提交</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super}}
+  <script type="text/javascript" src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+  <script>
+  $(document).ready(function() {
+      $('#pwd-form').formValidation({
+          framework: 'bootstrap',
+          icon: {
+              valid: 'glyphicon glyphicon-ok',
+              invalid: 'glyphicon glyphicon-remove',
+              validating: 'glyphicon glyphicon-refresh'
+          },
+          fields: {
+              confirmPassword: {
+                  validators: {
+                      identical: {
+                          field: 'new_pwd',
+                          message: '两次输入的密码不一致'
+                      }
+                  }
+              }
+          }
+      });
+  });
+  </script>
+{% endblock javascripts %}
