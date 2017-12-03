@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
-from gleam_platform.views import *
+from gleam_platform.views import IndexView
 from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^/', IndexView.as_view()),
+    url(r'^$', IndexView.as_view()),
     url(r'^', include('gleam_platform.urls')),
 ]

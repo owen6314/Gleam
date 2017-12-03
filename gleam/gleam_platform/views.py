@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 from django.utils import timezone
 from .forms import *
@@ -84,6 +85,7 @@ class SignupContestantView(View):
         mail_subject, message, settings.EMAIL_FROM, to=[to_email]
       )
       email.send()
+      messages.success(request, 'Your password was successfully updated!')
       return HttpResponse('请验证邮箱完成注册')
 
     # 跳转到index
@@ -284,33 +286,29 @@ class ProfileContestantView(View):
     if request.user.type != 'C':
       return redirect('permission-denied-403')
 
-    data = dict()
-    user = request.user
-    profile = user.contestant_profile
-    data['email'] = user.email
-    data['nick_name'] = profile.nick_name
-    data['school'] = profile.school
-    data['gender'] = profile.gender
+    fields = ['nick_name', 'gender', 'school', 'introduction']
+    data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
+    data['email'] = request.user.email
 
     return render(request, 'contestant_profile.html', data)
 
-  # 更新参赛者信息
-  @staticmethod
-  def post(request):
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'C':
-      return redirect('permission-denied-403')
-    form = ProfileContestantForm(request.POST, request.FILES)
-    if form.is_valid():
-      user = request.user
-      user.profile_image = form.cleaned_data['profile_image']
-      profile = user.contestant_profile
-      profile.nick_name = form.cleaned_data['nick_name']
-      profile.school = form.cleaned_data['school']
-      profile.gender = form.cleaned_data['gender']
-      profile.save()
-
-    return redirect('profile-contestant')
+    # # 更新参赛者信息
+    # @staticmethod
+    # def post(request):
+    #   # 如果用户类型不符, 拒绝请求
+    #   if request.user.type != 'C':
+    #     return redirect('permission-denied-403')
+    #   form = ProfileContestantForm(request.POST, request.FILES)
+    #   if form.is_valid():
+    #     user = request.user
+    #     user.profile_image = form.cleaned_data['profile_image']
+    #     profile = user.contestant_profile
+    #     profile.nick_name = form.cleaned_data['nick_name']
+    #     profile.school = form.cleaned_data['school']
+    #     profile.gender = form.cleaned_data['gender']
+    #     profile.save()
+    #
+    #   return redirect('profile-contestant')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -342,9 +340,9 @@ class CreateTournamentView(View):
     form_len = (len(request.POST) - 6) // 5
     for i in range(1, form_len + 1):
       data = {
-        'name': request.POST['name_'+str(i)],
-        'description': request.POST['description_'+str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'name': request.POST['name_' + str(i)],
+        'description': request.POST['description_' + str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
       }
@@ -354,7 +352,7 @@ class CreateTournamentView(View):
         contest.tournament = tournament
         contest.team_count = 0
         contest.save()
-      #if 'name_' + str(i) in request.POST.keys():
+      # if 'name_' + str(i) in request.POST.keys():
       #  contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
       #                    submit_begin_time=request.POST['submit_begin_time_'+str(i)],
       #                    submit_end_time=request.POST['submit_end_time_'+str(i)],
@@ -366,9 +364,9 @@ class CreateTournamentView(View):
         pass
     return redirect('home-organizer')
 
+
 @method_decorator(login_required, name='dispatch')
 class EditTournamentView(View):
-
   @staticmethod
   def get(request, *args):
     tournament_id = int(args[0])
@@ -411,9 +409,9 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name': request.POST['name_'+str(i)],
-        'description': request.POST['description_'+str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'name': request.POST['name_' + str(i)],
+        'description': request.POST['description_' + str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
       }
@@ -824,6 +822,7 @@ def activate(request, uidb64, token):
     return HttpResponse('垃圾验证码!')
 
 
+@method_decorator(login_required, name='dispatch')
 class ProfileEditOrganizerView(View):
   @staticmethod
   def get(request):
@@ -851,7 +850,38 @@ class ProfileEditOrganizerView(View):
 
       return redirect('profile-organizer')
     else:
-      return render(request, 'test.html', {'form': form})
+      return render(request, 'contestant_profile_edit.html', {'form': form})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProfileEditContestantView(View):
+  @staticmethod
+  def get(request):
+    fields = ['nick_name', 'school', 'gender', 'introduction']
+    data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
+    form = ProfileContestantForm(initial=data)
+    return render(request, 'contestant_profile_edit.html', {'form': form})
+
+  @staticmethod
+  def post(request):
+    form = ProfileContestantForm(request.POST, request.FILES)
+    if form.is_valid():
+      # 保存除avatar之外的所有field
+      fields = ['nick_name', 'school', 'gender', 'introduction']
+      tool.save_form_data_to_model_obj(request.user.contestant_profile, form, fields)
+
+      # 保存avatar
+      avatar = Image()
+      avatar.image = form.cleaned_data['avatar']
+      avatar.type = 'P'
+      avatar.owner = request.user
+      avatar.save()
+      request.user.contestant_profile.avatar = avatar
+      request.user.contestant_profile.save()
+
+      return redirect('profile-contestant')
+    else:
+      return render(request, 'contestant_profile_edit.html', {'form': form})
 
 
 class BadRequestView(View):

@@ -73,25 +73,20 @@ class UserLoginForm(forms.Form):
   password = forms.CharField()
 
 
-class ProfileContestantForm(forms.Form):
-
-  profile_image = forms.ImageField()
-  nick_name = forms.CharField()
-  school = forms.CharField()
-  gender = forms.CharField()
-
 
 class ProfileOrganizerForm(forms.Form):
   avatar = forms.ImageField()
-
   organization = forms.CharField(max_length=MAX_NAME_LEN_LONG,)
-
   biography = forms.CharField()
-
   description = forms.CharField()
-
   location = forms.CharField()
-
   field = forms.CharField(max_length=256,)
-
   website = forms.URLField()
+
+
+class ProfileContestantForm(forms.Form):
+  avatar = forms.ImageField()
+  nick_name = forms.CharField(max_length=MAX_NAME_LEN_SHORT,)
+  school = forms.CharField()
+  gender = forms.CharField()
+  introduction = forms.CharField()

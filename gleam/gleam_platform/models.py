@@ -94,6 +94,8 @@ class Contestant(models.Model):
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
+  introduction = models.TextField()
+
   def __str__(self):
     return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
 
