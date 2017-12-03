@@ -139,3 +139,10 @@ AUTH_USER_MODEL = 'gleam_platform.User'
 MEDIA_ROOT = 'media/'
 
 MEDIA_URL = '/media/'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.sina.com'
+EMAIL_HOST_USER = 'gleam_10bn_worth@sina.com'
+EMAIL_HOST_PASSWORD = 'wtf404again'
+EMAIL_PORT = 25
+EMAIL_FROM = 'gleam_10bn_worth@sina.com'
