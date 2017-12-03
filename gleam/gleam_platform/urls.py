@@ -35,5 +35,6 @@ urlpatterns = [
   url(r'^quit/([1-9][0-9]*)/', QuitTeamView.as_view(), name='quit'),
   url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),
   url(r'^profile-edit/organizer', ProfileEditOrganizerView.as_view(), name='profile-edit-organizer'),
+  url(r'^profile-edit/contestant', ProfileEditContestantView.as_view(), name='profile-edit-contestant'),
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', activate, name='activate'),
 ]
