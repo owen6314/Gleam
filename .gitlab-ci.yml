@@ -21,7 +21,7 @@ before_script:
   - python -V                                   # Print out python version for debugging
   # Uncomment next line if your Django app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
-  - pip install -r gleam/requirements.txt
+  - pip install -r gleam/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # To get Django tests to work you may need to create a settings file using
 # the following DATABASES:
@@ -44,4 +44,4 @@ test:
   # run unit tests in django project 
   # - python gleam/manage.py test
   # run flake8 to check coding style
-  - flake8 gleam/gleam_platform --exclude gleam/gleam_platform/static,gleam/gleam_platform/templates --ignore F401,E501,E111
+  - flake8 gleam/gleam_platform --exclude gleam/gleam_platform/static,gleam/gleam_platform/templates --ignore F401,E501,E111,E114
