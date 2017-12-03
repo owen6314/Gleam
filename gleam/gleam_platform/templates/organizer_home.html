@@ -33,11 +33,11 @@
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-fire"></i> 访问量 </span>
-        <div class="count">0</div>
+        <div class="count">?</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-envelope-o"></i> 新消息 </span>
-        <div class="count">1</div>
+        <div class="count">?</div>
       </div>
     </div>
     <!-- /top tiles -->
@@ -68,14 +68,14 @@
             </thead>
 
             <tbody>
-              {% for c in tournaments_ongoing %}
+              {% for t in tournaments_ongoing %}
               <tr>
-                <td>{{c.name}}</td>
-                <td>{{c.register_begin_time}}</td>
-                <td>{{c.overall_end_time}}</td>
-                <td>{{c.team_count}}</td>
-                <td><a href="{% url 'tournament-detail-organizer' c.id %}">{{c.name}}</a></td>
-                <td><a href="#"><i class="fa fa-wrench"></i></a></td>
+                <td>{{t.name}}</td>
+                <td>{{t.register_begin_time}}</td>
+                <td>{{t.overall_end_time}}</td>
+                <td>{{t.team_count}}</td>
+                <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
+                <td><a href="{% url 'edit-tournament' t.id %}"><i class="fa fa-wrench"></i></a></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -106,13 +106,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for c in tournaments_coming %}
+              {% for t in tournaments_coming %}
               <tr>
-                <td>{{c.name}}</td>
-                <td>{{c.register_begin_time}}</td>
-                <td>{{c.overall_end_time}}</td>
-                <td><a href="{% url 'tournament-detail-organizer' c.id %}">{{c.name}}</a></td>
-                <td><a href="#"><i class="fa fa-wrench"></i></a></td>
+                <td>{{t.name}}</td>
+                <td>{{t.register_begin_time}}</td>
+                <td>{{t.overall_end_time}}</td>
+                <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
+                <td><a href="{% url 'edit-tournament' t.id %}"><i class="fa fa-wrench"></i></a></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -143,13 +143,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for c in tournaments_saved %}
+              {% for t in tournaments_saved %}
               <tr>
-                <td>{{c.name}}</td>
-                <td>{{c.register_begin_time}}</td>
-                <td>{{c.overall_end_time}}</td>
-                <td><a href="{% url 'tournament-detail-organizer' c.id %}">{{c.name}}</a></td>
-                <td><a href="#"><i class="fa fa-wrench"></i></a></td>
+                <td>{{t.name}}</td>
+                <td>{{t.register_begin_time}}</td>
+                <td>{{t.overall_end_time}}</td>
+                <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
+                <td><a href="{% url 'edit-tournament' t.id %}"><i class="fa fa-wrench"></i></a></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -181,13 +181,13 @@
               </tr>
             </thead>
             <tbody>
-              {% for c in tournaments_finished %}
+              {% for t in tournaments_finished %}
               <tr>
-                <td>{{c.name}}</td>
-                <td>{{c.register_begin_time}}</td>
-                <td>{{c.overall_end_time}}</td>
-                <td>{{c.team_count}}</td>
-                <td><a href="{% url 'tournament-detail-organizer' c.id %}">{{c.name}}</a></td>
+                <td>{{t.name}}</td>
+                <td>{{t.register_begin_time}}</td>
+                <td>{{t.overall_end_time}}</td>
+                <td>{{t.team_count}}</td>
+                <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
               </tr>
               {% endfor %}
             </tbody>

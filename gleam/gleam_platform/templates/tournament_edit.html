@@ -21,7 +21,7 @@
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
-              <form class="form-horizontal form-label-left" action="#" method="post" id="contest-form" enctype="multipart/form-data">
+              <form class="form-horizontal form-label-left" action="{% url 'edit-tournament' tournament.id %}" method="post" id="contest-form" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="form-group">
