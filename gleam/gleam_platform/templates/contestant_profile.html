@@ -146,7 +146,7 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12">昵称
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="nick_name" name="nick_name" value="{{ nick_name }}"
+              <input type="text" id="nick_name" name="nick_name" minlength="4" value="{{ nick_name }}"
                      class="form-control col-md-7 col-xs-12">
             </div>
           </div>
@@ -174,7 +174,7 @@
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input id="school" class="date-picker form-control col-md-7 col-xs-12"
-                     name="school" value="{{ school }}" type="text">
+                     name="school" minlength="4" value="{{ school }}" type="text">
             </div>
           </div>
           <div class="ln_solid"></div>
@@ -188,7 +188,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -349,3 +348,13 @@
   </div>
 </div>
 {% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+<!-- validator -->
+<script>
+    $(document).ready(function() {
+        $("#profile-form").validate();
+    });
+</script>
+{% endblock %}
