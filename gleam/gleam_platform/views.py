@@ -321,8 +321,66 @@ class CreateTournamentView(View):
       #  contest.save()
       else:
         # form validate fail
-        break
+        pass
     return redirect('home-organizer')
+
+@method_decorator(login_required, name='dispatch')
+class EditTournamentView(View):
+
+  @staticmethod
+  def get(request, *args):
+    tournament_id = int(args[0])
+    try:
+      tournament = Tournament.objects.get(pk=tournament_id)
+      organizer = request.user.organizer_profile
+      assert tournament.organizer == organizer
+    except:
+      return redirect('permission-denied-403')
+    contests = tournament.contest_set.all()
+    forms = []
+    for contest in contests:
+      i = contest.id
+      data = {
+        'name_' + str(i): request.POST['name_' + str(i)],
+        'description_' + str(i): request.POST['description_' + str(i)],
+        'submit_begin_time_' + str(i): request.POST['submit_begin_time_' + str(i)],
+        'submit_end_time_' + str(i): request.POST['submit_end_time_' + str(i)],
+        'release_time_' + str(i): request.POST['release_time_' + str(i)],
+      }
+      forms.append(ContestForm(data))
+    return render(request, 'tournament_edit.html', {'tournament': tournament, 'contests': contests, 'forms': forms})
+
+  @staticmethod
+  def post(request, *args):
+    tournament_id = int(args[0])
+    try:
+      tournament = Tournament.objects.get(pk=tournament_id)
+    except:
+      return redirect('permission-denied-403')
+    tournament.name = request.POST['name']
+    tournament.description = request.POST['description']
+    tournament.image = request.FILES['image']
+    tournament.register_begin_time = request.POST['register_begin_time']
+    tournament.register_end_time = request.POST['register_end_time']
+    tournament.overall_end_time = request.POST['overall_end_time']
+    tournament.save()
+    # ToDo: max_team_member_num
+    contests = tournament.contest_set.all()
+    for contest in contests:
+      i = contest.id
+      data = {
+        'name': request.POST['name_'+str(i)],
+        'description': request.POST['description_'+str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'submit_end_time': request.POST['submit_end_time_' + str(i)],
+        'release_time': request.POST['release_time_' + str(i)],
+      }
+      form = ContestForm(data, instance=contest)
+      if form.is_valid():
+        form.save()
+      else:
+        pass
+    return redirect(request, 'tournament_edit.html', tournament_id)
 
 
 @method_decorator(login_required, name='dispatch')
