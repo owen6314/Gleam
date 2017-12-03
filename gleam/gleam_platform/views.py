@@ -86,8 +86,6 @@ class SignupContestantView(View):
       email.send()
       return HttpResponse('请验证邮箱完成注册')
 
-      # return redirect('home-contestant')
-
     # 跳转到index
     return redirect('index')
 
