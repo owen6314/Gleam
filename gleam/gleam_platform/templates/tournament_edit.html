@@ -36,7 +36,7 @@
                   <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" value="{{ tournament.description }}"></textarea>
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description">{{ tournament.description }}</textarea>
                   </div>
                 </div>
 
@@ -68,12 +68,12 @@
 
                 {% for c in contests %}
                 <div id="stage_form_">
-                  <h3>阶段{{c.name}}</h3>
+                  <h3>{{c.name}}</h3>
                   <div class="form-group">
                     <label class="control-label col-md-3" for="name_{{ c.id }}">阶段名称
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="name_{{ c.id }}" name="name_{{ c.id }}" >
+                      <input type="text" class="form-control has-feedback-left" id="name_{{ c.id }}" name="name_{{ c.id }}" value="{{ c.name }}">
                       <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>
@@ -81,14 +81,14 @@
                     <label class="control-label col-md-3" for="description_{{ c.id }}">阶段描述
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <textarea class="resizable_textarea form-control" name="description_{{ c.id }}" id="description_{{ c.id }}"></textarea>
+                      <textarea class="resizable_textarea form-control" name="description_{{ c.id }}" id="description_{{ c.id }}">{{c.description}}</textarea>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="control-label col-md-3" for="submit_begin_time_{{ c.id }}">阶段开始时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ c.id }}" name="submit_begin_time_{{ c.id }}" >
+                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ c.id }}" name="submit_begin_time_{{ c.id }}" value="{{c.submit_begin_time}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>
@@ -96,7 +96,7 @@
                     <label class="control-label col-md-3" for="submit_end_time_{{ c.id }}">阶段结束时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ c.id }}" name="submit_end_time_{{ c.id }}">
+                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ c.id }}" name="submit_end_time_{{ c.id }}" value="{{c.submit_end_time}}>
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>
@@ -104,7 +104,7 @@
                     <label class="control-label col-md-3" for="release_time_{{ c.id }}">公布阶段结果时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ c.id }}" name="release_time_{{ c.id }}">
+                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ c.id }}" name="release_time_{{ c.id }}"  value="{{c.release_time}}>
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>
