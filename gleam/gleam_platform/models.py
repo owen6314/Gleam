@@ -15,29 +15,6 @@ MAX_RID_LEN = 18
 
 
 
-class Organizer(models.Model):
-
-  avatar = models.ForeignKey('Image', null=True)
-
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'Organizer', default='Chiang Kai-shek')
-
-  biography = models.TextField(null=True)
-
-  description = models.TextField(null=True)
-
-  location = models.TextField(null=True)
-
-  field = models.CharField(max_length=256, null=True)
-
-  website = models.URLField(null=True)
-
-  class Meta:
-    verbose_name = u'Organizer'
-
-  def __str__(self):
-    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
-
-
 class Tournament(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
 
@@ -86,7 +63,7 @@ class Contest(models.Model):
 class Organizer(models.Model):
   avatar = models.ForeignKey('Image', null=True)
 
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'Chiang Kai-shek')
 
   biography = models.TextField(null=True)
 
