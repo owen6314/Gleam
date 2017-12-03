@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
@@ -11,30 +12,6 @@ MAX_NAME_LEN_SHORT = 32
 MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
-
-
-
-class Organizer(models.Model):
-
-  avatar = models.ForeignKey('Image', null=True)
-
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default='常凯申')
-
-  biography = models.TextField(null=True)
-
-  description = models.TextField(null=True)
-
-  location = models.TextField(null=True)
-
-  field = models.CharField(max_length=256, null=True)
-
-  website = models.URLField(null=True)
-
-  class Meta:
-    verbose_name = u'Organizer'
-
-  def __str__(self):
-    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
 
 
 class Tournament(models.Model):
@@ -85,8 +62,29 @@ class Contest(models.Model):
     return 'name:%s' % (self.name,)
 
 
-class Contestant(models.Model):
+class Organizer(models.Model):
+  avatar = models.ForeignKey('Image', null=True)
 
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
+
+  biography = models.TextField(null=True)
+
+  description = models.TextField(null=True)
+
+  location = models.TextField(null=True)
+
+  field = models.CharField(max_length=256, null=True)
+
+  website = models.URLField(null=True)
+
+  class Meta:
+    verbose_name = u'Organizer'
+
+  def __str__(self):
+    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+
+
+class Contestant(models.Model):
   avatar = models.ForeignKey('Image', null=True)
   # # resident id number
   # resident_id = models.CharField(max_length=MAX_RID_LEN)
@@ -142,9 +140,6 @@ class User(AbstractUser):
   username = None
   email = models.EmailField(_('email address'), unique=True, max_length=80)
 
-  # avatar = image = models.ImageField(null=True, blank=True, upload_to='avatars')
-
-
   TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
   type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
@@ -184,6 +179,7 @@ class Record(models.Model):
 
   contest = models.ForeignKey('Contest', null=True)
 
+
 class Image(models.Model):
   TYPE_CHOICES = (('P', 'public'), ('C', 'Confidential'))
   type = models.CharField(default='P', max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
@@ -193,6 +189,3 @@ class Image(models.Model):
 
   def __str__(self):
     return "%s" % (self.image)
-
-
-
