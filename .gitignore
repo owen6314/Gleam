@@ -74,3 +74,4 @@ configs.json
 
 autorun.sh
 migrations/
+media/
