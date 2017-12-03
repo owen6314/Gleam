@@ -21,5 +21,6 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^/', IndexView.as_view()),
     url(r'^', include('gleam_platform.urls')),
 ]
