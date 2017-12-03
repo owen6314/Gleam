@@ -124,7 +124,7 @@
       $("#avatar").fileinput({
           showUpload: false,
           maxFileSize: 1024,
-          initialPreview: ['/static/images/avatar.jpg'],
+          initialPreview: ['{{ user.organizer_profile.avatar.image.url }}'],
           initialPreviewAsData: true,
           initialPreviewFileType: 'image',
       });
