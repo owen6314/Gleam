@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "organizer_base.html" %}
 
-{% block title %}{% endblock title %}
+{% block title %}{{user.organizer_profile.organization}}{% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -14,7 +14,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="x_panel">
             <div class="x_title">
-              <h2>{{organizer.name}} <small>{{organizer.biography}}</small></h2>
+              <h2>{{user.organizer_profile.organization}} <small>{{user.organizer_profile.biography}}</small></h2>
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -26,20 +26,20 @@
                     </a>
                   </div>
                 </div>
-                <h3>{{organizer.name}}</h3>
+                <h3>{{user.organizer_profile.name}}</h3>
 
                 <ul class="list-unstyled user_data">
                   <li>
-                    <i class="fa fa-map-marker user-profile-icon"></i> {{organizer.location}}
+                    <i class="fa fa-map-marker user-profile-icon"></i> {{user.organizer_profile.location}}
                   </li>
 
                   <li>
-                    <i class="fa fa-briefcase user-profile-icon"></i> {{organizer.field}}
+                    <i class="fa fa-briefcase user-profile-icon"></i> {{user.organizer_profile.field}}
                   </li>
 
                   <li class="m-top-xs">
                     <i class="fa fa-external-link user-profile-icon"></i>
-                    <a href={{organizer.website}} target="_blank"> 网址 </a>
+                    <a href={{user.organizer_profile.website}} target="_blank"> 网站 </a>
                   </li>
                 </ul>
 
@@ -47,6 +47,8 @@
 
               </div>
               <div class="col-md-9 col-sm-9 col-xs-12">
+
+                <div><h2 align="center">这里应该放一个折线图统计每天的访问量</h2></div>
 
                 <div class="row tile_count">
                   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
@@ -66,8 +68,13 @@
                     <div class="count">{{total_team_num}}</div>
                   </div>
                   <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top"><i class="fa fa-bolt"></i> 贡献度 </span>
-                    <div class="count">{{contribution}}</div>
+                    <span class="count_top"><i class="fa fa-bolt"></i> 累计访问量 </span>
+                    <div class="count">{{233}}</div>
+                  </div>
+                  <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                    <span class="count_top"><i class="fa fa-flag"></i> 贡献度 </span>
+                    <!-- <div class="count">{{contribution}}</div> -->
+                    <div class="count">{{233}}</div>
                   </div>
                 </div>
 
@@ -127,7 +134,7 @@
                         </table>
                       </div>
                       <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                        <p>{{organizer.description}}</p>
+                        <p>{{user.organizer_profile.description}}</p>
                       </div>
                     </div>
                   </div>

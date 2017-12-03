@@ -34,9 +34,8 @@
         </li>
         <li><a><i class="fa fa-edit"></i>机构信息<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="page_404.html">官方主页</a></li>
-            <li><a href="sponsor_info.html">机构信息</a></li>
-            <li><a href="sponsor_info.html">资料修改</a></li>
+            <li><a href="{% url 'profile-organizer' %}">机构主页</a></li>
+            <li><a href="{% url 'profile-edit-organizer' %}">资料修改</a></li>
             <li><a href="sponsor_chgpwd.html">密码修改</a></li>
             <li><a href="sponsor_inbox.html">消息</a></li>
           </ul>
