@@ -194,7 +194,7 @@ class HomeContestantView(View):
 
 
     data = dict()
-    data['tournaments'] = Tournament.objects.filter(team__members__in=[request.user.contestant_profile]).distinct()
+    data['tournaments'] = Tournament.objects.filter(team__members=request.user.contestant_profile).distinct()
 
     return render(request, 'user_home.html', data)
 
@@ -590,7 +590,7 @@ class TournamentDetailContestantView(View):
 
     data['team'] = None
     try:
-      team = Team.objects.get(tournament=tournament, members__in=[request.user.contestant_profile])
+      team = Team.objects.get(tournament=tournament, members=request.user.contestant_profile)
     except:
       team = None
 
@@ -693,7 +693,7 @@ class RegisterView(View):
     except:
       # Invalid infomation
       return redirect('index')
-    team = Team.objects.filter(tournament=tournament).filter(members__in=[contestant])
+    team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     target_team = None
     if 'unique_id' in request.POST.keys() and request.POST['unique_id']:
       try:
@@ -753,27 +753,27 @@ class RegisterView(View):
 @method_decorator(login_required, name='dispatch')
 class QuitTeamView(View):
   @staticmethod
-  def post(request, *args):
+  def get(request, *args):
     tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
       contestant = request.user.contestant_profile
     except:
       # Invalid infomation
-      return redirect('index')
-    team = Team.objects.filter(tournament=tournament).filter(members__in=contestant)
+      return redirect('tournament-detail-contestant', tournament_id)
+    team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     if not team:
       # No team
-      return redirect('index')
+      return redirect('tournament-detail-contestant', tournament_id)
     team = team[0]
     if team.members.count() == 1:
       team.delete()
     else:
       # todo : fix it
-      # team.members.remove(contestant)
+      team.members.remove(contestant)
       if team.leader == contestant:
         team.leader = team.members.first()
-    return redirect('index')
+    return redirect('tournament-detail-contestant', tournament_id)
 
 
 def promote(team):

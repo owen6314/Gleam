@@ -32,6 +32,7 @@ urlpatterns = [
   url(r'^bad-request-400', BadRequestView.as_view(), name='bad-request-400'),
   url(r'^permission-denied-403', PermissionDeniedView.as_view(), name='permission-denied-403'),
   url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register'),
+  url(r'^quit/([1-9][0-9]*)/', QuitTeamView.as_view(), name='quit'),
   url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),
   url(r'^profile-edit/organizer', ProfileEditOrganizerView.as_view(), name='profile-edit-organizer')
 ]
