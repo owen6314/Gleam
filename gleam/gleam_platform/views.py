@@ -28,7 +28,6 @@ from gleam import settings
 
 
 class SignupOrganizerView(View):
-
   # 注册赛事方
   # email password
   @staticmethod
@@ -52,7 +51,6 @@ class SignupOrganizerView(View):
 
 
 class SignupContestantView(View):
-
   # 注册参赛者
   # email password
   @staticmethod
@@ -61,12 +59,16 @@ class SignupContestantView(View):
     if form.is_valid():
       user = form.save(commit=False)
 
+      # 未进行邮箱激活
+      user.is_active = False
+
       # 设置用户类型
       user.type = 'C'
 
       # 连接用户类型对应的用户信息表单
       profile = Contestant.objects.create()
       user.contestant_profile = profile
+
       user.save()
 
       current_site = get_current_site(request)
@@ -90,7 +92,6 @@ class SignupContestantView(View):
 
 
 class LoginOrganizerView(View):
-
   # 赛事方登录
   # email password
   @staticmethod
@@ -180,15 +181,15 @@ class HomeOrganizerView(View):
     data['tournament_finished_num'] = len(data['tournaments_finished'])
 
     # 即将开始的比赛
-    data['tournaments_coming'] = Tournament.objects\
-      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__gte=timezone.now())
+    data['tournaments_coming'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+                                                          register_begin_time__gte=timezone.now())
 
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
-    data['tournaments_ongoing'] = Tournament.objects\
-      .filter(status=Tournament.STATUS_PUBLISHED).filter(register_begin_time__lte=timezone.now())
+    data['tournaments_ongoing'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+                                                           register_begin_time__lte=timezone.now())
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -208,15 +209,12 @@ class HomeContestantView(View):
       return redirect('index')
 
     # 当前所有发布的锦标赛，按注册时间倒序排列
-    tournaments = Tournament.objects \
-      .filter(status__in=[Tournament.STATUS_PUBLISHED]) \
-      .order_by('-register_begin_time')
-
+    # tournaments = Tournament.objects.filter(status__in=[Tournament.STATUS_PUBLISHED]).order_by('-register_begin_time')
 
     data = dict()
     data['tournaments'] = Tournament.objects.filter(team__members=request.user.contestant_profile).distinct()
 
-    return render(request, 'user_home.html', data)
+    return render(request, 'contestant_home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -225,10 +223,6 @@ class ProfileOrganizerView(View):
   def get(request, *args):
     user_id = args[0]
     data = dict()
-
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'O':
-      return redirect('permission-denied-403')
 
     try:
       user = User.objects.get(id=user_id)
@@ -260,22 +254,24 @@ class ProfileOrganizerView(View):
 
     return render(request, 'organizer_profile.html', data)
 
-  # 更新赛事方信息
-  @staticmethod
-  def post(request):
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'O':
-      return redirect('permission-denied-403')
 
-    form = ProfileOrganizerForm(request.POST)
-    if form.is_valid():
-      user = request.user
-      profile = user.organizer_profile
-      # user.email = form.cleaned_data['email']
-      profile.organization = form.cleaned_data['organization']
-      profile.save()
 
-    return ProfileOrganizerView.get(request)
+    # # 更新赛事方信息
+    # @staticmethod
+    # def post(request):
+    #   # 如果用户类型不符, 拒绝请求
+    #   if request.user.type != 'O':
+    #     return redirect('permission-denied-403')
+    #
+    #   form = ProfileOrganizerForm(request.POST)
+    #   if form.is_valid():
+    #     user = request.user
+    #     profile = user.organizer_profile
+    #     # user.email = form.cleaned_data['email']
+    #     profile.organization = form.cleaned_data['organization']
+    #     profile.save()
+    #
+    #   return ProfileOrganizerView.get(request)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -298,7 +294,7 @@ class ProfileContestantView(View):
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
 
-    return render(request, 'user_admin.html', data)
+    return render(request, 'contestant_profile.html', data)
 
     # # 更新参赛者信息
     # @staticmethod
@@ -472,7 +468,7 @@ class TournamentDetailOrganizerView(View):
     data['contestant_num'] = len(contestants)
 
     try:
-      data['current_contest'] = Contest.objects.filter(tournament=tournament)\
+      data['current_contest'] = Contest.objects.filter(tournament=tournament) \
         .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
     except:
       data['current_contest'] = None
@@ -626,13 +622,12 @@ class TournamentDetailContestantView(View):
     data['register_end_time'] = tournament.register_end_time
 
     try:
-      data['current_contest'] = Contest.objects.filter(tournament=tournament)\
+      data['current_contest'] = Contest.objects.filter(tournament=tournament) \
         .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
     except:
       data['current_contest'] = None
 
-
-    data['contests_coming'] = Contest.objects.filter(tournament=tournament)\
+    data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
 
     data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
@@ -668,7 +663,6 @@ class TournamentDetailContestantView(View):
         data['team']['unique_id'] = '0'
     else:
       data['team_status'] = 0
-
 
     return render(request, 'tournament_detail_contestant.html', data)
 
@@ -708,12 +702,11 @@ class TournamentListView(View):
   # 显示比赛列表
   @staticmethod
   def get(request):
-
     all_contests = Contest.objects.all()
 
     all_tournaments = Tournament.objects.all()
 
-    tournaments_online = Tournament.objects\
+    tournaments_online = Tournament.objects \
       .filter(register_end_time__lt=timezone.now(), contest__submit_end_time__gte=timezone.now()).distinct()
 
     tournaments_registering = Tournament.objects.filter(register_end_time__gte=timezone.now()).distinct()
@@ -727,18 +720,6 @@ class TournamentListView(View):
 
     return render(request, 'tournament_list.html', data)
 
-
-class BadRequestView(View):
-  # 返回坏请求页面
-  @staticmethod
-  def get(request):
-    return render(request, 'bad_request_400.html')
-
-class PermissionDeniedView(View):
-  # 返回拒绝页面
-  @staticmethod
-  def get(request):
-    return render(request, 'page_403.html')
 
 @method_decorator(login_required, name='dispatch')
 class RegisterView(View):
@@ -863,7 +844,7 @@ class ProfileEditOrganizerView(View):
   @staticmethod
   def get(request):
     fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
-    data = tool.get_model_data(request.user.organizer_profile, fields)
+    data = tool.load_model_obj_data_to_dict(request.user.organizer_profile, fields)
     form = ProfileOrganizerForm(initial=data)
     return render(request, 'organizer_profile_edit.html', {'form': form})
 
@@ -873,7 +854,7 @@ class ProfileEditOrganizerView(View):
     if form.is_valid():
       # 保存除avatar之外的所有field
       fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
-      tool.post_model_data(request.user.organizer_profile, form, fields)
+      tool.save_form_data_to_model_obj(request.user.organizer_profile, form, fields)
 
       # 保存avatar
       avatar = Image()
@@ -939,8 +920,3 @@ class NotFoundView(View):
   @staticmethod
   def get(request):
     return render(request, 'page_404.html')
-
-
-
-
-
