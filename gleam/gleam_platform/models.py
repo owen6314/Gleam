@@ -84,8 +84,8 @@ class Organizer(models.Model):
 
 class Contestant(models.Model):
   avatar = models.ForeignKey('Image', null=True)
-  # # resident id number
-  # resident_id = models.CharField(max_length=MAX_RID_LEN)
+  # resident id number
+  resident_id = models.CharField(max_length=MAX_RID_LEN)
   # nick name
   nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice')
   # school name
@@ -93,6 +93,12 @@ class Contestant(models.Model):
   # gender
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
+  introduction = models.TextField()
+
+  def clean(self, *args, **kwargs):
+    # add custom validation here
+    super(Contestant, self).clean(*args, **kwargs)
 
   def __str__(self):
     return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)

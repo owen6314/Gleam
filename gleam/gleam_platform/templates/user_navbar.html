@@ -29,7 +29,7 @@
 												<i class="glyphicon glyphicon-user"></i>{{ nick_name }}
 											</a>
 											<ul class="dropdown-menu" style="min-width:110px;background-color:rgba(0, 0, 0, 0.5);text-align:center;">
-												<li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);}"href="{% url 'profile-contestant' %}">个人信息</a></li>
+												<li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);}"href="{% url 'profile-contestant' request.user.id %}">个人信息</a></li>
 												<li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="#achievement">成就点</a></li>
 												<li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="#help">帮助</a></li>
 												<li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="#settings">设置</a></li>

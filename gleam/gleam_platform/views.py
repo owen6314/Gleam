@@ -5,9 +5,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.contrib import messages
 from django.utils import timezone
-from .forms import *
-from .models import *
+from .forms import ContestForm, ContestantForm, OrganizerForm, UserSignupForm, UserLoginForm, ProfileContestantForm, ProfileOrganizerForm
+from .models import Tournament, Contest, Organizer, Contestant, Team, Record, Image
 import datetime
 import hashlib
 import csv
@@ -37,7 +43,6 @@ class SignupOrganizerView(View):
 
       # 注册完成后，直接登录
       login(request, user)
-
       return redirect('home-organizer')
     return redirect('index')
 
@@ -60,10 +65,21 @@ class SignupContestantView(View):
       user.contestant_profile = profile
       user.save()
 
-      # 注册完成后，直接登录
-      login(request, user)
+      current_site = get_current_site(request)
+      mail_subject = '激活Gleam账户，迎接美丽新世界'
+      message = render_to_string('email_confirmation.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': tool.account_activation_token.make_token(user),
+      })
+      to_email = form.cleaned_data.get('email')
+      email = EmailMessage(
+        mail_subject, message, settings.EMAIL_FROM, to=[to_email]
+      )
+      email.send()
 
-      return redirect('home-contestant')
+      return HttpResponse('请验证邮箱完成注册')
 
     # 跳转到index
     return redirect('index')
@@ -207,11 +223,33 @@ class ProfileOrganizerView(View):
     if request.user.type != 'O':
       return redirect('permission-denied-403')
 
-    data = dict()
-    user = request.user
-    profile = user.organizer_profile
-    data['email'] = user.email
-    data['organization'] = profile.organization
+    try:
+      user = User.objects.get(id=user_id)
+      organizer = user.organizer_profile
+    except:
+      return redirect('404')
+    data['organizer'] = organizer
+
+    tournaments_coming = tool.get_conditional_tournaments(organizer=organizer, type='COMING')
+    tournaments_ongoing = tool.get_conditional_tournaments(organizer=organizer, type='ONGOING')
+    tournaments_finished = tool.get_conditional_tournaments(organizer=organizer, type='FINISHED')
+
+    data['tournament_ongoing_num'] = tournaments_ongoing.count()
+    ongoing_team_num = 0
+    for tournament in tournaments_ongoing:
+      ongoing_team_num += tournament.team_set.count()
+    data['ongoing_team_num'] = ongoing_team_num
+    data['tournament_finished_num'] = tournaments_finished.count()
+    finished_team_num = 0
+    for tournament in tournaments_finished:
+      finished_team_num += tournament.team_set.count()
+    data['total_team_num'] = ongoing_team_num + finished_team_num
+
+    # TODO 贡献度算法
+    data['contribution'] = 0.5
+
+    data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
+    data['tournaments_faraway'] = tournaments_finished
 
     return render(request, 'organizer_profile.html', data)
 
@@ -237,38 +275,41 @@ class ProfileOrganizerView(View):
 class ProfileContestantView(View):
   # 显示参赛者信息
   @staticmethod
-  def get(request):
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'C':
-      return redirect('permission-denied-403')
+  def get(request, user_id):
+    # # 如果用户类型不符, 拒绝请求
+    # if request.user.type != 'C':
+    #   return redirect('permission-denied-403')
+    try:
+      user = User.objects.get(id=user_id)
+    except:
+      return redirect('404')
 
-    data = dict()
-    user = request.user
-    profile = user.contestant_profile
+    if user.type != 'C':
+      return redirect('403')
+
+    fields = ['nick_name', 'gender', 'school', 'introduction']
+    data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
-    data['nick_name'] = profile.nick_name
-    data['school'] = profile.school
-    data['gender'] = profile.gender
 
     return render(request, 'user_admin.html', data)
 
-  # 更新参赛者信息
-  @staticmethod
-  def post(request):
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'C':
-      return redirect('permission-denied-403')
-    form = ProfileContestantForm(request.POST, request.FILES)
-    if form.is_valid():
-      user = request.user
-      user.profile_image = form.cleaned_data['profile_image']
-      profile = user.contestant_profile
-      profile.nick_name = form.cleaned_data['nick_name']
-      profile.school = form.cleaned_data['school']
-      profile.gender = form.cleaned_data['gender']
-      profile.save()
-
-    return redirect('profile-contestant')
+    # # 更新参赛者信息
+    # @staticmethod
+    # def post(request):
+    #   # 如果用户类型不符, 拒绝请求
+    #   if request.user.type != 'C':
+    #     return redirect('permission-denied-403')
+    #   form = ProfileContestantForm(request.POST, request.FILES)
+    #   if form.is_valid():
+    #     user = request.user
+    #     user.profile_image = form.cleaned_data['profile_image']
+    #     profile = user.contestant_profile
+    #     profile.nick_name = form.cleaned_data['nick_name']
+    #     profile.school = form.cleaned_data['school']
+    #     profile.gender = form.cleaned_data['gender']
+    #     profile.save()
+    #
+    #   return redirect('profile-contestant')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -300,9 +341,9 @@ class CreateTournamentView(View):
     form_len = (len(request.POST) - 6) // 5
     for i in range(1, form_len + 1):
       data = {
-        'name': request.POST['name_'+str(i)],
-        'description': request.POST['description_'+str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'name': request.POST['name_' + str(i)],
+        'description': request.POST['description_' + str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
       }
@@ -312,7 +353,7 @@ class CreateTournamentView(View):
         contest.tournament = tournament
         contest.team_count = 0
         contest.save()
-      #if 'name_' + str(i) in request.POST.keys():
+      # if 'name_' + str(i) in request.POST.keys():
       #  contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
       #                    submit_begin_time=request.POST['submit_begin_time_'+str(i)],
       #                    submit_end_time=request.POST['submit_end_time_'+str(i)],
@@ -324,9 +365,9 @@ class CreateTournamentView(View):
         pass
     return redirect('home-organizer')
 
+
 @method_decorator(login_required, name='dispatch')
 class EditTournamentView(View):
-
   @staticmethod
   def get(request, *args):
     tournament_id = int(args[0])
@@ -369,9 +410,9 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name': request.POST['name_'+str(i)],
-        'description': request.POST['description_'+str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_'+str(i)],
+        'name': request.POST['name_' + str(i)],
+        'description': request.POST['description_' + str(i)],
+        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
       }
@@ -786,6 +827,23 @@ def promote(team):
   team.contests.add(contest)
   team.save()
 
+
+def activate(request, uidb64, token):
+  try:
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    user = User.objects.get(pk=uid)
+  except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    user = None
+  if user is not None and tool.account_activation_token.check_token(user, token):
+    user.is_active = True
+    user.save()
+    login(request, user)
+    return redirect('index')
+  else:
+    return HttpResponse('垃圾验证码!')
+
+
+@method_decorator(login_required, name='dispatch')
 class ProfileEditOrganizerView(View):
   @staticmethod
   def get(request):
@@ -811,9 +869,40 @@ class ProfileEditOrganizerView(View):
       request.user.organizer_profile.avatar = avatar
       request.user.organizer_profile.save()
 
-      return redirect('profile-organizer')
+      return redirect('profile-organizer', request.user.id)
     else:
-      return render(request, 'test.html', {'form': form})
+      return render(request, 'contestant_profile_edit.html', {'form': form})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProfileEditContestantView(View):
+  @staticmethod
+  def get(request):
+    fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
+    data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
+    form = ProfileContestantForm(initial=data)
+    return render(request, 'contestant_profile_edit.html', {'form': form})
+
+  @staticmethod
+  def post(request):
+    form = ProfileContestantForm(request.POST, request.FILES)
+    if form.is_valid():
+      # 保存除avatar之外的所有field
+      fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
+      tool.save_form_data_to_model_obj(request.user.contestant_profile, form, fields)
+
+      # 保存avatar
+      avatar = Image()
+      avatar.image = form.cleaned_data['avatar']
+      avatar.type = 'P'
+      avatar.owner = request.user
+      avatar.save()
+      request.user.contestant_profile.avatar = avatar
+      request.user.contestant_profile.save()
+
+      return redirect('profile-contestant')
+    else:
+      return render(request, 'contestant_profile_edit.html', {'form': form})
 
 
 

@@ -1,9 +1,8 @@
-from django.db import models
 from django import forms
 
 from .models import *
 
-
+import gleam_platform.tools as tool
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
 # max length of name(short version)
@@ -13,6 +12,22 @@ MAX_NAME_LEN_SHORT = 24
 MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
+
+
+class ResidentIDField(forms.Field):
+  def to_python(self, value):
+    """Normalize data to a list of strings."""
+    # Return an empty list if no input was given.
+    if not value:
+      return []
+    return value.split(',')
+
+  def validate(self, value):
+    """Check if value consists only of valid emails."""
+    # Use the parent's handling of required fields, etc.
+    super(ResidentIDField, self).validate(value)
+    if not tool.validate_rid(value):
+      raise forms.ValidationError('身份证号错误')
 
 
 class ContestForm(forms.ModelForm):
@@ -73,25 +88,21 @@ class UserLoginForm(forms.Form):
   password = forms.CharField()
 
 
-class ProfileContestantForm(forms.Form):
-
-  profile_image = forms.ImageField()
-  nick_name = forms.CharField()
-  school = forms.CharField()
-  gender = forms.CharField()
-
 
 class ProfileOrganizerForm(forms.Form):
-  avatar = forms.ImageField()
+  avatar = forms.ImageField(required=False)
+  organization = forms.CharField(max_length=MAX_NAME_LEN_LONG, required=False)
+  biography = forms.CharField(required=False)
+  description = forms.CharField(required=False)
+  location = forms.CharField(required=False)
+  field = forms.CharField(max_length=256, required=False)
+  website = forms.URLField(required=False)
 
-  organization = forms.CharField(max_length=MAX_NAME_LEN_LONG,)
 
-  biography = forms.CharField()
-
-  description = forms.CharField()
-
-  location = forms.CharField()
-
-  field = forms.CharField(max_length=256,)
-
-  website = forms.URLField()
+class ProfileContestantForm(forms.Form):
+  avatar = forms.ImageField(required=False)
+  nick_name = forms.CharField(max_length=MAX_NAME_LEN_SHORT, required=False)
+  school = forms.CharField(required=False)
+  gender = forms.CharField(required=False)
+  introduction = forms.CharField(required=False)
+  resident_id = ResidentIDField(required=False)
