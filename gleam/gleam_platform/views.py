@@ -46,7 +46,6 @@ class SignupOrganizerView(View):
 
       # 注册完成后，直接登录
       login(request, user)
-
       return redirect('home-organizer')
     return redirect('index')
 
@@ -85,7 +84,7 @@ class SignupContestantView(View):
         mail_subject, message, settings.EMAIL_FROM, to=[to_email]
       )
       email.send()
-      messages.success(request, 'Your password was successfully updated!')
+
       return HttpResponse('请验证邮箱完成注册')
 
     # 跳转到index
@@ -252,7 +251,7 @@ class ProfileOrganizerView(View):
     # TODO 贡献度算法
     data['contribution'] = 0.5
 
-    data['tournaments_recent'] = tournaments_ongoing + tournaments_coming
+    data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
     data['tournaments_faraway'] = tournaments_finished
 
     return render(request, 'organizer_profile.html', data)
@@ -281,14 +280,21 @@ class ProfileOrganizerView(View):
 class ProfileContestantView(View):
   # 显示参赛者信息
   @staticmethod
-  def get(request):
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'C':
-      return redirect('permission-denied-403')
+  def get(request, user_id):
+    # # 如果用户类型不符, 拒绝请求
+    # if request.user.type != 'C':
+    #   return redirect('permission-denied-403')
+    try:
+      user = User.objects.get(id=user_id)
+    except:
+      return redirect('404')
+
+    if user.type != 'C':
+      return redirect('403')
 
     fields = ['nick_name', 'gender', 'school', 'introduction']
-    data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
-    data['email'] = request.user.email
+    data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
+    data['email'] = user.email
 
     return render(request, 'contestant_profile.html', data)
 
@@ -848,7 +854,7 @@ class ProfileEditOrganizerView(View):
       request.user.organizer_profile.avatar = avatar
       request.user.organizer_profile.save()
 
-      return redirect('profile-organizer')
+      return redirect('profile-organizer', request.user.id)
     else:
       return render(request, 'contestant_profile_edit.html', {'form': form})
 
@@ -857,7 +863,7 @@ class ProfileEditOrganizerView(View):
 class ProfileEditContestantView(View):
   @staticmethod
   def get(request):
-    fields = ['nick_name', 'school', 'gender', 'introduction']
+    fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
     data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
     form = ProfileContestantForm(initial=data)
     return render(request, 'contestant_profile_edit.html', {'form': form})
@@ -867,7 +873,7 @@ class ProfileEditContestantView(View):
     form = ProfileContestantForm(request.POST, request.FILES)
     if form.is_valid():
       # 保存除avatar之外的所有field
-      fields = ['nick_name', 'school', 'gender', 'introduction']
+      fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
       tool.save_form_data_to_model_obj(request.user.contestant_profile, form, fields)
 
       # 保存avatar
