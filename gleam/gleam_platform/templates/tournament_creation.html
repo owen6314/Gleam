@@ -111,7 +111,7 @@
       });
       $("#tournament-image").fileinput({
           showUpload: false,
-          maxFileSize: 1024
+          maxFileSize: 1024,
       });
     })
 
@@ -135,6 +135,14 @@
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
             <textarea class="resizable_textarea form-control" name="description_'+contest_creation_stage_cnt+'" id="description_'+contest_creation_stage_cnt+'"></textarea> \
+          </div> \
+        </div> \
+        <div class="form-group"> \
+          <label class="control-label col-md-3" for="pass_rule_'+contest_creation_stage_cnt+'">晋级规则 <span class="required">*</span> \
+          </label> \
+          <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
+            <input type="text" class="form-control has-feedback-left" required="required" id="pass_rule_'+contest_creation_stage_cnt+'" name="pass_rule_'+contest_creation_stage_cnt+'" placeholder="此项大于1表示晋级人数，小于1表示晋级比例"> \
+            <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
         <div class="form-group"> \
