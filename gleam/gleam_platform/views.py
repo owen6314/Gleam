@@ -15,7 +15,7 @@ from django.contrib import messages
 
 from django.utils import timezone
 from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm
-from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image
+from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image, LeaderBoardItem
 import datetime
 import hashlib
 import csv
@@ -514,9 +514,12 @@ class TournamentDetailOrganizerView(View):
 
     TournamentDetailOrganizerView.updataRecord(filename=file_name, current_contest=current_contest)
     response_data = {}
+
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
   @staticmethod
+  # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
+  # cache the result may need some other tools like redis
   def get_leaderboard(contest):
     records = Record.objects.filter(contest=contest)
     teams = dict()
@@ -565,15 +568,23 @@ class TournamentDetailOrganizerView(View):
         except ValueError:
           # Invalid time
           return -1
-        pre_records = Record.objects.filter(team=team, time=time)
-        if pre_records.count() > max_times:
-          # too many record
-          return -1
-
-
         record = Record(team=team, score=row[1], time=time, contest=current_contest)
         record.save()
-        # team.score = row[1] if row[1] > team.score else team.score
+        records = Record.objects.filter(team=team, time=time).order_by("-time")
+        pre_leaderboard_item = current_contest.leaderboarditem_set.filter(team_id=team.id)
+        if records.count() > max_times:
+          pre_leaderboard_item[0].delete()
+        if not pre_leaderboard_item:
+          leaderboard_item = LeaderBoardItem(team_id=team.id, team_name=team.name, score=record.score,
+                                             time=time, contest=current_contest)
+          leaderboard_item.save()
+        else:
+          records = records.order_by("-score")
+          if pre_leaderboard_item[0].score < records[0].score:
+            pre_leaderboard_item[0].score = records[0].score
+            pre_leaderboard_item[0].time = records[0].time
+            pre_leaderboard_item[0].team_name = team.name
+            pre_leaderboard_item[0].save()
 
 
 @method_decorator(login_required, name='dispatch')
