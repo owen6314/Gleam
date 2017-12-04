@@ -1,7 +1,8 @@
 from django.contrib import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,9 +12,10 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.contrib import messages
+
 from django.utils import timezone
-from .forms import ContestForm, ContestantForm, OrganizerForm, UserSignupForm, UserLoginForm, ProfileContestantForm, ProfileOrganizerForm
-from .models import Tournament, Contest, Organizer, Contestant, Team, Record, Image
+from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm
+from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image
 import datetime
 import hashlib
 import csv
@@ -22,6 +24,8 @@ import os
 import json
 
 import gleam_platform.tools as tool
+from gleam import settings
+
 
 class SignupOrganizerView(View):
 
@@ -139,7 +143,7 @@ class IndexView(View):
   # 渲染主页
   @staticmethod
   def get(request):
-    return render(request, 'gleam.html')
+    return render(request, 'index.html')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -218,7 +222,10 @@ class HomeContestantView(View):
 class ProfileOrganizerView(View):
   # 显示赛事方信息
   @staticmethod
-  def get(request):
+  def get(request, *args):
+    user_id = args[0]
+    data = dict()
+
     # 如果用户类型不符, 拒绝请求
     if request.user.type != 'O':
       return redirect('permission-denied-403')
@@ -346,6 +353,7 @@ class CreateTournamentView(View):
         'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
+        'pass_rule': request.POST['pass_rule_' + str(i)]
       }
       form = ContestForm(data)
       if form.is_valid():
@@ -353,13 +361,6 @@ class CreateTournamentView(View):
         contest.tournament = tournament
         contest.team_count = 0
         contest.save()
-      # if 'name_' + str(i) in request.POST.keys():
-      #  contest = Contest(name=request.POST['name_'+str(i)], description=request.POST['description_'+str(i)],
-      #                    submit_begin_time=request.POST['submit_begin_time_'+str(i)],
-      #                    submit_end_time=request.POST['submit_end_time_'+str(i)],
-      #                    release_time=request.POST['release_time_'+str(i)],
-      #                    tournament=tournament, team_count=0)
-      #  contest.save()
       else:
         # form validate fail
         pass
@@ -387,6 +388,7 @@ class EditTournamentView(View):
         'submit_begin_time_' + str(i): contest.submit_begin_time,
         'submit_end_time_' + str(i): contest.submit_end_time,
         'release_time_' + str(i): contest.release_time,
+        'pass_rule_' + str(i): contest.pass_rule
       }
       zip.append({'contest': contest, 'form':ContestForm(data)})
     return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
@@ -407,6 +409,7 @@ class EditTournamentView(View):
     tournament.save()
     # ToDo: max_team_member_num
     contests = tournament.contest_set.all()
+    zip = []
     for contest in contests:
       i = contest.id
       data = {
@@ -415,16 +418,17 @@ class EditTournamentView(View):
         'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
         'submit_end_time': request.POST['submit_end_time_' + str(i)],
         'release_time': request.POST['release_time_' + str(i)],
+        'pass_rule': request.POST['pass_rule_' + str(i)]
       }
       form = ContestForm(data, instance=contest)
-      zip.append({'contest': contest, 'form': ContestForm(data)})
+      zip.append({'contest': contest, 'form': form})
     for z in zip:
       form = z['form']
       if form.is_valid():
         form.save()
       else:
         return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
-    return redirect(request, 'tournament-detail-contestant', tournament_id)
+    return redirect('tournament-detail-organizer', tournament_id)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -476,7 +480,7 @@ class TournamentDetailOrganizerView(View):
     data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
 
-    data['contests_finished'] = Contest.objects \
+    data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
       .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
     if data['current_contest']:
@@ -903,6 +907,28 @@ class ProfileEditContestantView(View):
       return redirect('profile-contestant')
     else:
       return render(request, 'contestant_profile_edit.html', {'form': form})
+
+
+class BadRequestView(View):
+  # 返回坏请求页面
+  @staticmethod
+  def get(request):
+    return render(request, 'page_400.html')
+
+
+class PermissionDeniedView(View):
+  # 返回拒绝页面
+  @staticmethod
+  def get(request):
+    return render(request, 'page_403.html')
+
+
+class NotFoundView(View):
+  # 返回拒绝页面
+  @staticmethod
+  def get(request):
+    return render(request, 'page_404.html')
+
 
 
 

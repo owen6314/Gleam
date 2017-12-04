@@ -40,11 +40,20 @@ class ContestForm(forms.ModelForm):
     submit_begin_time = cleaned_data.get('submit_begin_time')
     submit_end_time = cleaned_data.get('submit_end_time')
     release_time = cleaned_data.get('release_time')
+    pass_rule = cleaned_data.get('pass_rule')
     if submit_begin_time and submit_end_time and release_time:
-      if submit_begin_time <= submit_end_time and submit_end_time <= release_time:
+      if submit_begin_time <= submit_end_time <= release_time:
         pass
       else:
         raise forms.ValidationError("Invalid time order")
+    if submit_begin_time and submit_end_time and release_time:
+      if submit_begin_time <= submit_end_time <= release_time:
+        pass
+      else:
+        raise forms.ValidationError("Invalid time order")
+    if pass_rule :
+      if pass_rule < 0.001:
+        raise forms.ValidationError("Invalid rule")
 
 
 class UploadImageForm(forms.ModelForm):
