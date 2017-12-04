@@ -17,7 +17,7 @@
             </div>
             <div class="x_content">
               <br/>
-              <form id="profile—form" action="{% url 'profile-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left">
+              <form id="profile—form" action="{% url 'profile-edit-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left">
                 {% csrf_token %}
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12">用户名
@@ -91,6 +91,14 @@
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <input type="text" id="introduction" name="introduction" value="{{ introduction }}"
+                           class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">身份证
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="resident_id" name="resident_id" value="{{ resident_id }}"
                            class="form-control col-md-7 col-xs-12">
                   </div>
                 </div>
