@@ -49,6 +49,7 @@ class Contest(models.Model):
   submit_end_time = models.DateTimeField()
   release_time = models.DateTimeField()
   description = models.TextField()
+  pass_rule = models.DecimalField(max_digits=8, decimal_places=3, default=0.8)
 
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
 
@@ -63,7 +64,7 @@ class Contest(models.Model):
 class Organizer(models.Model):
   avatar = models.ForeignKey('Image', null=True)
 
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'Chiang Kai-shek')
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
 
   biography = models.TextField(null=True)
 
@@ -85,7 +86,7 @@ class Organizer(models.Model):
 class Contestant(models.Model):
   avatar = models.ForeignKey('Image', null=True)
   # resident id number
-  resident_id = models.CharField(max_length=MAX_RID_LEN)
+  resident_id = models.CharField(max_length=MAX_RID_LEN, null=True)
   # nick name
   nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice')
   # school name
@@ -94,7 +95,7 @@ class Contestant(models.Model):
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
-  introduction = models.TextField()
+  introduction = models.TextField(null=True)
 
   def clean(self, *args, **kwargs):
     # add custom validation here
@@ -188,8 +189,16 @@ class Image(models.Model):
   TYPE_CHOICES = (('P', 'public'), ('C', 'Confidential'))
   type = models.CharField(default='P', max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
   image = models.ImageField()
-  owner = models.ForeignKey('User', related_name='owned_images')
+  owner = models.ForeignKey('User', related_name='owned_images', null=True)
   accesses = models.ManyToManyField('User')
 
   def __str__(self):
     return "%s" % (self.image)
+
+
+class LeaderBoardItem(models.Model):
+  team_id = models.IntegerField(unique=True)
+  team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+  score = models.DecimalField(max_digits=4, decimal_places=2)
+  time = models.DateTimeField()
+  contest = models.ForeignKey('Contest', on_delete=models.CASCADE)
