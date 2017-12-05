@@ -26,20 +26,14 @@
 <body class="no-trans fixed-header-on">
 {% block body %}
 {% block navbar %}
-{% include "user_navbar.html" %}
+{% include "contestant_navbar.html" %}
 {% endblock %}
 
 {% block content %}
 {% endblock %}
 
 {% block footer %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <p class="text-center">Copyright © 2017 Gleam by <a target="_blank" href="">Gleam</a>.</p>
-    </div>
-  </div>
-</div>
+{% include "contestant_footer.html" %}
 {% endblock %}
 {% block javascripts %}
 <script type="text/javascript" src="/static/plugins/jquery.min.js"></script>
