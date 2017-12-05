@@ -2,6 +2,14 @@
 
 {% block title %} | 比赛详情{% endblock title %}
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% block content %}
 <div class = "container">
   <div class = "row">
@@ -444,10 +452,13 @@
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                       <h2>我的队伍: {{ team.team_name }}</h2>
-                      {% if team.unique_id != "0" %}
+                      {% if team.unique_id != "0" && team.leader.id == request.user.id %}
                       <h3>Team id: {{ team.unique_id }}
                       </h3>
                       {% endif %}
+                      <h3>队长:
+                        <a>{{ team.leader.nick_name }}</a>
+                      </h3>
                       <h3>队员:
                         {% for contestant in team.members %}
                         <a>{{ contestant.nick_name }}</a>
