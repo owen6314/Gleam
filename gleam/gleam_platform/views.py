@@ -400,7 +400,7 @@ class EditTournamentView(View):
       return redirect('permission-denied-403')
     tournament.name = request.POST['name']
     tournament.description = request.POST['description']
-    if 'image' in request.FILES.keys() and request.FILES['image']
+    if 'image' in request.FILES.keys() and request.FILES['image']:
       tournament.image = request.FILES['image']
     tournament.register_begin_time = request.POST['register_begin_time']
     tournament.register_end_time = request.POST['register_end_time']
