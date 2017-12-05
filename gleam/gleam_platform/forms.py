@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import *
+from .models import Contest, Organizer, Contestant, User
 
 import gleam_platform.tools as tool
 # max length of name(long version)
@@ -51,7 +51,7 @@ class ContestForm(forms.ModelForm):
         pass
       else:
         raise forms.ValidationError("Invalid time order")
-    if pass_rule :
+    if pass_rule:
       if pass_rule < 0.001:
         raise forms.ValidationError("Invalid rule")
 
@@ -95,7 +95,6 @@ class UserSignupForm(forms.ModelForm):
 class UserLoginForm(forms.Form):
   email = forms.EmailField()
   password = forms.CharField()
-
 
 
 class ProfileOrganizerForm(forms.Form):

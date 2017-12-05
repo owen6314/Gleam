@@ -6,6 +6,7 @@
   {{ block.super }}
   <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+  <style type="text/css">.errorlist {color: #FF0000;}</style>
 {% endblock stylesheets %}
 
 
@@ -18,6 +19,7 @@
           <div class="x_panel">
             <div class="x_title">
               <h2>修改比赛信息 <small>创建的比赛会首先经过Gleam的审核，审核通过后方可发布</small></h2>
+
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -77,6 +79,7 @@
 
                 <!-- zip 是zip(contest, form) -->
                 {% for z in zip %}
+                    {{ z.form.errors }}
                 <div id="stage_form_">
                   <h3>{{z.contest.name}}</h3>
                   <div class="form-group">
@@ -98,10 +101,11 @@
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-md-3" for="pass_rule_'+contest_creation_stage_cnt+'">晋级规则 <span class="required">*</span>
+                    {{ z.form.pass_rule.errors }}
+                    <label class="control-label col-md-3" for="pass_rule_{{ z.contest.id }}">晋级规则 <span class="required">*</span>
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" required="required" id="pass_rule_'+contest_creation_stage_cnt+'" name="pass_rule_'+contest_creation_stage_cnt+'" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{z.contest.pass_rule}}">
+                      <input type="text" class="form-control has-feedback-left" required="required" id="pass_rule_{{ z.contest.id }}" name="pass_rule_{{ z.contest.id }}" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{ z.contest.pass_rule }}">
                       <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>

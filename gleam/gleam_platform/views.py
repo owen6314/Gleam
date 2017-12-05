@@ -181,14 +181,14 @@ class HomeOrganizerView(View):
     data['tournament_finished_num'] = len(data['tournaments_finished'])
 
     # 即将开始的比赛
-    data['tournaments_coming'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_coming'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                           register_begin_time__gte=timezone.now())
 
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
-    data['tournaments_ongoing'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_ongoing'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                            register_begin_time__lte=timezone.now())
 
     # 正在进行的比赛数目
@@ -379,14 +379,16 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name_' + str(i): contest.name,
-        'description_' + str(i): contest.description,
-        'submit_begin_time_' + str(i): contest.submit_begin_time,
-        'submit_end_time_' + str(i): contest.submit_end_time,
-        'release_time_' + str(i): contest.release_time,
-        'pass_rule_' + str(i): contest.pass_rule
+        'name': contest.name,
+        'description': contest.description,
+        'submit_begin_time': contest.submit_begin_time,
+        'submit_end_time': contest.submit_end_time,
+        'release_time': contest.release_time,
+        'pass_rule': contest.pass_rule
       }
-      zip.append({'contest': contest, 'form':ContestForm(data)})
+      form = ContestForm(data, instance=contest)
+      form.is_valid()
+      zip.append({'contest': contest, 'form': form})
     return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
 
   @staticmethod
