@@ -421,13 +421,17 @@ class EditTournamentView(View):
       }
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
+    fail = False
     for z in zip:
       form = z['form']
       if form.is_valid():
         form.save()
       else:
-        return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
-    return redirect('tournament-detail-organizer', tournament_id)
+        fail = True
+    if fail:
+      return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
+    else:
+      return redirect('tournament-detail-organizer', tournament_id)
 
 
 @method_decorator(login_required, name='dispatch')
