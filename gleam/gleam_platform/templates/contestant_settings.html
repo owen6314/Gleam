@@ -3,7 +3,7 @@
 {% block title %} | 账户设置{% endblock title %}
 
 {% block content %}
-  <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+<div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -31,8 +31,8 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12">当前密码
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="now_password" class="form-control col-md-7 col-xs-12"
-                           name="now_password" placeholder="请输入当前密码" type="text">
+                    <input id="current_password" class="form-control col-md-7 col-xs-12"
+                           name="current_password" placeholder="请输入当前密码" type="text">
                   </div>
                 </div>
                 <div class="form-group">
@@ -42,7 +42,9 @@
                     <input id="new_password" class="form-control col-md-7 col-xs-12"
                            name="new_password" placeholder="请输入新的密码" type="text">
                   </div>
+
                 </div>
+                <span id="passstrength">a</span>
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12">确认密码
                   </label>
@@ -68,3 +70,31 @@
   </div>
 </div>
 {% endblock content %}
+
+{% block javascript %}
+{{ block.super }}
+<script>
+  $(document).ready(function () {
+      $('#new_password').keyup(function(e) {
+        var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+        var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+        var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+        alert("fuck");
+        if (false == enoughRegex.test($(this).val())) {
+            $('#passstrength').html('More Characters');
+        } else if (strongRegex.test($(this).val())) {
+            $('#passstrength').className = 'ok';
+            alert('Strong!');
+        } else if (mediumRegex.test($(this).val())) {
+            $('#passstrength').className = 'alert';
+            alert('Medium!');
+        } else {
+            $('#passstrength').className = 'error';
+            alert('Weak!');
+        }
+        return true;
+    });
+  });
+
+</script>
+{% endblock javascript %}
