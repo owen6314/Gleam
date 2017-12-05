@@ -181,14 +181,14 @@ class HomeOrganizerView(View):
     data['tournament_finished_num'] = len(data['tournaments_finished'])
 
     # 即将开始的比赛
-    data['tournaments_coming'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_coming'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                           register_begin_time__gte=timezone.now())
 
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
-    data['tournaments_ongoing'] = Tournament.objectsfilter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_ongoing'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                            register_begin_time__lte=timezone.now())
 
     # 正在进行的比赛数目
@@ -379,14 +379,16 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name_' + str(i): contest.name,
-        'description_' + str(i): contest.description,
-        'submit_begin_time_' + str(i): contest.submit_begin_time,
-        'submit_end_time_' + str(i): contest.submit_end_time,
-        'release_time_' + str(i): contest.release_time,
-        'pass_rule_' + str(i): contest.pass_rule
+        'name': contest.name,
+        'description': contest.description,
+        'submit_begin_time': contest.submit_begin_time,
+        'submit_end_time': contest.submit_end_time,
+        'release_time': contest.release_time,
+        'pass_rule': contest.pass_rule
       }
-      zip.append({'contest': contest, 'form':ContestForm(data)})
+      form = ContestForm(data, instance=contest)
+      form.is_valid()
+      zip.append({'contest': contest, 'form': form})
     return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
 
   @staticmethod
@@ -398,7 +400,8 @@ class EditTournamentView(View):
       return redirect('permission-denied-403')
     tournament.name = request.POST['name']
     tournament.description = request.POST['description']
-    tournament.image = request.FILES['image']
+    if 'image' in request.FILES.keys() and request.FILES['image']:
+      tournament.image = request.FILES['image']
     tournament.register_begin_time = request.POST['register_begin_time']
     tournament.register_end_time = request.POST['register_end_time']
     tournament.overall_end_time = request.POST['overall_end_time']
@@ -418,13 +421,17 @@ class EditTournamentView(View):
       }
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
+    fail = False
     for z in zip:
       form = z['form']
       if form.is_valid():
         form.save()
       else:
-        return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
-    return redirect('tournament-detail-organizer', tournament_id)
+        fail = True
+    if fail:
+      return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
+    else:
+      return redirect('tournament-detail-organizer', tournament_id)
 
 
 @method_decorator(login_required, name='dispatch')

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import *
+from .models import Contest, Organizer, Contestant, User
 
 import gleam_platform.tools as tool
 # max length of name(long version)
@@ -35,25 +35,17 @@ class ContestForm(forms.ModelForm):
     model = Contest
     exclude = ['tournament', 'team_count', 'last_csv_upload_time']
 
+
   def clean(self):
     cleaned_data = super(ContestForm, self).clean()
     submit_begin_time = cleaned_data.get('submit_begin_time')
     submit_end_time = cleaned_data.get('submit_end_time')
     release_time = cleaned_data.get('release_time')
-    pass_rule = cleaned_data.get('pass_rule')
     if submit_begin_time and submit_end_time and release_time:
-      if submit_begin_time <= submit_end_time <= release_time:
-        pass
-      else:
-        raise forms.ValidationError("Invalid time order")
-    if submit_begin_time and submit_end_time and release_time:
-      if submit_begin_time <= submit_end_time <= release_time:
-        pass
-      else:
-        raise forms.ValidationError("Invalid time order")
-    if pass_rule :
-      if pass_rule < 0.001:
-        raise forms.ValidationError("Invalid rule")
+      if submit_end_time <= submit_begin_time:
+        self.add_error('submit_end_time', '提交截止时间应位于开始时间之后')
+      if release_time <= submit_end_time:
+        self.add_error('release_time', '成绩公布时间应位于提交截止时间之后')
 
 
 class UploadImageForm(forms.ModelForm):
@@ -95,7 +87,6 @@ class UserSignupForm(forms.ModelForm):
 class UserLoginForm(forms.Form):
   email = forms.EmailField()
   password = forms.CharField()
-
 
 
 class ProfileOrganizerForm(forms.Form):

@@ -1,9 +1,6 @@
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
@@ -12,7 +9,6 @@ MAX_NAME_LEN_SHORT = 32
 MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
-
 
 
 class Tournament(models.Model):

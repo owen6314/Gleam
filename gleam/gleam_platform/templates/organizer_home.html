@@ -36,7 +36,7 @@
         <div class="count">?</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-envelope-o"></i> 新消息 </span>
+        <span class="count_top"><i class="fa fa-envelope-o"></i> 贡献度 </span>
         <div class="count">?</div>
       </div>
     </div>
@@ -70,7 +70,7 @@
             <tbody>
               {% for t in tournaments_ongoing %}
               <tr>
-                <td>{{t.name}}</td>
+                <td><a href="{% url 'edit-tournament' t.id %}">{{t.name}}</a></td>
                 <td>{{t.register_begin_time}}</td>
                 <td>{{t.overall_end_time}}</td>
                 <td>{{t.team_count}}</td>
@@ -108,7 +108,7 @@
             <tbody>
               {% for t in tournaments_coming %}
               <tr>
-                <td>{{t.name}}</td>
+                <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
                 <td>{{t.register_begin_time}}</td>
                 <td>{{t.overall_end_time}}</td>
                 <td><a href="{% url 'tournament-detail-organizer' t.id %}">{{t.name}}</a></td>
