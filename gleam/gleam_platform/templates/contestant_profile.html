@@ -25,22 +25,26 @@
           <div class="col-md-3 col-sm-3 col-xs-12">
             <div class="profile_img">
               <div id="crop-avatar">
+                {% if user.contestant_profile.avatar %}
+                <img class="img-responsive avatar-view" src="{{ user.contestant_profile.avatar.image.url }}" height="220" width="220" alt="Avatar">
+                {% else %}
                 <img class="img-responsive avatar-view" src="/static/images/default-img.jpg" height="220" width="220" alt="Avatar">
+                {% endif %}
               </div>
             </div>
-            <h2><b>{{ nick_name }}</b>
+            <h2><b>{{ user.contestant_profile.nick_name }}</b>
               <small>
-                <a href="" data-toggle="modal" data-target="#modify_modal"><i class="fa fa-wrench"></i></a>
+                <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
               </small></h2>
-            <h4>{{ email }}</h4>
-            {% if gender == 'M' %}
+            <h4>{{ user.contestant_profile.email }}</h4>
+            {% if user.contestant_profile.gender == 'M' %}
             <div>男</div>
-            {% elif gender == 'F' %}
+            {% elif user.contestant_profile.gender == 'F' %}
             <div>女</div>
-            {% elif gender ==  'O' %}
+            {% elif user.contestant_profile.gender ==  'O' %}
             <div>正常的性别</div>
             {% endif %}
-            <div>所属学校: {{ school }}</div>
+            <div>所属学校: {{ user.contestant_profile.school }}</div>
             <ul class="social-links">
               <li class="facebook"><a target="_blank"
                                       href="https://www.facebook.com/pages/HtmlCoder/714570988650168"><i
@@ -85,7 +89,7 @@
                     </table>
                   </div>
                   <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab-2">
-                    <p>{{ introduction }}</p>
+                    <p>{{ user.contestant_profile.introduction }}</p>
                   </div>
                 </div>
               </div>
@@ -96,7 +100,7 @@
     </div>
   </div>
 </div>
-<br>
+<!--<br>
 <div class="section translucent-bg bg-image-1 blue">
   <div class="container object-non-visible" data-animation-effect="fadeIn">
     <h1 id="contest" class="text-center title">竞赛经历</h1>
@@ -147,7 +151,7 @@
       </table>
     </div>
   </div>
-</div>
+</div>-->
 {% endblock content %}
 
 {% block javascripts %}
