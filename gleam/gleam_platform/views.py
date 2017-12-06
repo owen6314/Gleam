@@ -941,7 +941,7 @@ class PromotionView(View):
       .filter(contest=contest).order_by('-score')
     teams = [
       {
-        'id': item['team_id'],
+        'id': item['team'].id,
         'name': item['team_name'],
         'score': item['score'],
         'time': item['time'],
@@ -978,7 +978,7 @@ class PromotionView(View):
           if contest_next in item.team.contests.all():
             item.team.contests.remove(contest_next)
             item.team.save()
-            
+
     return redirect('promotion')
 
   @staticmethod
