@@ -606,7 +606,7 @@ class TournamentDetailOrganizerView(View):
           # Invalid unique_id
           return -1
         try:
-          time = datetime.datetime.strptime(row[2], "%Y/%m/%d %H:%M")
+          time = datetime.datetime.strptime(row[2], "%Y/%m/%d %H:%M:%S")
         except ValueError:
           # Invalid time
           return -1
@@ -668,16 +668,15 @@ class TournamentDetailContestantView(View):
     data['register_end_time'] = tournament.register_end_time
 
     try:
-      data['current_contest'] = Contest.objects.filter(tournament=tournament) \
-        .filter(submit_begin_time__lte=timezone.now()).order_by('-submit_begin_time')[0]
+      data['current_contest'] = Contest.objects.filter(tournament=tournament, submit_begin_time__lte=timezone.now(),
+                                                       submit_end_time__gte=timezone.now())[0]
     except:
       data['current_contest'] = None
 
-    data['contests_coming'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
-
-    data['contests_finished'] = Contest.objects.filter(tournament=tournament) \
-      .filter(submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
+    data['contests_coming'] = Contest.objects.filter(tournament=tournament,
+                                                     submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
+    data['contests_finished'] = Contest.objects.filter(tournament=tournament,
+                                                       submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
 
     if data['current_contest']:
       data['countdown'] = (data['current_contest'].submit_end_time - timezone.now()).days
@@ -751,12 +750,14 @@ class TournamentListView(View):
 
     all_tournaments = Tournament.objects.all()
 
-    tournaments_online = Tournament.objects \
+    tournaments_online = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED) \
       .filter(register_end_time__lt=timezone.now(), contest__submit_end_time__gte=timezone.now()).distinct()
 
-    tournaments_registering = Tournament.objects.filter(register_end_time__gte=timezone.now()).distinct()
+    tournaments_registering = Tournament.objects.filter(tatus=Tournament.STATUS_PUBLISHED,
+                                                        register_end_time__gte=timezone.now()).distinct()
 
-    tournaments_offline = Tournament.objects.exclude(contest__submit_end_time__gte=timezone.now()).distinct()
+    tournaments_offline = Tournament.objects.exclude(tatus=Tournament.STATUS_PUBLISHED,
+                                                     contest__submit_end_time__gte=timezone.now()).distinct()
 
     data = dict()
     data['tournaments_online'] = tournaments_online
