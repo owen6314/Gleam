@@ -410,19 +410,19 @@
                         <th>队长</th>
                         <th>指导教师</th>
                         <th>成绩</th>
-                        <th>提交次数</th>
+                        <th>提交时间</th>
                       </tr>
                       </thead>
 
                       <tbody>
                       {% for item in leaderboard %}
                       <tr>
-                        <th scope="row">{{ item.rank }}</th>
-                        <td>{{ item.team_name }}</td>
-                        <td>{{ item.leader}}</td>
-                        <td>{{ team.tutor }}</td>
-                        <td>{{ team.score }}</td>
-                        <td>{{ team.submit_num }}</td>
+                        <th scope="row">{{ item.team.rank }}</th>
+                        <td>{{ item.team.name }}</td>
+                        <td>{{ item.team.leader}}</td>
+                        <td>{{ item.team.tutor }}</td>
+                        <td>{{ item.score }}</td>
+                        <td>{{ item.time }}</td>
                       </tr>
                       {% endfor %}
                       </tbody>
