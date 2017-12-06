@@ -54,7 +54,7 @@ class Contest(models.Model):
   last_csv_upload_time = models.DateTimeField(null=True)
 
   def __str__(self):
-    return 'name:%s' % (self.name,)
+    return 'name:%s id%d' % (self.name, self.id)
 
 
 class Organizer(models.Model):
@@ -193,7 +193,7 @@ class Image(models.Model):
 
 
 class LeaderBoardItem(models.Model):
-  team = models.ForeignKey('Team')
+  team = models.ForeignKey('Team', null=True)
   # team_id = models.IntegerField(unique=True)
   team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   score = models.DecimalField(max_digits=4, decimal_places=2)

@@ -978,21 +978,23 @@ class ContestLeaderboardOrganizerView(View):
       return redirect('404')
 
     leader_board_items = LeaderBoardItem.objects \
-      .filter(contest=contest).order_by('-score')
-    leaderboard = [
-      {
-        'id': item['team'].id,
-        'team_name': item['team_name'],
-        'score': item['score'],
-        'time': item['time'],
+      .filter(contest=contest).order_by('-score').all()
+    leaderboard = list()
+    index = 0
+    for item in leader_board_items:
+      index += 1
+      leaderboard.append({
+        'id': item.team.id,
+        'team_name': item.team_name,
+        'score': item.score,
+        'time': item.time,
         'rank': index + 1,
-        'members': item['team'].members.all(),
-        'tutor': item['team'].tutor,
-      }
-      for index, item in enumerate(leader_board_items)
-    ]
+        'members': item.team.members.all(),
+        'tutor': item.team.tutor,
+      })
     data = dict()
     data['leaderboard'] = leaderboard
+    data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
       team_promoted = Team.objects.filter(contests__in=[contest_next])
@@ -1012,9 +1014,9 @@ class ContestLeaderboardOrganizerView(View):
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
       leader_board_items = LeaderBoardItem.objects \
-        .filter(contest=contest).order_by('-score')
+        .filter(contest=contest).order_by('-score').all()
       for item in leader_board_items:
-        if item.team_id in team_promoted_ids:
+        if str(item.team_id) in team_promoted_ids:
           if contest_next not in item.team.contests.all():
             item.team.contests.add(contest_next)
             item.team.save()
