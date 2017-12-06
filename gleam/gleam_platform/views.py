@@ -985,8 +985,8 @@ class PromotionView(View):
         'score': item['score'],
         'time': item['time'],
         'rank': index + 1,
-        'members': item['team'].members.all()
-        'tutor': item['team'].tutor
+        'members': item['team'].members.all(),
+        'tutor': item['team'].tutor,
       }
       for index, item in enumerate(leader_board_items)
     ]
