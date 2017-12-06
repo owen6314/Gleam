@@ -16,6 +16,94 @@
 {% endblock stylesheet %}
 
 {% block content %}
+<div style="height:100px;"></div>
+
+<div class="col-md-10 col-md-offset-1">
+  <div class="clearfix"></div>
+  <div class="col-md-3 col-sm-3 col-xs-12">
+    <div class="profile_img">
+      <div id="crop-avatar">
+        <img class="img-responsive avatar-view" src="{{ avatar.url }}" height="220" width="220" alt="Avatar">
+      </div>
+    </div>
+    <h2><b>{{ nick_name }}</b>
+      <small>
+        <a href="" data-toggle="modal" data-target="#modify_modal"><i class="fa fa-wrench"></i></a>
+      </small></h2>
+
+    <ul class="list-unstyled">
+      <li>
+        <i class="fa fa-email"></i> {{ email }}
+      </li>
+
+      <li>
+        <i class="fa fa-genderless"></i>
+        {% if gender == 'M' %}
+        男
+        {% elif gender == 'F' %}
+        女
+        {% elif gender ==  'O' %}
+        a正常的性别
+        {% endif %}
+      </li>
+      <li>
+        <i class="fa fa-home"></i> 所属学校: {{ school }}
+      </li>
+      <li class="facebook">
+        <a target="_blank" href="https://www.facebook.com/pages/HtmlCoder/714570988650168">
+          <i class="fa fa-facebook"></i></a>
+      </li>
+      <li class="twitter"><a target="_blank" href="https://twitter.com/HtmlcoderMe">
+        <i class="fa fa-twitter"></i>
+      </a></li>
+      <li class="googleplus">
+        <a target="_blank" href="http://plus.google.com">
+          <i class="fa fa-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+
+  </div>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+    <div class="x_panel">
+      <div class="" role="tabpanel" data-example-id="togglable-tabs">
+        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#tab_content1" id="profile-tab-1" role="tab" data-toggle="tab" aria-expanded="true">近期动态</a>
+          </li>
+          <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab-2" data-toggle="tab" aria-expanded="false">个人介绍</a>
+          </li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+          <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="profile-tab-1">
+            <table class="table table-striped table-bordered">
+              <thead>
+              <tr>
+                <th>比赛名称</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>比赛主页</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for t in tournaments_faraway %}
+              <tr>
+                <td>{{t.name}}</td>
+                <td>{{t.register_begin_time}}</td>
+                <td>{{t.overall_end_time}}</td>
+                <td><a href="{% url 'tournament-detail-contestant' t.id %}">{{t.name}}</a></td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab-2">
+            <p>{{ introduction }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
   <div class="container">
     <div class="row">
