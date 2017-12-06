@@ -14,7 +14,8 @@ from django.template.loader import render_to_string
 from django.contrib import messages
 
 from django.utils import timezone
-from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm
+from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm, \
+  PromotionForm
 from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image, LeaderBoardItem
 import datetime
 import hashlib
@@ -182,14 +183,14 @@ class HomeOrganizerView(View):
 
     # 即将开始的比赛
     data['tournaments_coming'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                          register_begin_time__gte=timezone.now())
+                                                           register_begin_time__gte=timezone.now())
 
     # 即将开始的比赛数目
     data['tournament_coming_num'] = len(data['tournaments_coming'])
 
     # 正在进行的比赛
     data['tournaments_ongoing'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                           register_begin_time__lte=timezone.now())
+                                                            register_begin_time__lte=timezone.now())
 
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
@@ -578,7 +579,7 @@ class TournamentDetailOrganizerView(View):
         if records.count() > max_times:
           pre_leaderboard_item[0].delete()
         if not pre_leaderboard_item:
-          leaderboard_item = LeaderBoardItem(team_id=team.id, team_name=team.name, score=record.score,
+          leaderboard_item = LeaderBoardItem(team=team, team_id=team.id, team_name=team.name, score=record.score,
                                              time=time, contest=current_contest)
           leaderboard_item.save()
         else:
@@ -672,7 +673,6 @@ class TournamentDetailContestantView(View):
       data['team_status'] = 0
 
     return render(request, 'tournament_detail_contestant.html', data)
-
 
   @staticmethod
   def get_leaderboard(contest):
@@ -927,3 +927,67 @@ class NotFoundView(View):
   @staticmethod
   def get(request):
     return render(request, 'page_404.html')
+
+
+class PromotionView(View):
+  @staticmethod
+  def get(request, contest_id):
+    try:
+      contest = Contest.objects.get(id=contest_id)
+    except ObjectDoesNotExist:
+      return redirect('404')
+
+    leader_board_items = LeaderBoardItem.objects \
+      .filter(contest=contest).order_by('-score')
+    teams = [
+      {
+        'id': item['team_id'],
+        'name': item['team_name'],
+        'score': item['score'],
+        'time': item['time'],
+        'rank': index + 1,
+      }
+      for index, item in enumerate(leader_board_items)
+    ]
+    data = dict()
+    data['teams'] = teams
+    contest_next = PromotionView.get_next_contest(contest)
+    if contest_next:
+      team_promoted = Team.objects.filter(contests__in=[contest_next])
+      team_promoted_ids = [team.id for team in team_promoted]
+      data['promoted'] = team_promoted_ids
+      return render(request, 'checkboxes_test.html', data)
+
+  @staticmethod
+  def post(request, contest_id):
+    team_promoted_ids = request.POST.getlist('promoted')
+    try:
+      contest = Contest.objects.get(id=contest_id)
+    except ObjectDoesNotExist:
+      return redirect('404')
+    contest_next = PromotionView.get_next_contest(contest)
+    if contest_next:
+      leader_board_items = LeaderBoardItem.objects \
+        .filter(contest=contest).order_by('-score')
+      for item in leader_board_items:
+        if item.team_id in team_promoted_ids:
+          if contest_next not in item.team.contests.all():
+            item.team.contests.add(contest_next)
+            item.team.save()
+        else:
+          if contest_next in item.team.contests.all():
+            item.team.contests.remove(contest_next)
+            item.team.save()
+            
+    return redirect('promotion')
+
+  @staticmethod
+  def get_next_contest(contest):
+    tournament = contest.tournament
+    try:
+      contest_next = Contest.objects \
+        .filter(tournament=tournament, submit_begin_time__gte=contest.submit_end_time) \
+        .order_by('submit_begin_time')[0]
+      return contest_next
+    except IndexError:
+      return None
