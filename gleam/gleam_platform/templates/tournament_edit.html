@@ -27,6 +27,7 @@
                 {% csrf_token %}
 
                 <div class="form-group">
+                  {{ tform.name.errors }}
                   <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -35,6 +36,7 @@
                 </div>
 
                 <div class="form-group">
+                  {{ tform.description.errors }}
                   <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -43,6 +45,7 @@
                 </div>
 
                 <div class="form-group">
+                  {{ tform.image.errors }}
                   <label class="control-label col-md-3" for="image"> 赛事图片 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
@@ -51,6 +54,7 @@
                 </div>
 
                 <div class="form-group">
+                  {{ tform.register_begin_time.errors }}
                   <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
@@ -60,6 +64,7 @@
                 </div>
 
                 <div class="form-group">
+                  {{ tform.register_end_time.errors }}
                   <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
@@ -69,11 +74,21 @@
                 </div>
 
                 <div class="form-group">
+                  {{ tform.overall_end_time.errors }}
                   <label class="control-label col-md-3" for="overall_end_time">总成绩公布时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                     <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" value="{{ tournament.overall_end_time | date:'Y-m-d H:i' }}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {{ tform.max_team_member_num.errors }}
+                  <label class="control-label col-md-3" for="team-limit">队伍人数限制 <span class="required">*</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="number" id="team-limit" maxlength="128" name="team-limit" class="form-control col-md-7 col-xs-12" value="{{ tournament.max_team_member_num }}">
                   </div>
                 </div>
 
@@ -104,7 +119,7 @@
                     <label class="control-label col-md-3" for="pass_rule_{{ z.contest.id }}">晋级规则 <span class="required">*</span>
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" required="required" id="pass_rule_{{ z.contest.id }}" name="pass_rule_{{ z.contest.id }}" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{ z.contest.pass_rule }}">
+                      <input type="number" class="form-control has-feedback-left" required="required" id="pass_rule_{{ z.contest.id }}" name="pass_rule_{{ z.contest.id }}" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{ z.contest.pass_rule }}">
                       <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span>
                     </div>
                   </div>

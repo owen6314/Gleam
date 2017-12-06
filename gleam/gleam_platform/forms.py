@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Contest, Organizer, Contestant, User
+from .models import Tournament, Contest, Organizer, Contestant, User
 
 import gleam_platform.tools as tool
 # max length of name(long version)
@@ -30,11 +30,22 @@ class ResidentIDField(forms.Field):
       raise forms.ValidationError('身份证号错误')
 
 
+class TournamentForm(forms.ModelForm):
+  class Meta:
+    model = Tournament
+    exclude = ['organizer', 'status', 'team_count', 'image']
+
+  def clean_max_team_member_num(self):
+    max_team_member_num = self.cleaned_data['max_team_member_num']
+    if max_team_member_num < 1:
+      raise forms.ValidationError('队伍最大人数应为正数')
+    return max_team_member_num
+
+
 class ContestForm(forms.ModelForm):
   class Meta:
     model = Contest
     exclude = ['tournament', 'team_count', 'last_csv_upload_time']
-
 
   def clean(self):
     cleaned_data = super(ContestForm, self).clean()
@@ -46,6 +57,12 @@ class ContestForm(forms.ModelForm):
         self.add_error('submit_end_time', '提交截止时间应位于开始时间之后')
       if release_time <= submit_end_time:
         self.add_error('release_time', '成绩公布时间应位于提交截止时间之后')
+
+  def clean_pass_rule(self):
+    pass_rule = self.cleaned_data['pass_rule']
+    if pass_rule <= 0:
+      raise forms.ValidationError('通过规则应为正数')
+    return pass_rule
 
 
 class UploadImageForm(forms.ModelForm):

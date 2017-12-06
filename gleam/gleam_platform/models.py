@@ -8,7 +8,7 @@ MAX_NAME_LEN_SHORT = 32
 # max length of flag
 MAX_FLAG_LEN = 2
 # max length of resident id number
-MAX_RID_LEN = 18
+MAX_RID_LEN = 32
 
 
 class Tournament(models.Model):
