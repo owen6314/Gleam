@@ -43,12 +43,12 @@
                   <tbody>
                     {% for e in leaderboard %}
                     <tr>
-                      <td><input type="checkbox" name="{{e.id}}"></td>
+                      <td><input type="checkbox" {% if e.id in promoted %}checked{% endif %} name="promoted" value="{{ e.id }}"/></td>
                       <td>{{e.rank}}</td>
                       <td>{{e.team_name}}</td>
                       <td>
                         {% for m in e.members %}
-                          {{m.nick_name}}
+                        <a href="{% url 'profile-contestant' m.id %}">{{m.nick_name}}</a>
                         {% endfor %}
                       </td>
                       <td>{{e.tutor}}</td>
