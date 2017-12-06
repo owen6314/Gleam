@@ -3,15 +3,20 @@
 {% block title %} | 邮箱验证{% endblock title %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2" style="text-align: center;">
-      <h1>一封验证邮件已经发送到您的邮箱</h1>
-      <h1>请点击邮件中提供的链接完成注册</h1>
-      <a id="link_resend" href="{{ domain }}{% url 'confirmation-email-send' user_id %}">
-        <button id="button_resend" class="btn btn-success">重发该邮件(60s内只能发送一次)</button>
-      </a>
-      <div class="space"></div>
+<div id="home" class="banner">
+  <div class="banner-image"></div>
+  <div class="banner-caption">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1" style="text-align: center;">
+          <p style="font-size:40px;">一封验证邮件已经发送到您的邮箱</p>
+          <p style="font-size:40px;">请点击邮件中提供的链接完成注册</p>
+          <div class="space"></div>
+          <a id="link_resend" href="{{ domain }}{% url 'confirmation-email-send' user_id %}">
+            <button id="button_resend" class="btn btn-success">重发该邮件(60s内只能发送一次)</button>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

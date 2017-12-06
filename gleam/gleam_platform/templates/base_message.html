@@ -9,8 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% endblock %}
   {% block stylesheet %}
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Raleway:700,400,300' rel='stylesheet' type='text/css'>
   <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
   <link href="/static/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
   <link href="/static/css/animations.css" rel="stylesheet">
@@ -22,8 +20,6 @@
   {% endblock head %}
 </head>
 
-<body class="no-trans fixed-header-on">
-<div style="height:100px;"></div>
 {% block body %}
 {% block navbar %}
 {% include "index_navbar.html" %}
@@ -33,7 +29,6 @@
 {% endblock %}
 
 {% block footer %}
-{% include "index_footer.html" %}
 {% endblock %}
 {% block javascripts %}
 <script type="text/javascript" src="/static/plugins/jquery.min.js"></script>
