@@ -1,15 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Contestant Signup</title>
-</head>
-<body>
-<form action={% url 'signup-contestant' %} method="POST">
-    {% csrf_token %}
-    <p><label>email</label><input type="email" value="{{ username }}" name="email"/></p>
-    <p><label>password</label><input type="password" value="{{ password }}" name="password"/></p>
-    <p><input type="submit" value="Submit"/></p>
-</form>
-</body>
-</html>
+{% extends "base_index.html" %}
+
+{% block title %} | 注册{% endblock title %}
+
+{% block stylesheet %}
+{{ block.super }}
+<style>
+	.transparent {
+		filter: alpha(opacity=50);
+		-moz-opacity: 0.5;
+		opacity: 0.5;
+	}
+</style>
+{% endblock stylesheet %}
+
+{% block content %}
+<div id="home" class="banner">
+	<div class="banner-image"></div>
+	<div class="banner-caption" style="top:30%;">
+		<div class="container">
+			<div class="row">
+				<h1 class="text-center">加入<span>Gleam</span></h1>
+					<p class="lead text-center">大学生大数据竞赛报名平台</p>
+				<div class="col-md-7 col-md-offset-2 object-non-visible" data-animation-effect="fadeIn">
+					<div>
+						<form id="register-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="contestant-register-email" class="col-sm-3 control-label">邮箱</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control transparent" id="contestant-register-email" name="email"
+												 placeholder="example@example.com">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="contestant-register-password" class="col-sm-3 control-label">密码</label>
+								<div class="col-sm-9">
+									<input type="password" class="form-control transparent" id="contestant-register-password" name="password"
+												 placeholder="password">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="contestant-register-password" class="col-sm-3 control-label">再次输入密码</label>
+								<div class="col-sm-9">
+									<input type="password" class="form-control transparent" id="contestant-register-repeat-password" name="repeat_password"
+												 placeholder="password">
+								</div>
+							</div>
+							<div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <button type="submit" form="register-contestant-form"  class="btn btn-primary">注册</button>
+                  </div>
+                </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+
+{% endblock javascripts %}
