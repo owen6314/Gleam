@@ -5,7 +5,6 @@ from gleam_platform.models import User
 # 测试主页
 class IndexTest(TestCase):
 
-
     # 测试主页url
     def test_index_url(self):
         c = Client()
@@ -17,7 +16,6 @@ class IndexTest(TestCase):
 
 class SignupOrganizerTest(TestCase):
     
-
     # 测试组织者注册失败跳转回主页
     def test_signup_organizer_fail_url(self):
         c = Client()
@@ -38,6 +36,9 @@ class SignupOrganizerTest(TestCase):
         response = c.post('/signup/organizer',{"password":"12345678admin", "email": "thss@163.com"})
         u = User.objects.get(email="thss@163.com")
         self.assertEqual(u.email, "thss@163.com")
+
+    def tearDown(self):
+        User.objects.filter(email="thss@163.com").delete()
 
 
 class LoginOrganizerTest(TestCase):

@@ -85,6 +85,7 @@
                             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
                                  aria-labelledby="headingOne">
                               <div class="panel-body">
+                                {% if contests_finished %}
                                 <table class="table table-added table-bordered">
                                   <thead>
                                   <tr>
@@ -110,6 +111,9 @@
                                   {% endfor %}
                                   </tbody>
                                 </table>
+                                {% else %}
+                                <h2>目前没有已经结束的阶段</h2>
+                                {% endif %}
                               </div>
                             </div>
                           </div>
@@ -158,6 +162,7 @@
                             <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
                                  aria-labelledby="headingThree">
                               <div class="panel-body">
+                                {% if contests_coming %}
                                 <table class="table table-added table-bordered">
                                   <thead>
                                   <tr>
@@ -183,6 +188,9 @@
                                   {% endfor %}
                                   </tbody>
                                 </table>
+                                {% else %}
+                                <h2>目前没有即将到来的阶段</h2>
+                                {% endif %}
                               </div>
                             </div>
                           </div>
@@ -452,7 +460,7 @@
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                       <h2>我的队伍: {{ team.team_name }}</h2>
-                      {% if team.unique_id != "0" && team.leader.id == request.user.id %}
+                      {% if team.unique_id != "0" and team.leader.id == request.user.id %}
                       <h3>Team id: {{ team.unique_id }}
                       </h3>
                       {% endif %}
