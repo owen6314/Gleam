@@ -425,10 +425,10 @@
                       <tbody>
                       {% for item in leaderboard %}
                       <tr>
-                        <th scope="row">{{ item.team.rank }}</th>
-                        <td>{{ item.team.name }}</td>
-                        <td>{{ item.team.leader}}</td>
-                        <td>{{ item.team.tutor }}</td>
+                        <th scope="row">{{ item.rank }}</th>
+                        <td>{{ item.team_name }}</td>
+                        <td>{{ item.members.0.nick_name}}</td>
+                        <td>{{ item.tutor }}</td>
                         <td>{{ item.score }}</td>
                         <td>{{ item.time }}</td>
                       </tr>
@@ -460,7 +460,7 @@
                   <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                       <h2>我的队伍: {{ team.team_name }}</h2>
-                      {% if team.unique_id != "0" and team.leader.id == request.user.id %}
+                      {% if team.unique_id != "0" %}
                       <h3>Team id: {{ team.unique_id }}
                       </h3>
                       {% endif %}

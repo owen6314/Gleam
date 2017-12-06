@@ -64,7 +64,6 @@
             <tbody>
               {% for e in leaderboard %}
               <tr>
-                <td><input type="checkbox" name="{{e.team_name}}"></td>
                 <td>{{e.rank}}</td>
                 <td>{{e.team_name}}</td>
                 <td>
@@ -164,7 +163,7 @@
                 <td>{{c.submit_begin_time}}</td>
                 <td>{{c.submit_end_time}}</td>
                 <td>{{c.release_time}}</td>
-                <td><a href="#">查看成绩单</a></td>
+                <td><a href="{% url 'contest-leaderboard-organizer' c.id %}">查看成绩单</a></td>
               </tr>
               {% endfor %}
             </tbody>

@@ -563,33 +563,21 @@ class TournamentDetailOrganizerView(View):
   # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
   # cache the result may need some other tools like redis
   def get_leaderboard(contest):
-    records = Record.objects.filter(contest=contest)
-    teams = dict()
-    for record in records:
-      team_id_str = str(record.team_id)
-      if team_id_str not in teams:
-        team_info = dict()
-        team_info['team_name'] = record.team.name
-        team_info['members'] = record.team.members.all()
-        team_info['submit_num'] = 1
-        team_info['score'] = record.score
-        team_info['tutor'] = record.team.tutor
-        teams[team_id_str] = team_info
-      else:
-        teams[team_id_str]['submit_num'] += 1
-        if record.score > teams[team_id_str]['score']:
-          teams[team_id_str]['score'] = record.score
-    leaderboard = [x[1] for x in teams.items()]
-    leaderboard.sort(key=lambda x: x['score'], reverse=True)
-    if leaderboard:
-      last_score = leaderboard[0]['score']
-      rank = 1
-      for team in leaderboard:
-        if team['score'] > last_score:
-          rank += 1
-          last_score = team['score']
-        team['rank'] = rank
-    return leaderboard
+    leaderboard = contest.leaderboarditem_set.order_by('-score')
+    ret = []
+    rank = 1
+    for record in leaderboard:
+      team_info = dict()
+      team_info['team_name'] = record.team.name
+      team_info['members'] = record.team.members.all()
+      team_info['submit_num'] = record.submit_num
+      team_info['score'] = record.score
+      team_info['tutor'] = record.team.tutor
+      team_info['rank'] = rank
+      rank += 1
+      ret.append(team_info)
+
+    return ret
 
   @staticmethod
   def updataRecord(filename, current_contest, header=False, max_times=999):
@@ -682,7 +670,7 @@ class TournamentDetailContestantView(View):
     if data['current_contest']:
       data['countdown'] = (data['current_contest'].submit_end_time - timezone.now()).days
       data['update_time'] = data['current_contest'].release_time
-      data['leaderboard'] = TournamentDetailOrganizerView.get_leaderboard(data['current_contest'])
+      data['leaderboard'] = TournamentDetailContestantView.get_leaderboard(data['current_contest'])
     else:
       data['countdown'] = 'N/A'
       data['update_time'] = ''
@@ -713,34 +701,25 @@ class TournamentDetailContestantView(View):
     return render(request, 'tournament_detail_contestant.html', data)
 
   @staticmethod
+  # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
+  # cache the result may need some other tools like redis
   def get_leaderboard(contest):
-    records = Record.objects.filter(contest=contest)
-    teams = dict()
-    for record in records:
-      team_id_str = str(record.team_id)
-      if team_id_str not in teams:
-        team_info = dict()
-        team_info['team_name'] = record.team.name
-        team_info['members'] = record.members.all()
-        team_info['submit_num'] = 1
-        team_info['score'] = record.score
-        team_info['tutor'] = record.team.tutor
-        teams[team_id_str] = team_info
-      else:
-        teams[team_id_str]['submit_num'] += 1
-        if record.score > teams[team_id_str]['score']:
-          teams[team_id_str]['score'] = record.score
-    leaderboard = [x[1] for x in teams.items()]
-    leaderboard.sort(key=lambda x: x['score'], reverse=True)
-    if leaderboard:
-      last_score = leaderboard[0]['score']
-      rank = 1
-      for team in leaderboard:
-        if team['score'] > last_score:
-          rank += 1
-          last_score = team['score']
-        team['rank'] = rank
-    return leaderboard
+    leaderboard = contest.leaderboarditem_set.order_by('-score')
+    ret = []
+    rank = 1
+    for record in leaderboard:
+      team_info = dict()
+      team_info['team_name'] = record.team.name
+      team_info['members'] = record.team.members.all()
+      team_info['submit_num'] = record.submit_num
+      team_info['score'] = record.score
+      team_info['time'] = record.time
+      team_info['tutor'] = record.team.tutor
+      team_info['rank'] = rank
+      rank += 1
+      ret.append(team_info)
+
+    return ret
 
 
 class TournamentListView(View):
@@ -982,7 +961,6 @@ class ContestLeaderboardOrganizerView(View):
     leaderboard = list()
     index = 0
     for item in leader_board_items:
-      index += 1
       leaderboard.append({
         'id': item.team.id,
         'team_name': item.team_name,
@@ -992,6 +970,7 @@ class ContestLeaderboardOrganizerView(View):
         'members': item.team.members.all(),
         'tutor': item.team.tutor,
       })
+      index += 1
     data = dict()
     data['leaderboard'] = leaderboard
     data['contest_id'] = contest.id
