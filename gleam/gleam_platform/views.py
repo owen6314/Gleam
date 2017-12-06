@@ -15,7 +15,7 @@ from django.contrib import messages
 
 from django.utils import timezone
 from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm, \
-  PromotionForm
+  PromotionForm, TournamentForm
 from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image, LeaderBoardItem
 import datetime
 import hashlib
@@ -330,19 +330,25 @@ class CreateTournamentView(View):
   # 创建比赛
   @staticmethod
   def post(request):
-    name = request.POST['name']
-    description = request.POST['description']
-    image = request.FILES['image']
-    register_begin_time = request.POST['register_begin_time']
-    register_end_time = request.POST['register_end_time']
-    organizer = request.user.organizer_profile
-    # ToDo: max_team_member_num
-    tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
-                            register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
-                            max_team_member_num=3)
-    tournament.overall_end_time = request.POST['overall_end_time']
-    tournament.save()
-    form_len = (len(request.POST) - 6) // 5
+    tournament_form = TournamentForm(request.POST)
+    tournament = None
+    if tournament_form.is_valid():
+      tournament = tournament_form.save(commit=False)
+      tournament.image = request.FILES['image']
+      tournament.organizer = request.user.organizer_profile
+      tournament.status = Tournament.STATUS_SAVED
+      tournament.save()
+    # name = request.POST['name']
+    # description = request.POST['description']
+    # image = request.FILES['image']
+    # register_begin_time = request.POST['register_begin_time']
+    # register_end_time = request.POST['register_end_time']
+    # tournament.overall_end_time = request.POST['overall_end_time']
+    # organizer = request.user.organizer_profile
+    # tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
+    #                         register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
+    #                         max_team_member_num=3)
+    form_len = (len(request.POST) - 7) // 6
     for i in range(1, form_len + 1):
       data = {
         'name': request.POST['name_' + str(i)],
@@ -375,22 +381,22 @@ class EditTournamentView(View):
       assert tournament.organizer == organizer
     except:
       return redirect('permission-denied-403')
+    tform = TournamentForm(instance=tournament)
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
       i = contest.id
-      data = {
-        'name': contest.name,
-        'description': contest.description,
-        'submit_begin_time': contest.submit_begin_time,
-        'submit_end_time': contest.submit_end_time,
-        'release_time': contest.release_time,
-        'pass_rule': contest.pass_rule
-      }
-      form = ContestForm(data, instance=contest)
-      form.is_valid()
+      #data = {
+      #  'name': contest.name,
+      #  'description': contest.description,
+      #  'submit_begin_time': contest.submit_begin_time,
+      #  'submit_end_time': contest.submit_end_time,
+      #  'release_time': contest.release_time,
+      #  'pass_rule': contest.pass_rule
+      #}
+      form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
-    return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
+    return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
 
   @staticmethod
   def post(request, *args):
@@ -399,15 +405,22 @@ class EditTournamentView(View):
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
       return redirect('permission-denied-403')
-    tournament.name = request.POST['name']
-    tournament.description = request.POST['description']
     if 'image' in request.FILES.keys() and request.FILES['image']:
       tournament.image = request.FILES['image']
-    tournament.register_begin_time = request.POST['register_begin_time']
-    tournament.register_end_time = request.POST['register_end_time']
-    tournament.overall_end_time = request.POST['overall_end_time']
-    tournament.save()
-    # ToDo: max_team_member_num
+      tournament.save()
+    tform = TournamentForm(request.POST, instance=tournament)
+    formfail = False
+    if tform.is_valid():
+      tform.save()
+    else:
+      formfail = True
+
+    #tournament.name = request.POST['name']
+    #tournament.description = request.POST['description']
+    #tournament.register_begin_time = request.POST['register_begin_time']
+    #tournament.register_end_time = request.POST['register_end_time']
+    #tournament.overall_end_time = request.POST['overall_end_time']
+    #tournament.save()
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
@@ -422,15 +435,15 @@ class EditTournamentView(View):
       }
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
-    fail = False
+
     for z in zip:
       form = z['form']
       if form.is_valid():
         form.save()
       else:
-        fail = True
-    if fail:
-      return render(request, 'tournament_edit.html', {'tournament': tournament, 'zip': zip})
+        formfail = True
+    if formfail:
+      return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
       return redirect('tournament-detail-organizer', tournament_id)
 
