@@ -197,5 +197,6 @@ class LeaderBoardItem(models.Model):
   # team_id = models.IntegerField(unique=True)
   team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   score = models.DecimalField(max_digits=4, decimal_places=2)
+  submit_num = models.IntegerField(default=1)
   time = models.DateTimeField()
   contest = models.ForeignKey('Contest', on_delete=models.CASCADE)

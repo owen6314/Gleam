@@ -622,6 +622,7 @@ class TournamentDetailOrganizerView(View):
           leaderboard_item.save()
         else:
           records = records.order_by("-score")
+          pre_leaderboard_item[0].submit_num += 1
           if pre_leaderboard_item[0].score < records[0].score:
             pre_leaderboard_item[0].score = records[0].score
             pre_leaderboard_item[0].time = records[0].time
@@ -977,18 +978,20 @@ class PromotionView(View):
 
     leader_board_items = LeaderBoardItem.objects \
       .filter(contest=contest).order_by('-score')
-    teams = [
+    leaderboard = [
       {
         'id': item['team'].id,
-        'name': item['team_name'],
+        'team_name': item['team_name'],
         'score': item['score'],
         'time': item['time'],
         'rank': index + 1,
+        'members': item['team'].members.all()
+        'tutor': item['team'].tutor
       }
       for index, item in enumerate(leader_board_items)
     ]
     data = dict()
-    data['teams'] = teams
+    data['leaderboard'] = leaderboard
     contest_next = PromotionView.get_next_contest(contest)
     if contest_next:
       team_promoted = Team.objects.filter(contests__in=[contest_next])
