@@ -193,6 +193,7 @@ class Image(models.Model):
 
 
 class LeaderBoardItem(models.Model):
+  team = models.ForeignKey('Team')
   team_id = models.IntegerField(unique=True)
   team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   score = models.DecimalField(max_digits=4, decimal_places=2)
