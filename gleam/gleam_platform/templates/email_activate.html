@@ -8,7 +8,7 @@
     <div class="col-md-8 col-md-offset-2" style="text-align: center;">
       <h1>一封验证邮件已经发送到您的邮箱</h1>
       <h1>请点击邮件中提供的链接完成注册</h1>
-      <a id="link_resend" href="http://www.baidu.com">
+      <a id="link_resend" href="{{ domain }}{% url 'confirmation-email-send' user_id %}">
         <button id="button_resend" class="btn btn-success">重发该邮件(60s内只能发送一次)</button>
       </a>
       <div class="space"></div>
@@ -22,7 +22,7 @@
 <script>
     function change(){
         $("#button_resend").attr("class","btn btn-success");
-        $("#link_resend").attr("href","http://www.baidu.com");
+        $("#link_resend").attr("href","{{ domain }}{% url 'confirmation-email-send' user_id %}");
     }
     $(document).ready(function() {
         $("#button_resend").click(function () {

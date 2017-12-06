@@ -86,10 +86,34 @@ class SignupContestantView(View):
       )
       email.send()
 
-      return HttpResponse('请验证邮箱完成注册')
+      # return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://'+ current_site})
+      return redirect('confirmation-email-send', user.id)
 
     # 跳转到index
     return redirect('index')
+
+class SendConfirmationEmailView(View):
+  @staticmethod
+  def get(request, user_id):
+    try:
+      user = User.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+      return redirect('404')
+
+    current_site = get_current_site(request)
+    mail_subject = '激活Gleam账户，迎接美丽新世界'
+    message = render_to_string('email_confirmation.html', {
+      'user': user,
+      'domain': current_site.domain,
+      'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+      'token': tool.account_activation_token.make_token(user),
+    })
+    email = EmailMessage(
+      mail_subject, message, settings.EMAIL_FROM, to=[user.email]
+    )
+    email.send()
+
+    return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://'+ current_site.domain})
 
 
 class LoginOrganizerView(View):
