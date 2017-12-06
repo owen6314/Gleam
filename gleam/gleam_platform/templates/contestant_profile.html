@@ -26,7 +26,7 @@
             <div class="profile_img">
               <div id="crop-avatar">
                 {% if user.contestant_profile.avatar %}
-                <img class="img-responsive avatar-view" src="{{ user.contestant_profile.avatar.url }}" height="220" width="220" alt="Avatar">
+                <img class="img-responsive avatar-view" src="{{ user.contestant_profile.avatar.image.url }}" height="220" width="220" alt="Avatar">
                 {% else %}
                 <img class="img-responsive avatar-view" src="/static/images/default-img.jpg" height="220" width="220" alt="Avatar">
                 {% endif %}
@@ -34,7 +34,7 @@
             </div>
             <h2><b>{{ user.contestant_profile.nick_name }}</b>
               <small>
-                <a href=""><i class="fa fa-wrench"></i></a>
+                <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
               </small></h2>
             <h4>{{ user.contestant_profile.email }}</h4>
             {% if user.contestant_profile.gender == 'M' %}

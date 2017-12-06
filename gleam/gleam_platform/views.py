@@ -318,6 +318,7 @@ class ProfileContestantView(View):
     fields = ['nick_name', 'gender', 'school', 'introduction']
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
+    data['user'] = user
 
     return render(request, 'contestant_profile.html', data)
 
@@ -940,7 +941,7 @@ class ProfileEditContestantView(View):
       request.user.contestant_profile.avatar = avatar
       request.user.contestant_profile.save()
 
-      return redirect('profile-contestant')
+      return redirect('profile-contestant', request.user.id)
     else:
       return render(request, 'contestant_profile_edit.html', {'form': form})
 
