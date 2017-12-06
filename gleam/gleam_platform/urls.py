@@ -40,6 +40,7 @@ urlpatterns = [
   url(r'^profile-edit/contestant', ProfileEditContestantView.as_view(), name='profile-edit-contestant'),
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', activate,
       name='activate'),
-  url(r'^promotion/([1-9][0-9]*)/$', PromotionView.as_view(), name='promotion'),
+  url(r'^contest-leaderboard/organizer/([1-9][0-9]*)/$', ContestLeaderboardOrganizerView.as_view(),
+      name='contest-leaderboard-organizer'),
   url(r'^confirmation-email-send/([1-9][0-9]*)/$', SendConfirmationEmailView.as_view(), name='confirmation-email-send'),
 ]

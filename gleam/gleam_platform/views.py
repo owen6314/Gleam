@@ -968,7 +968,7 @@ class NotFoundView(View):
     return render(request, 'page_404.html')
 
 
-class PromotionView(View):
+class ContestLeaderboardOrganizerView(View):
   @staticmethod
   def get(request, contest_id):
     try:
@@ -985,19 +985,21 @@ class PromotionView(View):
         'score': item['score'],
         'time': item['time'],
         'rank': index + 1,
-        'members': item['team'].members.all()
-        'tutor': item['team'].tutor
+        'members': item['team'].members.all(),
+        'tutor': item['team'].tutor,
       }
       for index, item in enumerate(leader_board_items)
     ]
     data = dict()
     data['leaderboard'] = leaderboard
-    contest_next = PromotionView.get_next_contest(contest)
+    contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
       team_promoted = Team.objects.filter(contests__in=[contest_next])
       team_promoted_ids = [team.id for team in team_promoted]
       data['promoted'] = team_promoted_ids
-      return render(request, 'checkboxes_test.html', data)
+    else:
+      data['promoted'] = []
+    return render(request, 'organizer_contest_leaderboard.html', data)
 
   @staticmethod
   def post(request, contest_id):
@@ -1006,7 +1008,7 @@ class PromotionView(View):
       contest = Contest.objects.get(id=contest_id)
     except ObjectDoesNotExist:
       return redirect('404')
-    contest_next = PromotionView.get_next_contest(contest)
+    contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
       leader_board_items = LeaderBoardItem.objects \
         .filter(contest=contest).order_by('-score')
@@ -1020,7 +1022,7 @@ class PromotionView(View):
             item.team.contests.remove(contest_next)
             item.team.save()
 
-    return redirect('promotion')
+    return redirect('contest-leaderboard-organizer', contest_id)
 
   @staticmethod
   def get_next_contest(contest):
