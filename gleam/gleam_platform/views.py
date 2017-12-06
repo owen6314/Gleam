@@ -753,10 +753,10 @@ class TournamentListView(View):
     tournaments_online = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED) \
       .filter(register_end_time__lt=timezone.now(), contest__submit_end_time__gte=timezone.now()).distinct()
 
-    tournaments_registering = Tournament.objects.filter(tatus=Tournament.STATUS_PUBLISHED,
+    tournaments_registering = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                         register_end_time__gte=timezone.now()).distinct()
 
-    tournaments_offline = Tournament.objects.exclude(tatus=Tournament.STATUS_PUBLISHED,
+    tournaments_offline = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
                                                      contest__submit_end_time__gte=timezone.now()).distinct()
 
     data = dict()
