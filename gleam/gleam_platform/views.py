@@ -92,6 +92,7 @@ class SignupContestantView(View):
     # 跳转到index
     return redirect('index')
 
+
 class SendConfirmationEmailView(View):
   @staticmethod
   def get(request, user_id):
@@ -113,7 +114,7 @@ class SendConfirmationEmailView(View):
     )
     email.send()
 
-    return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://'+ current_site.domain})
+    return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
 
 
 class LoginOrganizerView(View):
@@ -279,8 +280,6 @@ class ProfileOrganizerView(View):
 
     return render(request, 'organizer_profile.html', data)
 
-
-
     # # 更新赛事方信息
     # @staticmethod
     # def post(request):
@@ -411,14 +410,14 @@ class EditTournamentView(View):
     zip = []
     for contest in contests:
       i = contest.id
-      #data = {
+      # data = {
       #  'name': contest.name,
       #  'description': contest.description,
       #  'submit_begin_time': contest.submit_begin_time,
       #  'submit_end_time': contest.submit_end_time,
       #  'release_time': contest.release_time,
       #  'pass_rule': contest.pass_rule
-      #}
+      # }
       form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
     return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
@@ -440,12 +439,12 @@ class EditTournamentView(View):
     else:
       formfail = True
 
-    #tournament.name = request.POST['name']
-    #tournament.description = request.POST['description']
-    #tournament.register_begin_time = request.POST['register_begin_time']
-    #tournament.register_end_time = request.POST['register_end_time']
-    #tournament.overall_end_time = request.POST['overall_end_time']
-    #tournament.save()
+    # tournament.name = request.POST['name']
+    # tournament.description = request.POST['description']
+    # tournament.register_begin_time = request.POST['register_begin_time']
+    # tournament.register_end_time = request.POST['register_end_time']
+    # tournament.overall_end_time = request.POST['overall_end_time']
+    # tournament.save()
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:

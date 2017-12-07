@@ -80,7 +80,7 @@ def validate_rid(ID):
     pass
   else:
     return False
-  if ID[:-1].isdigit() == False:
+  if ID[:-1].isdigit() is False:
     return False
   if ID[-1].isdigit() or ID[-1] == 'X':
     pass
