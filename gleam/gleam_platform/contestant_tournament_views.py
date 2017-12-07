@@ -144,7 +144,7 @@ class TournamentListView(View):
                                                         register_end_time__gte=timezone.now()).distinct()
 
     tournaments_offline = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                     contest__submit_end_time__gte=timezone.now()).distinct()
+                                                    contest__submit_end_time__gte=timezone.now()).distinct()
 
     data = dict()
     data['tournaments_online'] = tournaments_online

@@ -18,6 +18,7 @@ from .models import Tournament, Contestant, User, Image
 import gleam_platform.tools as tool
 from gleam import settings
 
+
 class SignupContestantView(View):
   # 注册参赛者
   # email password
@@ -82,6 +83,7 @@ class SendConfirmationEmailView(View):
     email.send()
 
     return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+
 
 class LoginContestantView(View):
   # 参赛方登录
@@ -200,6 +202,3 @@ class ProfileEditContestantView(View):
       return redirect('profile-contestant', request.user.id)
     else:
       return render(request, 'contestant_profile_edit.html', {'form': form})
-
-
-

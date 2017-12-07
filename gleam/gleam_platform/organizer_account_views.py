@@ -63,6 +63,7 @@ class LogoutOrganizerView(View):
     auth.logout(request)
     return redirect('index')
 
+
 @method_decorator(login_required, name='dispatch')
 class HomeOrganizerView(View):
   # 显示赛事方主页
