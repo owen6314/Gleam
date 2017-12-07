@@ -279,7 +279,7 @@ class ProfileOrganizerView(View):
     data['tournaments_faraway'] = tournaments_finished
 
     return render(request, 'organizer_profile.html', data)
-    
+
     # # 更新赛事方信息
     # @staticmethod
     # def post(request):
