@@ -35,7 +35,7 @@
 <div style="height:80px;"></div>
 
 <div class="container object-non-visible" data-animation-effect="fadeIn">
-	<h1 id="contest"  class="text-center title">我关注的竞赛</h1>
+	<h1 id="contest"  class="text-center title">我参加的比赛</h1>
 	<div class="space"></div>
 	<!--<div class="row">
     <div class="col-sm-12">
@@ -91,6 +91,7 @@
 			</thead>
 
 			<tbody>
+			{% if tournaments %}
 			{% for tournament in tournaments %}
 			<tr>
 				<td>{{ tournament.name }}</td>
@@ -101,6 +102,11 @@
 				<td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
 			</tr>
 			{% endfor %}
+			{% else %}
+			<tr>
+				<td colspan="6" style="text-align: center;">您目前还没有参加任何比赛</td>
+			</tr>
+			{% endif %}
 			<!--<tr>
 				<td>“迁瑞杯”全校吃鸡大赛</td>
 				<td>2017/02/30</td>
@@ -128,7 +134,7 @@
 	<div class="container">
 		<h1 class="text-center title" id="portfolio">查看竞赛</h1>
 		<div class="separator"></div>
-		<p class="lead text-center">这里包含了与你有关的所有比赛<br>点击标签来查看</p>
+		<p class="lead text-center">这里包含了本平台发布的所有比赛<br>点击标签来查看</p>
 		<br>
 		<div class="row object-non-visible" data-animation-effect="fadeIn">
 			<div class="col-md-12">
@@ -137,11 +143,11 @@
 						<li class="active"><a href="#" data-filter="*">全部</a></li>
 						<li><a href="#" data-filter=".join">我参加的</a></li>
 						<li><a href="#" data-filter=".online">正在报名</a></li>
-						<li><a href="#" data-filter=".coming">最热</a></li>
+						<li><a href="#" data-filter=".coming">即将到来</a></li>
 					</ul>
 				</div>
-				{% for tournament in tournaments %}
 				<div class="isotope-container row grid-space-20">
+				{% for tournament in tournaments %}
 					<div class="col-sm-6 col-md-3 isotope-item coming">
 						<div class="image-box">
 							<div class="overlay-container">
@@ -161,7 +167,7 @@
 								<img src="/static/images/portfolio-3.jpg" alt="">
 								<a class="overlay" data-toggle="modal" data-target="#project-3">
 									<i class="fa fa-search-plus"></i>
-									<span>正在进行</span>
+									<span>正在报名</span>
 								</a>
 							</div>
 							<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
@@ -173,7 +179,7 @@
 								<img src="/static/images/portfolio-3.jpg" alt="">
 								<a class="overlay" data-toggle="modal" data-target="#project-3">
 									<i class="fa fa-search-plus"></i>
-									<span>我参加的</span>
+									<span>正在进行</span>
 								</a>
 							</div>
 							<a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>

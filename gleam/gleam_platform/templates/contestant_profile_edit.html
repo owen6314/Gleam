@@ -17,31 +17,14 @@
             </div>
             <div class="x_content">
               <br/>
-              <form id="profile—form" action="{% url 'profile-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left">
+              <form id="profile—form" action="{% url 'profile-edit-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12">用户名
-                  </label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="text" id="user_name" name="user_name" value="{{ user_name }}"
-                           class="form-control col-md-7 col-xs-12" disabled="disabled">
-                  </div>
-                </div>
                 <div class="form-group">
                   <label class="control-label col-md-3 col-sm-3 col-xs-12">邮箱
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="email" class="form-control col-md-7 col-xs-12"
-                           name="email" value="{{ email }}" placeholder="" type="text">
-                    <a href="">获取验证码</a>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-12">验证码
-                  </label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="ack_num" class="form-control col-md-7 col-xs-12"
-                           name="ack_num" placeholder="请输入收到的验证码" type="text">
+                           name="email" value="{{ email }}" disabled="disabled"type="text">
                   </div>
                 </div>
                 <div class="form-group">
@@ -91,6 +74,14 @@
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
                     <input type="text" id="introduction" name="introduction" value="{{ introduction }}"
+                           class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">身份证
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" id="resident_id" name="resident_id" value="{{ resident_id }}"
                            class="form-control col-md-7 col-xs-12">
                   </div>
                 </div>

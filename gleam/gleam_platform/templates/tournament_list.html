@@ -35,9 +35,7 @@
         <div class="container object-non-visible" data-animation-effect="fadeIn">
           <div class="x_content">
             <div class="space"></div>
-            {% if tournaments_online == NULL %}
-            <h2>目前没有进行中的比赛</h2>
-            {% else %}
+
             <table class="table table-added table-bordered">
               <thead>
               <tr>
@@ -49,8 +47,8 @@
                 <th>赛事主页</th>
               </tr>
               </thead>
-
               <tbody>
+              {% if tournaments_online %}
               {% for tournament in tournaments_online %}
               <tr>
                 <td>{{ tournament.name }}</td>
@@ -61,27 +59,13 @@
                 <td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
               </tr>
               {% endfor %}
-              <!--<tr>
-                <td>“迁瑞杯”全校吃鸡大赛</td>
-                <td>2017/02/30</td>
-                <td>2018/1/1</td>
-                <td>100</td>
-                <td>666</td>
-                <td>完赛</td>
-                <td><a href="#detail">“迁瑞杯”全校吃鸡大赛</a></td>
-              </tr>
+              {% else %}
               <tr>
-                <td>“吃鸡吧”全国吃鸡联赛</td>
-                <td>2017/02/30</td>
-                <td>2018/1/1</td>
-                <td>100</td>
-                <td>666</td>
-                <td>尚未开始</td>
-                <td><a href="#detail">“吃鸡吧”全国吃鸡联赛</a></td>
-              </tr>-->
+                <td colspan="6" style="text-align: center;">目前没有进行中的比赛</td>
+              </tr>
+              {% endif %}
               </tbody>
             </table>
-            {% endif %}
           </div>
         </div>
       </div>
@@ -89,9 +73,7 @@
         <div class="container object-non-visible" data-animation-effect="fadeIn">
           <div class="x_content">
             <div class="space"></div>
-            {% if tournaments_registering == NULL %}
-            <h2>目前没有即将开始的比赛</h2>
-            {% else %}
+
             <table class="table table-added table-bordered">
               <thead>
               <tr>
@@ -103,8 +85,8 @@
                 <th>赛事主页</th>
               </tr>
               </thead>
-
               <tbody>
+              {% if tournaments_registering %}
               {% for tournament in tournaments_registering %}
               <tr>
                 <td>{{ tournament.name }}</td>
@@ -115,27 +97,14 @@
                 <td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
               </tr>
               {% endfor %}
-              <!--<tr>
-                <td>“迁瑞杯”全校吃鸡大赛</td>
-                <td>2017/02/30</td>
-                <td>2018/1/1</td>
-                <td>100</td>
-                <td>666</td>
-                <td>完赛</td>
-                <td><a href="#detail">“迁瑞杯”全校吃鸡大赛</a></td>
-              </tr>
+              {% else %}
               <tr>
-                <td>“吃鸡吧”全国吃鸡联赛</td>
-                <td>2017/02/30</td>
-                <td>2018/1/1</td>
-                <td>100</td>
-                <td>666</td>
-                <td>尚未开始</td>
-                <td><a href="#detail">“吃鸡吧”全国吃鸡联赛</a></td>
-              </tr>-->
+                <td colspan="6" style="text-align: center;">目前没有即将开始的比赛</td>
+              </tr>
+              {% endif %}
               </tbody>
             </table>
-            {% endif %}
+
           </div>
         </div>
       </div>
@@ -143,10 +112,6 @@
         <div class="container object-non-visible" data-animation-effect="fadeIn">
           <div class="x_content">
             <div class="space"></div>
-            {% if tournaments_offline == NULL %}
-            <h2 style="text-align: center">目前没有已结束的比赛</h2>
-            <div class="space"></div>
-            {% else %}
             <table class="table table-added table-bordered">
               <thead>
               <tr>
@@ -158,8 +123,8 @@
                 <th>赛事主页</th>
               </tr>
               </thead>
-
               <tbody>
+              {% if tournaments_offline %}
               {% for tournament in tournaments_offline %}
               <tr>
                 <td>{{ tournament.name }}</td>
@@ -170,9 +135,13 @@
                 <td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
               </tr>
               {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="6" style="text-align: center;">目前没有已结束的比赛</td>
+              </tr>
+              {% endif %}
               </tbody>
             </table>
-            {% endif %}
           </div>
         </div>
       </div>

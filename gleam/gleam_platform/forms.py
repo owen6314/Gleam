@@ -1,9 +1,8 @@
-from django.db import models
 from django import forms
 
-from .models import *
+from .models import Tournament, Contest, Organizer, Contestant, User
 
-
+import gleam_platform.tools as tool
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 80
 # max length of name(short version)
@@ -13,6 +12,34 @@ MAX_NAME_LEN_SHORT = 24
 MAX_FLAG_LEN = 2
 # max length of resident id number
 MAX_RID_LEN = 18
+
+
+class ResidentIDField(forms.Field):
+  def to_python(self, value):
+    """Normalize data to a list of strings."""
+    # Return an empty list if no input was given.
+    if not value:
+      return []
+    return value.split(',')
+
+  def validate(self, value):
+    """Check if value consists only of valid emails."""
+    # Use the parent's handling of required fields, etc.
+    super(ResidentIDField, self).validate(value)
+    if not tool.validate_rid(value):
+      raise forms.ValidationError('身份证号错误')
+
+
+class TournamentForm(forms.ModelForm):
+  class Meta:
+    model = Tournament
+    exclude = ['organizer', 'status', 'team_count', 'image']
+
+  def clean_max_team_member_num(self):
+    max_team_member_num = self.cleaned_data['max_team_member_num']
+    if max_team_member_num < 1:
+      raise forms.ValidationError('队伍最大人数应为正数')
+    return max_team_member_num
 
 
 class ContestForm(forms.ModelForm):
@@ -26,10 +53,16 @@ class ContestForm(forms.ModelForm):
     submit_end_time = cleaned_data.get('submit_end_time')
     release_time = cleaned_data.get('release_time')
     if submit_begin_time and submit_end_time and release_time:
-      if submit_begin_time <= submit_end_time and submit_end_time <= release_time:
-        pass
-      else:
-        raise forms.ValidationError("Invalid time order")
+      if submit_end_time <= submit_begin_time:
+        self.add_error('submit_end_time', '提交截止时间应位于开始时间之后')
+      if release_time <= submit_end_time:
+        self.add_error('release_time', '成绩公布时间应位于提交截止时间之后')
+
+  def clean_pass_rule(self):
+    pass_rule = self.cleaned_data['pass_rule']
+    if pass_rule <= 0:
+      raise forms.ValidationError('通过规则应为正数')
+    return pass_rule
 
 
 class UploadImageForm(forms.ModelForm):
@@ -73,25 +106,25 @@ class UserLoginForm(forms.Form):
   password = forms.CharField()
 
 
-class ProfileContestantForm(forms.Form):
-
-  profile_image = forms.ImageField()
-  nick_name = forms.CharField()
-  school = forms.CharField()
-  gender = forms.CharField()
-
-
 class ProfileOrganizerForm(forms.Form):
-  avatar = forms.ImageField()
+  avatar = forms.ImageField(required=False)
+  organization = forms.CharField(max_length=MAX_NAME_LEN_LONG, required=False)
+  biography = forms.CharField(required=False)
+  description = forms.CharField(required=False)
+  location = forms.CharField(required=False)
+  field = forms.CharField(max_length=256, required=False)
+  website = forms.URLField(required=False)
 
-  organization = forms.CharField(max_length=MAX_NAME_LEN_LONG,)
 
-  biography = forms.CharField()
+class ProfileContestantForm(forms.Form):
+  avatar = forms.ImageField(required=False)
+  nick_name = forms.CharField(max_length=MAX_NAME_LEN_SHORT, required=False)
+  school = forms.CharField(required=False)
+  gender = forms.CharField(required=False)
+  introduction = forms.CharField(required=False)
+  resident_id = ResidentIDField(required=False)
 
-  description = forms.CharField()
 
-  location = forms.CharField()
-
-  field = forms.CharField(max_length=256,)
-
-  website = forms.URLField()
+class PromotionForm(forms.Form):
+  promoted = forms.MultipleChoiceField()
+  # choices=(("1", "A"), ("2", "B"), ("3", "C"), ("4", "D")))

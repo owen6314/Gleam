@@ -2,6 +2,14 @@
 
 {% block title %} {% endblock title %}
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% block content %}
 <div id="home" class="banner">
   <div class="banner-image"></div>
@@ -10,9 +18,7 @@
       <div class="row">
         <div class="col-md-8 col-md-offset-2 object-non-visible" data-animation-effect="fadeIn">
           <h1 class="text-center">We are <span>Gleam</span></h1>
-          <p class="lead text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos
-            debitis provident nulla illum minus enim praesentium repellendus ullam cupiditate reiciendis
-            optio voluptatem, recusandae nobis quis aperiam, sapiente libero ut at.</p>
+          <p class="lead text-center">大学生大数据竞赛报名平台</p>
           <div class="button-group">
             <button id="as-user" data-toggle="modal" data-target="#user-modal" class="btn btn-primary">
               参加比赛
@@ -91,6 +97,13 @@
                              placeholder="password">
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label for="contestant-login-password" class="col-sm-2 control-label">再次输入密码</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="contestant-register-repeat-password" name="repeat_password"
+                             placeholder="password">
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -132,14 +145,14 @@
                 <form id="login-organizer-form" class="form-horizontal" role="form" action="{% url 'login-organizer' %}" method="POST">
                   {% csrf_token %}
                   <div class="form-group">
-                    <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
+                    <label for="organizer-login-email" class="col-sm-2 control-label">邮箱</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="organizer-login-email" name="email"
                              placeholder="example@example.com">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
+                    <label for="organizer-login-password" class="col-sm-2 control-label">密码</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" id="organizer-login-password" name="password"
                              placeholder="password">
@@ -1155,8 +1168,6 @@
 
 {% block javascripts %}
 {{ block.super }}
-<script type="text/javascript" src="/static/js/index.js"></script>
-<script type="text/javascript" src="/static/js/template.js"></script>
 <script>
     $(function () {
         $(".banner-image").backstretch('/static/images/banner.jpg');

@@ -1,9 +1,6 @@
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
@@ -11,8 +8,7 @@ MAX_NAME_LEN_SHORT = 32
 # max length of flag
 MAX_FLAG_LEN = 2
 # max length of resident id number
-MAX_RID_LEN = 18
-
+MAX_RID_LEN = 32
 
 
 class Tournament(models.Model):
@@ -49,6 +45,7 @@ class Contest(models.Model):
   submit_end_time = models.DateTimeField()
   release_time = models.DateTimeField()
   description = models.TextField()
+  pass_rule = models.DecimalField(max_digits=8, decimal_places=3, default=0.8)
 
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
 
@@ -57,13 +54,13 @@ class Contest(models.Model):
   last_csv_upload_time = models.DateTimeField(null=True)
 
   def __str__(self):
-    return 'name:%s' % (self.name,)
+    return 'name:%s id%d' % (self.name, self.id)
 
 
 class Organizer(models.Model):
   avatar = models.ForeignKey('Image', null=True)
 
-  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'Chiang Kai-shek')
+  organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
 
   biography = models.TextField(null=True)
 
@@ -84,8 +81,8 @@ class Organizer(models.Model):
 
 class Contestant(models.Model):
   avatar = models.ForeignKey('Image', null=True)
-  # # resident id number
-  # resident_id = models.CharField(max_length=MAX_RID_LEN)
+  # resident id number
+  resident_id = models.CharField(max_length=MAX_RID_LEN, null=True)
   # nick name
   nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice')
   # school name
@@ -93,6 +90,12 @@ class Contestant(models.Model):
   # gender
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
+
+  introduction = models.TextField(null=True)
+
+  def clean(self, *args, **kwargs):
+    # add custom validation here
+    super(Contestant, self).clean(*args, **kwargs)
 
   def __str__(self):
     return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
@@ -182,8 +185,18 @@ class Image(models.Model):
   TYPE_CHOICES = (('P', 'public'), ('C', 'Confidential'))
   type = models.CharField(default='P', max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
   image = models.ImageField()
-  owner = models.ForeignKey('User', related_name='owned_images')
+  owner = models.ForeignKey('User', related_name='owned_images', null=True)
   accesses = models.ManyToManyField('User')
 
   def __str__(self):
     return "%s" % (self.image)
+
+
+class LeaderBoardItem(models.Model):
+  team = models.ForeignKey('Team', null=True)
+  # team_id = models.IntegerField(unique=True)
+  team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
+  score = models.DecimalField(max_digits=4, decimal_places=2)
+  submit_num = models.IntegerField(default=1)
+  time = models.DateTimeField()
+  contest = models.ForeignKey('Contest', on_delete=models.CASCADE)
