@@ -7,6 +7,7 @@ from django.shortcuts import HttpResponse
 from .models import Image
 from gleam.settings import MEDIA_ROOT
 
+
 def serve_image(request, path, document_root=MEDIA_ROOT):
   try:
     obj = Image.objects.get(image=path)
