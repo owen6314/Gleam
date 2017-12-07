@@ -124,6 +124,7 @@ class ProfileContestantForm(forms.Form):
   introduction = forms.CharField(required=False)
   resident_id = ResidentIDField(required=False)
 
+
 class PromotionForm(forms.Form):
   promoted = forms.MultipleChoiceField()
-    # choices=(("1", "A"), ("2", "B"), ("3", "C"), ("4", "D")))
+  # choices=(("1", "A"), ("2", "B"), ("3", "C"), ("4", "D")))
