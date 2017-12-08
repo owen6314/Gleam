@@ -111,7 +111,7 @@ class HomeOrganizerView(View):
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
 
-    return render(request, 'organizer_home.html', data)
+    return render(request, 'organizer/organizer_home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -149,7 +149,7 @@ class ProfileOrganizerView(View):
     data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
     data['tournaments_faraway'] = tournaments_finished
 
-    return render(request, 'organizer_profile.html', data)
+    return render(request, 'organizer/organizer_profile.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -159,7 +159,7 @@ class ProfileEditOrganizerView(View):
     fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
     data = tool.load_model_obj_data_to_dict(request.user.organizer_profile, fields)
     form = ProfileOrganizerForm(initial=data)
-    return render(request, 'organizer_profile_edit.html', {'form': form})
+    return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):
@@ -180,4 +180,4 @@ class ProfileEditOrganizerView(View):
 
       return redirect('profile-organizer', request.user.id)
     else:
-      return render(request, 'contestant_profile_edit.html', {'form': form})
+      return render(request, 'contestant/profile_edit.html', {'form': form})

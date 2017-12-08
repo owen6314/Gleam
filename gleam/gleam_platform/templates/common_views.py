@@ -74,7 +74,7 @@ class SignupContestantView(View):
 
       current_site = get_current_site(request)
       mail_subject = '激活Gleam账户，迎接美丽新世界'
-      message = render_to_string('email_confirmation.html', {
+      message = render_to_string('contestant/email_confirmation.html', {
         'user': user,
         'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -103,7 +103,7 @@ class SendConfirmationEmailView(View):
 
     current_site = get_current_site(request)
     mail_subject = '激活Gleam账户，迎接美丽新世界'
-    message = render_to_string('email_confirmation.html', {
+    message = render_to_string('contestant/email_confirmation.html', {
       'user': user,
       'domain': current_site.domain,
       'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -114,7 +114,7 @@ class SendConfirmationEmailView(View):
     )
     email.send()
 
-    return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+    return render(request, 'contestant/email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
 
 
 class LoginOrganizerView(View):
@@ -220,7 +220,7 @@ class HomeOrganizerView(View):
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
 
-    return render(request, 'organizer_home.html', data)
+    return render(request, 'organizer/organizer_home.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -240,7 +240,7 @@ class HomeContestantView(View):
     data = dict()
     data['tournaments'] = Tournament.objects.filter(team__members=request.user.contestant_profile).distinct()
 
-    return render(request, 'contestant_home.html', data)
+    return render(request, 'contestant/home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -278,7 +278,7 @@ class ProfileOrganizerView(View):
     data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
     data['tournaments_faraway'] = tournaments_finished
 
-    return render(request, 'organizer_profile.html', data)
+    return render(request, 'organizer/organizer_profile.html', data)
 
     # # 更新赛事方信息
     # @staticmethod
@@ -319,7 +319,7 @@ class ProfileContestantView(View):
     data['email'] = user.email
     data['user'] = user
 
-    return render(request, 'contestant_profile.html', data)
+    return render(request, 'contestant/profile.html', data)
 
     # # 更新参赛者信息
     # @staticmethod
@@ -349,7 +349,7 @@ class CreateTournamentView(View):
       organizer = request.user.organizer_profile
     except:
       return render(request, 'page_403.html')
-    return render(request, 'tournament_creation.html')
+    return render(request, 'tournament/tournament_creation.html')
 
   # 创建比赛
   @staticmethod
@@ -420,7 +420,7 @@ class EditTournamentView(View):
       # }
       form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
-    return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
+    return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
 
   @staticmethod
   def post(request, *args):
@@ -467,7 +467,7 @@ class EditTournamentView(View):
       else:
         formfail = True
     if formfail:
-      return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
+      return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
       return redirect('tournament-detail-organizer', tournament_id)
 
@@ -534,7 +534,7 @@ class TournamentDetailOrganizerView(View):
       data['update_time'] = ''
       data['leaderboard'] = []
 
-    return render(request, 'tournament_detail_organizer.html', data)
+    return render(request, 'tournament/tournament_detail_organizer.html', data)
 
   @staticmethod
   def post(request, *args):
@@ -697,7 +697,7 @@ class TournamentDetailContestantView(View):
     else:
       data['team_status'] = 0
 
-    return render(request, 'tournament_detail_contestant.html', data)
+    return render(request, 'tournament/tournament_detail_contestant.html', data)
 
   @staticmethod
   # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
@@ -743,7 +743,7 @@ class TournamentListView(View):
     data['tournaments_registering'] = tournaments_registering
     data['tournaments_offline'] = tournaments_offline
 
-    return render(request, 'tournament_list.html', data)
+    return render(request, 'tournament/tournament_list.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -871,7 +871,7 @@ class ProfileEditOrganizerView(View):
     fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
     data = tool.load_model_obj_data_to_dict(request.user.organizer_profile, fields)
     form = ProfileOrganizerForm(initial=data)
-    return render(request, 'organizer_profile_edit.html', {'form': form})
+    return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):
@@ -892,7 +892,7 @@ class ProfileEditOrganizerView(View):
 
       return redirect('profile-organizer', request.user.id)
     else:
-      return render(request, 'contestant_profile_edit.html', {'form': form})
+      return render(request, 'contestant/profile_edit.html', {'form': form})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -902,7 +902,7 @@ class ProfileEditContestantView(View):
     fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
     data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
     form = ProfileContestantForm(initial=data)
-    return render(request, 'contestant_profile_edit.html', {'form': form})
+    return render(request, 'contestant/profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):
@@ -923,7 +923,7 @@ class ProfileEditContestantView(View):
 
       return redirect('profile-contestant', request.user.id)
     else:
-      return render(request, 'contestant_profile_edit.html', {'form': form})
+      return render(request, 'contestant/profile_edit.html', {'form': form})
 
 
 class BadRequestView(View):
