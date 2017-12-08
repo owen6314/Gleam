@@ -40,20 +40,6 @@ class SignupContestantView(View):
 
       user.save()
 
-      current_site = get_current_site(request)
-      mail_subject = '激活Gleam账户，迎接美丽新世界'
-      message = render_to_string('email_confirmation.html', {
-        'user': user,
-        'domain': current_site.domain,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': tool.account_activation_token.make_token(user),
-      })
-      to_email = form.cleaned_data.get('email')
-      email = EmailMessage(
-        mail_subject, message, settings.EMAIL_FROM, to=[to_email]
-      )
-      email.send()
-
       # return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://'+ current_site})
       return redirect('confirmation-email-send', user.id)
 

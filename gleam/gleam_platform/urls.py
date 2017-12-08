@@ -5,8 +5,8 @@ from .organizer_account_views import SignupOrganizerView, LoginOrganizerView, Ho
 from .contestant_account_views import SignupContestantView, LoginContestantView, HomeContestantView, \
   ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView
 from .organizer_tournament_views import CreateTournamentView, TournamentDetailOrganizerView, EditTournamentView, \
-  RegisterView, QuitTeamView, ContestLeaderboardOrganizerView
-from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView
+  ContestLeaderboardOrganizerView
+from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView, QuitTeamView
 import gleam.settings as settings
 from .image_manage import serve_image
 
