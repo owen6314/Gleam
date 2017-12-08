@@ -1,0 +1,132 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{user.organizer_profile.organization}}{% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div style="height:100px;"></div>
+
+  <div class="col-md-10 col-md-offset-1">
+    <div class="clearfix"></div>
+    <div class="col-md-3 col-sm-3 col-xs-12">
+      <div class="profile_img">
+        <div id="crop-avatar">
+          <img class="img-responsive avatar-view" src="{{ user.organizer_profile.avatar.image.url }}" height="220" width="220" alt="Avatar" title="{{user.organizer_profile.organization}}">
+        </div>
+      </div>
+      <h2>{{user.organizer_profile.organization}} <small>{{user.organizer_profile.biography}}</small></h2>
+      <ul class="list-unstyled">
+        <li>
+          <i class="fa fa-map-marker user-profile-icon"></i> {{user.organizer_profile.location}}
+        </li>
+
+        <li>
+          <i class="fa fa-briefcase user-profile-icon"></i> {{user.organizer_profile.field}}
+        </li>
+
+        <li class="m-top-xs">
+          <i class="fa fa-external-link user-profile-icon"></i>
+          <a href={{user.organizer_profile.website}} target="_blank"> 主页 </a>
+        </li>
+
+        <li>
+          <i class="fa fa-home"></i> 进行中的比赛 {{tournament_ongoing_num}}
+        </li>
+
+        <li>
+          <i class="fa fa-user"></i> 当前参加队伍数 {{ongoing_team_num}}
+        </li>
+
+        <li>
+          <i class="fa fa-book"></i> 累计举办比赛 {{tournament_finished_num}}
+        </li>
+
+        <li>
+          <i class="fa fa-clock-o"></i> 累计参加人数 {{total_team_num}}
+        </li>
+
+        <li>
+          <i class="fa fa-bolt"></i> 累计访问量 233
+        </li>
+
+        <li>
+          <i class="fa fa-flag"></i> 贡献度 {{contribution}}
+        </li>
+      </ul>
+      <br />
+    </div>
+    <div class="col-md-9 col-sm-9 col-xs-12">
+
+      <div><h2 align="center">这里应该放一个折线图统计每天的访问量</h2></div>
+
+      <div class="x_panel">
+        <div class="" role="tabpanel" data-example-id="togglable-tabs">
+          <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">近期动态</a>
+            </li>
+            <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">举办的比赛</a>
+            </li>
+            <li role="presentation" class=""><a href="#tab_content3" role="tab" id="profile-tab2" data-toggle="tab" aria-expanded="false">更多</a>
+            </li>
+          </ul>
+          <div id="myTabContent" class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+              <ul class="messages">
+              	{% for t in tournaments_recent %}
+                <li>
+                  <img src={{t.image}} class="avatar" alt="Avatar">
+                  <div class="message_date">
+                    <h3 class="date text-info">{{t.register_begin_time.datetime.day}}</h3>
+                    <p class="month">{{t.register_begin_time.datetime.month}}</p>
+                  </div>
+                  <div class="message_wrapper">
+                    <h4 class="heading">{{t.name}}</h4>
+                    <blockquote class="message">{{t.description}}</blockquote>
+                    <br />
+                    <p class="url">
+                      <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
+                      <a href="{% url 'tournament-detail-contestant' t.id %}"><i class="fa fa-external-link"></i> 详情 </a>
+                    </p>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>比赛名称</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>比赛主页</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for t in tournaments_faraway %}
+                  <tr>
+                    <td>{{t.name}}</td>
+                    <td>{{t.register_begin_time}}</td>
+                    <td>{{t.overall_end_time}}</td>
+                    <td><a href="{% url 'tournament-detail-contestant' t.id %}">{{t.name}}</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
+              <p>{{user.organizer_profile.description}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}

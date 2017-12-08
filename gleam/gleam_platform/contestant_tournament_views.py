@@ -105,7 +105,7 @@ class TournamentDetailContestantView(View):
     else:
       data['team_status'] = 0
 
-    return render(request, 'tournament_detail_contestant.html', data)
+    return render(request, 'tournament/tournament_detail_contestant.html', data)
 
   @staticmethod
   # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
@@ -151,7 +151,7 @@ class TournamentListView(View):
     data['tournaments_registering'] = tournaments_registering
     data['tournaments_offline'] = tournaments_offline
 
-    return render(request, 'tournament_list.html', data)
+    return render(request, 'tournament/tournament_list.html', data)
 
 
 @method_decorator(login_required, name='dispatch')

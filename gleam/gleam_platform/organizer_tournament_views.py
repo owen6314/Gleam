@@ -23,7 +23,7 @@ class CreateTournamentView(View):
       organizer = request.user.organizer_profile
     except:
       return render(request, 'page_403.html')
-    return render(request, 'tournament_creation.html')
+    return render(request, 'tournament/tournament_creation.html')
 
   # 创建比赛
   @staticmethod
@@ -94,7 +94,7 @@ class EditTournamentView(View):
       # }
       form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
-    return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
+    return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
 
   @staticmethod
   def post(request, *args):
@@ -141,7 +141,7 @@ class EditTournamentView(View):
       else:
         formfail = True
     if formfail:
-      return render(request, 'tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
+      return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
       return redirect('tournament-detail-organizer', tournament_id)
 
@@ -208,7 +208,7 @@ class TournamentDetailOrganizerView(View):
       data['update_time'] = ''
       data['leaderboard'] = []
 
-    return render(request, 'tournament_detail_organizer.html', data)
+    return render(request, 'tournament/tournament_detail_organizer.html', data)
 
   @staticmethod
   def post(request, *args):
@@ -324,7 +324,7 @@ class ContestLeaderboardOrganizerView(View):
       data['promoted'] = team_promoted_ids
     else:
       data['promoted'] = []
-    return render(request, 'organizer_contest_leaderboard.html', data)
+    return render(request, 'organizer/organizer_contest_leaderboard.html', data)
 
   @staticmethod
   def post(request, contest_id):
