@@ -1,3 +1,5 @@
+# personal files
+fabfile.py
 # uwsgi
 uwsgi.ini
 # Byte-compiled / optimized / DLL files
