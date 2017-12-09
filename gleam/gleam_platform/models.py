@@ -1,6 +1,10 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
+
 # max length of name(long version)
 MAX_NAME_LEN_LONG = 128
 # max length of name(short version)
@@ -35,7 +39,7 @@ class Tournament(models.Model):
   STATUS_PUBLISHED = 1
 
   def __str__(self):
-    return 'name:%s orgid:%s' % (self.name, self.organizer.user_set.all()[0].id)
+    return 'name:%s orgid:%s' % (self.name, self.organizer.user.id)
 
 
 class Contest(models.Model):
@@ -76,29 +80,29 @@ class Organizer(models.Model):
     verbose_name = u'Organizer'
 
   def __str__(self):
-    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+    return 'id:%d email:%s' % (self.user.id, self.user.email)
 
 
 class Contestant(models.Model):
-  avatar = models.ForeignKey('Image', null=True)
+  avatar = models.ForeignKey('Image', null=True, blank=True)
   # resident id number
-  resident_id = models.CharField(max_length=MAX_RID_LEN, null=True)
+  resident_id = models.CharField(max_length=MAX_RID_LEN, null=True, blank=True)
   # nick name
-  nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice')
+  nick_name = models.CharField(max_length=MAX_NAME_LEN_SHORT, default='Alice', null=True, blank=True)
   # school name
-  school = models.CharField(max_length=MAX_NAME_LEN_LONG)
+  school = models.CharField(max_length=MAX_NAME_LEN_LONG, null=True, blank=True)
   # gender
   GENDER_CHOICES = (('M', 'male'), ('F', 'female'), ('O', 'others'))
   gender = models.CharField(choices=GENDER_CHOICES, max_length=MAX_FLAG_LEN, default='O')
 
-  introduction = models.TextField(null=True)
+  introduction = models.TextField(null=True, blank=True)
 
-  def clean(self, *args, **kwargs):
+  def clean(self):
     # add custom validation here
-    super(Contestant, self).clean(*args, **kwargs)
+    super(Contestant, self).clean()
 
   def __str__(self):
-    return 'id:%d email:%s' % (self.user_set.all()[0].id, self.user_set.all()[0].email)
+    return 'id:%d email:%s' % (self.user.id, self.user.email)
 
 
 class UserManager(BaseUserManager):
@@ -144,8 +148,8 @@ class User(AbstractUser):
   TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
   type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
 
-  organizer_profile = models.ForeignKey(Organizer, null=True, on_delete=models.CASCADE)
-  contestant_profile = models.ForeignKey(Contestant, null=True, on_delete=models.CASCADE)
+  organizer_profile = models.OneToOneField(Organizer, null=True, on_delete=models.CASCADE)
+  contestant_profile = models.OneToOneField(Contestant, null=True, on_delete=models.CASCADE)
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = []
@@ -154,6 +158,16 @@ class User(AbstractUser):
 
   def __str__(self):
     return 'id:%d email:%s' % (self.id, self.email)
+
+
+@receiver(post_delete, sender=User)
+def post_delete_user(sender, instance, *args, **kwargs):
+  if instance.type == 'C':
+    if instance.contestant_profile:
+      instance.contestant_profile.delete()
+  elif instance.type == 'O':
+    if instance.organizer_profile:
+      instance.organizer_profile.delete()
 
 
 class Team(models.Model):
