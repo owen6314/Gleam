@@ -17,22 +17,14 @@ MAX_RID_LEN = 32
 
 class Tournament(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-
   organizer = models.ForeignKey('Organizer')
-
   description = models.TextField()
-
   status = models.IntegerField()
-
   image = models.ImageField(null=True, blank=True, upload_to='tournament_images')
-
   register_begin_time = models.DateTimeField()
   register_end_time = models.DateTimeField()
-
   overall_end_time = models.DateTimeField()
-
   max_team_member_num = models.IntegerField()
-
   team_count = models.IntegerField(default=0)
 
   STATUS_SAVED = 0
@@ -44,17 +36,13 @@ class Tournament(models.Model):
 
 class Contest(models.Model):
   name = models.CharField(max_length=MAX_NAME_LEN_LONG)
-
   submit_begin_time = models.DateTimeField()
   submit_end_time = models.DateTimeField()
   release_time = models.DateTimeField()
   description = models.TextField()
   pass_rule = models.DecimalField(max_digits=8, decimal_places=3, default=0.8)
-
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
-
   team_count = models.IntegerField(default=0)
-
   last_csv_upload_time = models.DateTimeField(null=True)
 
   def __str__(self):
@@ -62,18 +50,14 @@ class Contest(models.Model):
 
 
 class Organizer(models.Model):
+  profile_page_visit_num = models.IntegerField(default=0)
+  donation = models.IntegerField(default=0)
   avatar = models.ForeignKey('Image', null=True)
-
   organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
-
   biography = models.TextField(null=True)
-
   description = models.TextField(null=True)
-
   location = models.TextField(null=True)
-
   field = models.CharField(max_length=256, null=True)
-
   website = models.URLField(null=True)
 
   class Meta:
@@ -144,12 +128,10 @@ class User(AbstractUser):
 
   username = None
   email = models.EmailField(_('email address'), unique=True, max_length=80)
-
   TYPE_CHOICES = (('O', 'Organizer'), ('C', 'Contestant'))
   type = models.CharField(max_length=MAX_FLAG_LEN, choices=TYPE_CHOICES)
-
-  organizer_profile = models.OneToOneField(Organizer, null=True, on_delete=models.CASCADE)
-  contestant_profile = models.OneToOneField(Contestant, null=True, on_delete=models.CASCADE)
+  organizer_profile = models.OneToOneField(Organizer, null=True, blank=True, on_delete=models.CASCADE)
+  contestant_profile = models.OneToOneField(Contestant, null=True, blank=True, on_delete=models.CASCADE)
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = []
@@ -171,6 +153,7 @@ def post_delete_user(sender, instance, *args, **kwargs):
 
 
 class Team(models.Model):
+  is_valid = models.BooleanField(default=True)
   # team name
   name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   # team members
@@ -189,9 +172,7 @@ class Team(models.Model):
 class Record(models.Model):
   team = models.ForeignKey('Team')
   score = models.DecimalField(max_digits=4, decimal_places=2)
-
   time = models.DateTimeField()
-
   contest = models.ForeignKey('Contest', null=True)
 
 

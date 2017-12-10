@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.conf.urls.static import static
 from django.contrib import admin
 from gleam_platform.common_views import IndexView
 from django.conf import settings

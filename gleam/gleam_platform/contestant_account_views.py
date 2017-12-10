@@ -40,7 +40,6 @@ class SignupContestantView(View):
 
       user.save()
 
-      # return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://'+ current_site})
       return redirect('confirmation-email-send', user.id)
 
     # 跳转到index
@@ -91,13 +90,13 @@ class LoginContestantView(View):
     return redirect('index')
 
 
-@method_decorator(login_required, name='dispatch')
-class LogoutContestantView(View):
-  # 登出
-  @staticmethod
-  def get(request):
-    auth.logout(request)
-    return redirect('index')
+# @method_decorator(login_required, name='dispatch')
+# class LogoutContestantView(View):
+#   # 登出
+#   @staticmethod
+#   def get(request):
+#     auth.logout(request)
+#     return redirect('index')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -105,17 +104,12 @@ class HomeContestantView(View):
   # 显示参赛者主页
   @staticmethod
   def get(request):
-    try:
-      contestant = request.user.contestant_profile
-    except:
-      # 403 permission denied
-      return redirect('index')
-
-    # 当前所有发布的锦标赛，按注册时间倒序排列
-    # tournaments = Tournament.objects.filter(status__in=[Tournament.STATUS_PUBLISHED]).order_by('-register_begin_time')
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
 
     data = dict()
-    data['tournaments'] = Tournament.objects.filter(team__members=request.user.contestant_profile).distinct()
+    data['tournaments'] = Tournament.objects\
+      .filter(team__members=request.user.contestant_profile).distinct()
 
     return render(request, 'contestant/home.html', data)
 
@@ -125,21 +119,19 @@ class ProfileContestantView(View):
   # 显示参赛者信息
   @staticmethod
   def get(request, user_id):
-    # # 如果用户类型不符, 拒绝请求
-    # if request.user.type != 'C':
-    #   return redirect('permission-denied-403')
+
     try:
       user = User.objects.get(id=user_id)
     except:
       return redirect('404')
 
-    if user.type != 'C':
+    if user.type != 'C' or not user.contestant_profile:
       return redirect('403')
 
     fields = ['nick_name', 'gender', 'school', 'introduction']
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
-    data['user'] = user
+    # data['user'] = user
 
     return render(request, 'contestant/profile.html', data)
 
@@ -163,6 +155,10 @@ def activate(request, uidb64, token):
 class ProfileEditContestantView(View):
   @staticmethod
   def get(request):
+
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
+
     fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
     data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
     form = ProfileContestantForm(initial=data)
@@ -170,6 +166,10 @@ class ProfileEditContestantView(View):
 
   @staticmethod
   def post(request):
+
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
+
     form = ProfileContestantForm(request.POST, request.FILES)
     if form.is_valid():
       # 保存除avatar之外的所有field
