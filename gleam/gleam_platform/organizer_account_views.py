@@ -158,7 +158,6 @@ class ProfileOrganizerView(View):
         # 一个队长 + 队员数
         data['total_contestant_num'] += team.members.count + 1
 
-
     # ongoing_team_num = 0
     # for tournament in tournaments_ongoing:
     #   ongoing_team_num += tournament.team_set.count()

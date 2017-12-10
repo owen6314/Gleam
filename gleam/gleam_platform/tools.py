@@ -69,12 +69,11 @@ def get_conditional_tournaments(organizer=None, reverse_order=False, type='ALL')
 
 
 def validate_rid(ID):
-
   VERIFYMATRIX = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
   VERIFYCODE = '10X98765432'
 
   if type(ID) == list:
-     ID = ''.join(ID)
+    ID = ''.join(ID)
   if len(ID) != 18:
     return False
   if 1900 < int(ID[6:10]) < 2100:
@@ -98,6 +97,7 @@ def validate_rid(ID):
     return False
   else:
     return True
+
 
 def get_contribution(organizer):
   return 0.1 + math.sqrt(organizer.donation) / 1000000
