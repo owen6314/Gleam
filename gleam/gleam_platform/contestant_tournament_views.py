@@ -108,25 +108,13 @@ class TournamentListView(View):
   # 显示比赛列表
   @staticmethod
   def get(request):
-    tournaments_online = Tournament.objects \
-      .filter(status=Tournament.STATUS_PUBLISHED) \
-      .filter(register_end_time__lte=timezone.now(), overall_end_time__gt=timezone.now()) \
-      .distinct()
-
-    tournaments_registering = Tournament.objects \
-      .filter(status=Tournament.STATUS_PUBLISHED) \
-      .filter(register_begin_time__lte=timezone.now(), register_end_time__gt=timezone.now()) \
-      .distinct()
-
-    tournaments_offline = Tournament.objects \
-      .filter(status=Tournament.STATUS_PUBLISHED)\
-      .filter(overall_end_time__lte=timezone.now()) \
-      .distinct()
-
-    tournaments_coming = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)\
-      .filter(register_begin_time__lt=timezone.now())\
-      .distinct()
-
+    tournaments = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)
+    now = timezone.now()
+    tournaments_coming = tournaments.filter(register_begin_time__gte=now)
+    tournaments_registering = tournaments.filter(register_begin_time__lte=now, register_end_time__gt=now)
+    tournaments_online = tournaments.filter(register_end_time__lte=now, overall_end_time__gt=now)
+    tournaments_offline = tournaments.filter(overall_end_time__lte=now)
+    
     data = dict()
     data['tournaments_online'] = tournaments_online
     data['tournaments_registering'] = tournaments_registering
