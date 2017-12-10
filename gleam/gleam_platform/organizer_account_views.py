@@ -83,22 +83,21 @@ class HomeOrganizerView(View):
     #   data['total_team_num'] += len(tournament.team_set.all())
 
     # 已保存的比赛
-    data['tournaments_saved'] = Tournament.objects.filter(status=Tournament.STATUS_SAVED)
+    data['tournaments_saved'] = tournaments.filter(status=Tournament.STATUS_SAVED)
     # 已结束的比赛
-    data['tournaments_finished'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_finished'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                              overall_end_time__lte=timezone.now())
     # # 已结束的比赛数目
     # data['tournament_finished_num'] = len(data['tournaments_finished'])
     # 即将开始的比赛
-    data['tournaments_coming'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_coming'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                            register_begin_time__gte=timezone.now())
     # # 即将开始的比赛数目
     # data['tournament_coming_num'] = len(data['tournaments_coming'])
     # 正在进行的比赛
-    data['tournaments_ongoing'] = Tournament.objects \
-      .filter(status=Tournament.STATUS_PUBLISHED,
-              register_begin_time__lte=timezone.now(),
-              overall_end_time__gt=timezone.now())
+    data['tournaments_ongoing'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
+                                                     register_begin_time__lte=timezone.now(),
+                                                     overall_end_time__gt=timezone.now())
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
     # 由该主办方主办，当前正在进行（register_begin_time <= now overall_end_time）的
