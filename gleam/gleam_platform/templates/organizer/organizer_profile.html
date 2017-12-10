@@ -14,7 +14,7 @@
     <div class="col-md-3 col-sm-3 col-xs-12">
       <div class="profile_img">
         <div id="crop-avatar">
-          <img class="img-responsive avatar-view" src="{{ user.organizer_profile.avatar.image.url }}" height="220" width="220" alt="Avatar" title="{{user.organizer_profile.organization}}">
+          <img class="img-responsive avatar-view" src="{% if user.organizer_profile.avatar.image %}{{ user.organizer_profile.avatar.image.url }}{% endif %}" height="220" width="220" title="{{user.organizer_profile.organization}}">
         </div>
       </div>
       <h2>{{user.organizer_profile.organization}} <small>{{user.organizer_profile.biography}}</small></h2>
@@ -29,7 +29,7 @@
 
         <li class="m-top-xs">
           <i class="fa fa-external-link user-profile-icon"></i>
-          <a href={{user.organizer_profile.website}} target="_blank"> 主页 </a>
+          <a href={{user.organizer_profile.website}} target="_blank"> {{user.organizer_profile.organization}} </a>
         </li>
 
         <li>
@@ -37,7 +37,7 @@
         </li>
 
         <li>
-          <i class="fa fa-user"></i> 当前参加队伍数 {{ongoing_team_num}}
+          <i class="fa fa-user"></i> 当前参加人数 {{ongoing_contestant_num}}
         </li>
 
         <li>
@@ -45,11 +45,11 @@
         </li>
 
         <li>
-          <i class="fa fa-clock-o"></i> 累计参加人数 {{total_team_num}}
+          <i class="fa fa-clock-o"></i> 累计参加人数 {{total_contestant_num}}
         </li>
 
         <li>
-          <i class="fa fa-bolt"></i> 累计访问量 233
+          <i class="fa fa-bolt"></i> 累计访问量 {{heat}}
         </li>
 
         <li>
@@ -60,7 +60,7 @@
     </div>
     <div class="col-md-9 col-sm-9 col-xs-12">
 
-      <div><h2 align="center">这里应该放一个折线图统计每天的访问量</h2></div>
+      <div><h2 align="center">这里应该放一个图随便统计点什么</h2></div>
 
       <div class="x_panel">
         <div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -77,7 +77,7 @@
               <ul class="messages">
               	{% for t in tournaments_recent %}
                 <li>
-                  <img src={{t.image}} class="avatar" alt="Avatar">
+                  <img src={{ t.image.url }} class="avatar" alt="{{t.name}}">
                   <div class="message_date">
                     <h3 class="date text-info">{{t.register_begin_time.datetime.day}}</h3>
                     <p class="month">{{t.register_begin_time.datetime.month}}</p>
@@ -88,7 +88,7 @@
                     <br />
                     <p class="url">
                       <span class="fs1 text-info" aria-hidden="true" data-icon=""></span>
-                      <a href="{% url 'tournament-detail-contestant' t.id %}"><i class="fa fa-external-link"></i> 详情 </a>
+                      <i class="fa fa-external-link"></i> <a href="{% url 'tournament-detail-contestant' t.id %}"> 详情 </a>
                     </p>
                   </div>
                 </li>
