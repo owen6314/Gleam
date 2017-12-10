@@ -1,28 +1,11 @@
-from django.contrib import auth
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-from django.core.mail import EmailMessage
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from django.contrib import messages
-
 from django.utils import timezone
-from .forms import ContestForm, UserSignupForm, UserLoginForm, ProfileOrganizerForm, ProfileContestantForm, \
-  PromotionForm, TournamentForm
-from .models import Tournament, Contest, Organizer, Contestant, User, Team, Record, Image, LeaderBoardItem
-import datetime
+from .models import Tournament, Contest, Team, Record
 import hashlib
-import csv
-import uuid
-import os
-import json
 
 
 @method_decorator(login_required, name='dispatch')
@@ -31,53 +14,47 @@ class TournamentDetailContestantView(View):
   @staticmethod
   def get(request, *args):
 
+    # 判断当前用户类型
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
+
+    # 判断比赛存在性
     tournament_id = int(args[0])
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
     except:
-      # 错误tournament id
-      return redirect('permission-denied-403')
+      return redirect('404')
 
-    # 如果用户类型不符, 拒绝请求
-    if request.user.type != 'C':
-      return redirect('permission-denied-403')
-
+    # 构造回传数据
     data = dict()
 
     data['tournament_id'] = tournament_id
-
     data['description'] = tournament.description
-
     data['name'] = tournament.name
-
     data['organization'] = tournament.organizer.organization
-
-    teams = tournament.team_set.all()
-    contestants = list()
-    for _team in teams:
-      members = _team.members.all()
-      contestants.extend(members)
-    data['contestant_num'] = len(contestants)
-
+    # teams = tournament.team_set.all()
+    # contestants = list()
+    # for _team in teams:
+    #   members = _team.members.all()
+    #   contestants.extend(members)
+    # data['contestant_num'] = len(contestants)
     data['register_begin_time'] = tournament.register_begin_time
-
     data['register_end_time'] = tournament.register_end_time
-
     try:
-      data['current_contest'] = Contest.objects.filter(tournament=tournament, submit_begin_time__lte=timezone.now(),
-                                                       submit_end_time__gte=timezone.now())[0]
+      data['current_contest'] = Contest.objects.get(tournament=tournament, submit_begin_time__lte=timezone.now(),
+                                                    release_time__gt=timezone.now())
     except:
       data['current_contest'] = None
 
     data['contests_coming'] = Contest.objects.filter(tournament=tournament,
                                                      submit_begin_time__gt=timezone.now()).order_by('submit_begin_time')
     data['contests_finished'] = Contest.objects.filter(tournament=tournament,
-                                                       submit_end_time__lt=timezone.now()).order_by('-submit_end_time')
+                                                       release_time__lte=timezone.now()).order_by('-submit_begin_time')
 
     if data['current_contest']:
       data['countdown'] = (data['current_contest'].submit_end_time - timezone.now()).days
       data['update_time'] = data['current_contest'].release_time
-      data['leaderboard'] = TournamentDetailContestantView.get_leaderboard(data['current_contest'])
+      data['leaderboard'] = TournamentDetailContestantView.get_leader_board(data['current_contest'])
     else:
       data['countdown'] = 'N/A'
       data['update_time'] = ''
@@ -93,7 +70,6 @@ class TournamentDetailContestantView(View):
       data['team_status'] = 1
       data['team'] = dict()
       data['team']['team_name'] = team.name
-      all_members = team.members.all()
       data['team']['leader'] = team.leader
       data['team']['members'] = team.members.all()
       data['team']['tutor'] = team.tutor
@@ -108,15 +84,14 @@ class TournamentDetailContestantView(View):
     return render(request, 'tournament_detail_contestant.html', data)
 
   @staticmethod
-  # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
-  # cache the result may need some other tools like redis
-  def get_leaderboard(contest):
+  def get_leader_board(contest):
     leaderboard = contest.leaderboarditem_set.order_by('-score')
-    ret = []
+    leader_board = []
     rank = 1
     for record in leaderboard:
       team_info = dict()
       team_info['team_name'] = record.team.name
+      team_info['leader'] = record.team.leader
       team_info['members'] = record.team.members.all()
       team_info['submit_num'] = record.submit_num
       team_info['score'] = record.score
@@ -124,32 +99,39 @@ class TournamentDetailContestantView(View):
       team_info['tutor'] = record.team.tutor
       team_info['rank'] = rank
       rank += 1
-      ret.append(team_info)
+      leader_board.append(team_info)
 
-    return ret
+    return leader_board
 
 
 class TournamentListView(View):
   # 显示比赛列表
   @staticmethod
   def get(request):
-    all_contests = Contest.objects.all()
+    tournaments_online = Tournament.objects \
+      .filter(status=Tournament.STATUS_PUBLISHED) \
+      .filter(register_end_time__lte=timezone.now(), overall_end_time__gt=timezone.now()) \
+      .distinct()
 
-    all_tournaments = Tournament.objects.all()
+    tournaments_registering = Tournament.objects \
+      .filter(status=Tournament.STATUS_PUBLISHED) \
+      .filter(register_begin_time__lte=timezone.now(), register_end_time__gt=timezone.now()) \
+      .distinct()
 
-    tournaments_online = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED) \
-      .filter(register_end_time__lt=timezone.now(), contest__submit_end_time__gte=timezone.now()).distinct()
+    tournaments_offline = Tournament.objects \
+      .filter(status=Tournament.STATUS_PUBLISHED)\
+      .filter(overall_end_time__lte=timezone.now()) \
+      .distinct()
 
-    tournaments_registering = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                        register_end_time__gte=timezone.now()).distinct()
-
-    tournaments_offline = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                    contest__submit_end_time__gte=timezone.now()).distinct()
+    tournaments_coming = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED)\
+      .filter(register_begin_time__lt=timezone.now())\
+      .distinct()
 
     data = dict()
     data['tournaments_online'] = tournaments_online
     data['tournaments_registering'] = tournaments_registering
     data['tournaments_offline'] = tournaments_offline
+    data['tournaments_coming'] = tournaments_coming
 
     return render(request, 'tournament_list.html', data)
 

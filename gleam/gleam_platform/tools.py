@@ -3,6 +3,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
 
 import time
+import math
 
 from .models import Tournament
 
@@ -97,3 +98,6 @@ def validate_rid(ID):
     return False
   else:
     return True
+
+def get_contribution(organizer):
+  return 0.1 + math.sqrt(organizer.donation) / 1000000
