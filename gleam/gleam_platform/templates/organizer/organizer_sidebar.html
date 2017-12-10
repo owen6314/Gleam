@@ -5,17 +5,15 @@
 
   <div class="clearfix"></div>
 
-  <!-- menu profile quick info -->
   <div class="profile clearfix">
-<!--     <div class="profile_pic">
-      <img src="/static/images/img.jpg" alt="..." class="img-circle profile_img">
-    </div> -->
+    <div class="profile_pic">
+      <img src="{% if user.organizer_profile.avatar.image %}{{ user.organizer_profile.avatar.image.url }}{% endif %}" class="img-circle profile_img">
+    </div>
     <div class="profile_info">
       <span>Welcome,</span>
-      <h2>{{user.organizer.organization}}</h2>
+      <h2>{{request.user.organizer_profile.organization}}</h2>
     </div>
   </div>
-  <!-- /menu profile quick info -->
 
   <br />
 
@@ -29,21 +27,20 @@
             <li><a href="{% url 'home-organizer' %}#competitions-to-begin">将要开始</a></li>
             <li><a href="{% url 'home-organizer' %}#competitions-to-public">审核中</a></li>
             <li><a href="{% url 'home-organizer' %}#competitions-off-line">已结束</a></li>
-            <li><a href="{% url 'create-contest' %}">发布新比赛</a></li>
+            <li><a href="{% url 'create-contest' %}">创建新比赛</a></li>
           </ul>
         </li>
-        <li><a><i class="fa fa-edit"></i>机构信息<span class="fa fa-chevron-down"></span></a>
+        <li><a><i class="fa fa-edit"></i>资料管理<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="{% url 'profile-organizer' request.user.id %}">机构主页</a></li>
+            <li><a href="{% url 'profile-organizer' request.user.id %}" target="blank">我的主页</a></li>
             <li><a href="{% url 'profile-edit-organizer' %}">资料修改</a></li>
             <li><a href="#">密码修改</a></li>
-            <li><a href="sponsor_inbox.html">消息</a></li>
           </ul>
         </li>
         <li><a><i class="fa fa-info"></i>Gleam<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
             <li><a href="../page_404.html">关于Gleam</a></li>
-            <li><a href="mailto:calciferzh@outlook.com">联系我们</a></li>
+            <li><a href="mailto:calciferzh@outlook.com">联系Gleam</a></li>
           </ul>
         </li>
         <li>
