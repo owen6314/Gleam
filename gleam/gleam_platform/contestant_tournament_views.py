@@ -81,7 +81,7 @@ class TournamentDetailContestantView(View):
     else:
       data['team_status'] = 0
 
-    return render(request, 'tournament_detail_contestant.html', data)
+    return render(request, 'tournament/tournament_detail_contestant.html', data)
 
   @staticmethod
   def get_leader_board(contest):
@@ -133,7 +133,7 @@ class TournamentListView(View):
     data['tournaments_offline'] = tournaments_offline
     data['tournaments_coming'] = tournaments_coming
 
-    return render(request, 'tournament_list.html', data)
+    return render(request, 'tournament/tournament_list.html', data)
 
 
 @method_decorator(login_required, name='dispatch')

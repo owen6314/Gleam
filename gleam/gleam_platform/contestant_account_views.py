@@ -56,7 +56,7 @@ class SendConfirmationEmailView(View):
 
     current_site = get_current_site(request)
     mail_subject = '激活Gleam账户，迎接美丽新世界'
-    message = render_to_string('email_confirmation.html', {
+    message = render_to_string('contestant/email_confirmation.html', {
       'user': user,
       'domain': current_site.domain,
       'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -67,7 +67,7 @@ class SendConfirmationEmailView(View):
     )
     email.send()
 
-    return render(request, 'email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+    return render(request, 'contestant/email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
 
 
 class LoginContestantView(View):
@@ -111,7 +111,7 @@ class HomeContestantView(View):
     data['tournaments'] = Tournament.objects\
       .filter(team__members=request.user.contestant_profile).distinct()
 
-    return render(request, 'contestant_home.html', data)
+    return render(request, 'contestant/home.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -133,7 +133,7 @@ class ProfileContestantView(View):
     data['email'] = user.email
     # data['user'] = user
 
-    return render(request, 'contestant_profile.html', data)
+    return render(request, 'contestant/profile.html', data)
 
 
 def activate(request, uidb64, token):
@@ -162,7 +162,7 @@ class ProfileEditContestantView(View):
     fields = ['nick_name', 'school', 'gender', 'introduction', 'resident_id']
     data = tool.load_model_obj_data_to_dict(request.user.contestant_profile, fields)
     form = ProfileContestantForm(initial=data)
-    return render(request, 'contestant_profile_edit.html', {'form': form})
+    return render(request, 'contestant/profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):
@@ -187,4 +187,4 @@ class ProfileEditContestantView(View):
 
       return redirect('profile-contestant', request.user.id)
     else:
-      return render(request, 'contestant_profile_edit.html', {'form': form})
+      return render(request, 'contestant/profile_edit.html', {'form': form})

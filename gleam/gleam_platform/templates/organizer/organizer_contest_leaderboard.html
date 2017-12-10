@@ -1,6 +1,6 @@
-{% extends "organizer_base.html" %}
+{% extends "organizer/organizer_base.html" %}
 
-{% block title %} 资料修改 {% endblock title %}
+{% block title %} 阶段排名 {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -19,7 +19,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="x_panel">
             <div class="x_title">
-              <h2>初赛成绩 <small>更新于 2017/11/30 20:08</small></h2>
+              <h2>初赛成绩 <small>更新于 {{update_time}}</small></h2>
               <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -47,7 +47,7 @@
                       <td>{{e.team_name}}</td>
                       <td>
                         {% for m in e.members %}
-                        <a href="{% url 'profile-contestant' m.id %}">{{m.nick_name}}</a>
+                          <a href="{% url 'profile-contestant' m.id %}">{{m.nick_name}}</a>
                         {% endfor %}
                       </td>
                       <td>{{e.tutor}}</td>

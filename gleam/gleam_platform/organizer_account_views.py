@@ -120,7 +120,7 @@ class HomeOrganizerView(View):
     # 贡献度
     data['contribution'] = tool.get_contribution(organizer)
 
-    return render(request, 'organizer_home.html', data)
+    return render(request, 'organizer/organizer_home.html', data)
 
 
 class ProfileOrganizerView(View):
@@ -174,7 +174,7 @@ class ProfileOrganizerView(View):
     data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
     data['tournaments_faraway'] = tournaments_finished
 
-    return render(request, 'organizer_profile.html', data)
+    return render(request, 'organizer/organizer_profile.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -184,7 +184,7 @@ class ProfileEditOrganizerView(View):
     fields = ['organization', 'biography', 'description', 'location', 'field', 'website']
     data = tool.load_model_obj_data_to_dict(request.user.organizer_profile, fields)
     form = ProfileOrganizerForm(initial=data)
-    return render(request, 'organizer_profile_edit.html', {'form': form})
+    return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
 
   @staticmethod
   def post(request):

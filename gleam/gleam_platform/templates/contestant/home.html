@@ -1,0 +1,148 @@
+{% extends "base/base.html" %}
+
+{% block title %} | 主页{% endblock title %}
+
+{% block stylesheet %}
+  {{ block.super }}
+{% endblock stylesheet %}
+
+{% block content %}
+  <div style="height:100px;"></div>
+  <div class="container">
+    <div class="row">
+      <div id="myCarousel" class="carousel slide">
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel" data-slide-to="1"></li>
+          <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="item active">
+            <img src="/static/images/banner.jpg" alt="First slide">
+          </div>
+          <div class="item">
+            <img src="/static/images/bg-image-1.jpg" alt="Second slide">
+          </div>
+          <div class="item">
+            <img src="/static/images/bg-image-2.jpg" alt="Third slide">
+          </div>
+        </div>
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div style="height:80px;"></div>
+
+  <div class="container object-non-visible" data-animation-effect="fadeIn">
+    <h1 id="contest"  class="text-center title">我参加的比赛</h1>
+    <div class="space"></div>
+    <div class="x_content">
+      <table id="datatable-buttons" class="table table-added table-bordered">
+        <thead>
+        <tr>
+          <th>比赛名称</th>
+          <th>主办方</th>
+          <th>参赛人数</th>
+          <th>开始时间</th>
+          <th>结束时间</th>
+          <th>赛事主页</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% if tournaments %}
+          {% for tournament in tournaments %}
+            <tr>
+              <td>{{ tournament.name }}</td>
+              <td>{{ tournament.organizer.organization}}</td>
+              <td>{{ tournament.team_cnt}}</td>
+              <td>{{ tournament.register_begin_time }}</td>
+              <td>{{ tournament.register_end_time }}</td>
+              <td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" style="text-align: center;">您目前还没有参加任何比赛</td>
+          </tr>
+        {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  <div class="section">
+    <div class="container">
+      <h1 class="text-center title" id="portfolio">查看竞赛</h1>
+      <div class="separator"></div>
+      <p class="lead text-center">这里包含了本平台发布的所有比赛<br>点击标签来查看</p>
+      <br>
+      <div class="row object-non-visible" data-animation-effect="fadeIn">
+        <div class="col-md-12">
+          <div class="filters text-center">
+            <ul class="nav nav-pills">
+              <li class="active"><a href="#" data-filter="*">全部</a></li>
+              <li><a href="#" data-filter=".join">我参加的</a></li>
+              <li><a href="#" data-filter=".online">正在报名</a></li>
+              <li><a href="#" data-filter=".coming">即将到来</a></li>
+            </ul>
+          </div>
+          {% for tournament in tournamnets %}
+            <div class="col-sm-6 col-md-3 isotope-item join">
+              <div class="image-box">
+                <div class="overlay-container">
+                  <img src="/static/images/portfolio-3.jpg" alt="">
+                  <a class="overlay" data-toggle="modal" data-target="#project-3">
+                    <i class="fa fa-search-plus"></i>
+                    <span>已参加</span>
+                  </a>
+                </div>
+                <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+              </div>
+            </div>
+          {% endfor %}
+          <div class="isotope-container row grid-space-20">
+            {% for tournament in tournaments_coming %}
+              <div class="col-sm-6 col-md-3 isotope-item coming">
+                <div class="image-box">
+                  <div class="overlay-container">
+                    <img src="/static/images/portfolio-1.jpg" alt="">
+                    <a class="overlay" data-toggle="modal" data-target="#project-1">
+                      <i class="fa fa-search-plus"></i>
+                      <span>即将到来</span>
+                    </a>
+                  </div>
+                  <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-1">{{ tournament.name}}</a>
+                </div>
+              </div>
+            {% endfor %}
+            {% for tournament in tournaments_online %}
+              <div class="col-sm-6 col-md-3 isotope-item online">
+                <div class="image-box">
+                  <div class="overlay-container">
+                    <img src="/static/images/portfolio-3.jpg" alt="">
+                    <a class="overlay" data-toggle="modal" data-target="#project-3">
+                      <i class="fa fa-search-plus"></i>
+                      <span>正在进行</span>
+                    </a>
+                  </div>
+                  <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <a class="pull-right" href="{% url 'tournament-list' %}">查看更多</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}

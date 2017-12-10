@@ -1,0 +1,118 @@
+{% extends "base/base.html" %}
+
+{% block title %} | 账户设置{% endblock title %}
+
+{% block stylesheet %}
+  {{ block.super }}
+  <link href="/static/css/strength.css" rel="stylesheet">
+{% endblock stylesheet %}
+
+{% block content %}
+  <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title" style="text-align: center" >
+                <h2>修改账户设置
+                  <small>请谨慎修改</small>
+                </h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <br/>
+                <form id="profile—form" action="" method="post" data-parsley-validate class="form-horizontal form-label-left">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">邮箱
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input id="email" class="form-control col-md-7 col-xs-12"
+                             name="email" value="{{ email }}" disabled="disabled" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">当前密码
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input id="current_password" class="form-control col-md-7 col-xs-12"
+                             name="current_password" placeholder="请输入当前密码" type="password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">新密码
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input id="new_password" class="form-control col-md-7 col-xs-12"
+                             name="new_password" placeholder="请输入新的密码" type="password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div id="strength" style="width:30%;text-align: center;color:gray; "></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">确认密码
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input id="repeat_new_password" class="form-control col-md-7 col-xs-12"
+                             name="repeat_new_password" placeholder="请再次输入新的密码" type="password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div id="validate" style="width:30%;text-align: center;color:red; "></div>
+                    </div>
+                  </div>
+
+                  <div class="ln_solid"></div>
+                  <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                      <button type="submit" form="profile—form"  class="btn btn-primary">提交</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script>
+    $('#new_password').keyup(function() {
+      var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+      var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+      if (strongRegex.test($(this).val())) {
+        $('#strength').html("强");
+        $('#strength').attr("class","strong");
+      } else if (mediumRegex.test($(this).val())) {
+        $('#strength').html("中等");
+        $('#strength').attr("class","medium");
+      } else {
+        $('#strength').html("弱");
+        $('#strength').attr("class","weak");
+      }
+      return true;
+    });
+    $('#repeat_new_password').keyup(function() {
+
+      var pwd1 = $("#new_password").val();
+      var pwd2 = $("#repeat_new_password").val();
+      if (pwd1 !== pwd2) {
+        $('#validate').html("两次输入密码不相同！");
+      }
+    });
+
+  </script>
+{% endblock javascripts %}

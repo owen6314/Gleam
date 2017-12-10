@@ -1,4 +1,4 @@
-{% extends "organizer_base.html" %}
+{% extends "organizer/organizer_base.html" %}
 
 {% block title %} 资料修改 {% endblock title %}
 
@@ -25,76 +25,65 @@
               <div class="form-group">
 
                 {{ form.organization.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organization"> 机构名称 <span class="required">*</span>
-                </label>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organization"> 机构名称 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
-                  <input type="text" id="organization" maxlength="128" name="organization" required="required" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.organization}}">
-
+                  <input type="text" id="organization" maxlength="128" name="organization" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.organization}}">
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.biography.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="biography"> 简介(不超过140字) <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="biography"> 简介(不超过140字)
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
 
-                  <input maxlength="280" type="text" id="biography" name="biography" required="required" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.biography}}">
+                  <input maxlength="280" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.biography}}">
 
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.location.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="location"> 所在地 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="location"> 所在地
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
-                  <input type="text" maxlength="140" id="location" name="location" required="required" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.location}}">
-
+                  <input type="text" maxlength="140" id="location" name="location" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.location}}">
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.field.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="field"> 行业 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="field"> 行业
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
-                  <input type="text" maxlength="140" id="field" name="field" required="required" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.field}}">
-
+                  <input type="text" maxlength="140" id="field" name="field" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.field}}">
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.website.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website"> 主页(http或https开头) <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website"> 主页(http或https开头)
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
-                  <input type="url" id="website" name="website" required="required" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.website}}">
-
+                  <input type="url" id="website" name="website" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.website}}">
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.description.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description"> 详细介绍 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description"> 详细介绍
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
                   <textarea class="resizable_textarea form-control" name="description" id="description">{{user.organizer_profile.description}}</textarea>
-
                 </div>
               </div>
 
               <div class="form-group">
                 {{ form.avatar.errors }}
-                <label class="control-label col-md-3" for="avatar"> 头像 <span class="required">*</span>
+                <label class="control-label col-md-3" for="avatar"> 头像
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="file" accept=".jpg,.png" name="avatar" required="required" id="avatar">
+                  <input type="file" accept=".jpg,.png" name="avatar" id="avatar">
                 </div>
               </div>
 
@@ -124,9 +113,11 @@
       $("#avatar").fileinput({
           showUpload: false,
           maxFileSize: 1024,
+          {% if user.organizer_profile.avatar.image %}
           initialPreview: ['{{ user.organizer_profile.avatar.image.url }}'],
           initialPreviewAsData: true,
           initialPreviewFileType: 'image',
+          {% endif %}
       });
     })
 
