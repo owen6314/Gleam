@@ -84,15 +84,6 @@ class EditTournamentView(View):
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
-      i = contest.id
-      # data = {
-      #  'name': contest.name,
-      #  'description': contest.description,
-      #  'submit_begin_time': contest.submit_begin_time,
-      #  'submit_end_time': contest.submit_end_time,
-      #  'release_time': contest.release_time,
-      #  'pass_rule': contest.pass_rule
-      # }
       form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
     return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
@@ -114,12 +105,6 @@ class EditTournamentView(View):
     else:
       formfail = True
 
-    # tournament.name = request.POST['name']
-    # tournament.description = request.POST['description']
-    # tournament.register_begin_time = request.POST['register_begin_time']
-    # tournament.register_end_time = request.POST['register_end_time']
-    # tournament.overall_end_time = request.POST['overall_end_time']
-    # tournament.save()
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
@@ -135,15 +120,32 @@ class EditTournamentView(View):
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
 
+    prev_time = tournament.register_end_time
     for z in zip:
       form = z['form']
       if form.is_valid():
-        form.save()
+        if form.cleaned_data['submit_begin_time'] > prev_time:
+          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+          formfail = True
+        else:
+          form.save()
       else:
         formfail = True
+        if form.cleaned_data['submit_begin_time'] > prev_time:
+          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+      prev_time = form.cleaned_data['release_time']
+
+    if tournament.overall_end_time < prev_time:
+      tform.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
+      formfail = True
+
     if formfail:
+      tournament.status = Tournament.STATUS_SAVED
+      tournament.save()
       return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
+      tournament.status = Tournament.STATUS_PUBLISHED
+      tournament.save()
       return redirect('tournament-detail-organizer', tournament_id)
 
 
