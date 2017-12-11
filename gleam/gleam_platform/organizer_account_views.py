@@ -205,4 +205,4 @@ class ProfileEditOrganizerView(View):
 
       return redirect('profile-organizer', request.user.id)
     else:
-      return render(request, 'organizer_profile_edit.html', {'form': form})
+      return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
