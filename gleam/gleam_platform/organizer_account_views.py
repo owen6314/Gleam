@@ -217,7 +217,6 @@ class AccountEditOrganizerView(View):
     form = AccountEditForm()
     return render(request, 'organizer/account_edit.html', {'form': form})
 
-
   @staticmethod
   def post(request):
     if request.user.type != 'O' or not request.user.organizer_profile:

@@ -189,6 +189,7 @@ class ProfileEditContestantView(View):
     else:
       return render(request, 'contestant/profile_edit.html', {'form': form})
 
+
 @method_decorator(login_required, name='dispatch')
 class AccountEditContestantView(View):
 
@@ -198,7 +199,6 @@ class AccountEditContestantView(View):
       return redirect('403')
     form = AccountEditForm()
     return render(request, 'contestant/account_edit.html', {'form': form})
-
 
   @staticmethod
   def post(request):
@@ -220,7 +220,3 @@ class AccountEditContestantView(View):
 
     else:
       return render(request, 'contestant/account_edit.html', {'form': form})
-
-
-
-

@@ -129,6 +129,7 @@ class PromotionForm(forms.Form):
   promoted = forms.MultipleChoiceField()
   # choices=(("1", "A"), ("2", "B"), ("3", "C"), ("4", "D")))
 
+
 class AccountEditForm(forms.Form):
   old_password = forms.CharField(required=True)
   new_password = forms.CharField(required=True)
