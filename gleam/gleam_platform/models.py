@@ -24,8 +24,8 @@ class Tournament(models.Model):
   register_begin_time = models.DateTimeField()
   register_end_time = models.DateTimeField()
   overall_end_time = models.DateTimeField()
-  max_team_member_num = models.IntegerField()
-  team_count = models.IntegerField(default=0)
+  max_team_member_num = models.PositiveIntegerField()
+  team_count = models.PositiveIntegerField(default=0)
 
   STATUS_SAVED = 0
   STATUS_PUBLISHED = 1
@@ -42,7 +42,7 @@ class Contest(models.Model):
   description = models.TextField()
   pass_rule = models.DecimalField(max_digits=8, decimal_places=3, default=0.8)
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
-  team_count = models.IntegerField(default=0)
+  team_count = models.PositiveIntegerField(default=0)
   last_csv_upload_time = models.DateTimeField(null=True, blank=True)
   last_promote_time = models.DateTimeField(null=True, blank=True)
 
@@ -51,8 +51,8 @@ class Contest(models.Model):
 
 
 class Organizer(models.Model):
-  profile_page_visit_num = models.IntegerField(default=0)
-  donation = models.IntegerField(default=0)
+  profile_page_visit_num = models.PositiveIntegerField(default=0)
+  donation = models.PositiveIntegerField(default=0)
   avatar = models.ForeignKey('Image', null=True)
   organization = models.CharField(max_length=MAX_NAME_LEN_LONG, verbose_name=u'组织', default=u'常凯申')
   biography = models.TextField(null=True)
@@ -190,9 +190,8 @@ class Image(models.Model):
 
 class LeaderBoardItem(models.Model):
   team = models.ForeignKey('Team', null=True)
-  # team_id = models.IntegerField(unique=True)
   team_name = models.CharField(max_length=MAX_NAME_LEN_SHORT)
   score = models.DecimalField(max_digits=4, decimal_places=2)
-  submit_num = models.IntegerField(default=1)
+  submit_num = models.PositiveIntegerField(default=1)
   time = models.DateTimeField()
   contest = models.ForeignKey('Contest', on_delete=models.CASCADE)

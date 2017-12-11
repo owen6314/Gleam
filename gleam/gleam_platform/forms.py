@@ -53,9 +53,9 @@ class ContestForm(forms.ModelForm):
     submit_end_time = cleaned_data.get('submit_end_time')
     release_time = cleaned_data.get('release_time')
     if submit_begin_time and submit_end_time and release_time:
-      if submit_end_time <= submit_begin_time:
+      if submit_end_time < submit_begin_time:
         self.add_error('submit_end_time', '提交截止时间应位于开始时间之后')
-      if release_time <= submit_end_time:
+      if release_time < submit_end_time:
         self.add_error('release_time', '成绩公布时间应位于提交截止时间之后')
 
   def clean_pass_rule(self):
@@ -128,6 +128,7 @@ class ProfileContestantForm(forms.Form):
 class PromotionForm(forms.Form):
   promoted = forms.MultipleChoiceField()
   # choices=(("1", "A"), ("2", "B"), ("3", "C"), ("4", "D")))
+
 
 class AccountEditForm(forms.Form):
   old_password = forms.CharField(required=True)
