@@ -11,7 +11,7 @@
 {% block content %}
 <div style="height:100px;"></div>
 
-<div class="col-md-10 col-md-offset-1" role="main">
+<div class="col-md-12" style="text-align: center;" role="main">
   <div class="page-title">
     <div class="text-center">
       <h1>比赛列表</h1>
@@ -21,21 +21,20 @@
   <div class="clearfix"></div>
 
   <div class="container">
-    <div class="text-center col-md-8 col-md-offset-2">
+    <div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
       <ul class="nav nav-pills">
-        <li class="active" style="width:33%;"><a style="font-size:18px;" href="#tab_content1" data-toggle="tab">进行中</a></li>
-        <li style="width:33%;"><a style="font-size:18px;" href="#tab_content2" data-toggle="tab">即将开始</a></li>
-        <li style="width:33%;"><a style="font-size:18px;" href="#tab_content3" data-toggle="tab">已结束</a></li>
+        <li class="active" style="width:24%;"><a style="font-size:18px;" href="#tab_content1" data-toggle="tab">正在进行</a></li>
+        <li style="width:24%;"><a style="font-size:18px;" href="#tab_content2" data-toggle="tab">正在注册</a></li>
+        <li style="width:24%;"><a style="font-size:18px;" href="#tab_content3" data-toggle="tab">即将开始</a></li>
+        <li style="width:24%;"><a style="font-size:18px;" href="#tab_content4" data-toggle="tab">已经结束</a></li>
       </ul>
     </div>
     <div class="clearfix"></div>
-
     <div id="tournament_list_content" class="tab-content">
       <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="online">
         <div class="container object-non-visible" data-animation-effect="fadeIn">
-          <div class="x_content">
+          <div class="x_content" style="text-align: center;">
             <div class="space"></div>
-
             <table class="table table-added table-bordered">
               <thead>
               <tr>
@@ -69,11 +68,10 @@
           </div>
         </div>
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="ongoing">
+    <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="registering">
         <div class="container object-non-visible" data-animation-effect="fadeIn">
           <div class="x_content">
             <div class="space"></div>
-
             <table class="table table-added table-bordered">
               <thead>
               <tr>
@@ -99,6 +97,44 @@
               {% endfor %}
               {% else %}
               <tr>
+                <td colspan="6" style="text-align: center;">目前没有正在注册的比赛</td>
+              </tr>
+              {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="coming">
+        <div class="container object-non-visible" data-animation-effect="fadeIn">
+          <div class="x_content">
+            <div class="space"></div>
+
+            <table class="table table-added table-bordered">
+              <thead>
+              <tr>
+                <th>比赛名称</th>
+                <th>主办方</th>
+                <th>参赛人数</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th>赛事主页</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% if tournaments_coming %}
+              {% for tournament in tournaments_coming %}
+              <tr>
+                <td>{{ tournament.name }}</td>
+                <td>{{ tournament.organizer.organization}}</td>
+                <td>{{ tournament.team_cnt}}</td>
+                <td>{{ tournament.register_begin_time }}</td>
+                <td>{{ tournament.register_end_time }}</td>
+                <td><a href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a></td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
                 <td colspan="6" style="text-align: center;">目前没有即将开始的比赛</td>
               </tr>
               {% endif %}
@@ -108,7 +144,7 @@
           </div>
         </div>
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="offline">
+      <div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="offline">
         <div class="container object-non-visible" data-animation-effect="fadeIn">
           <div class="x_content">
             <div class="space"></div>
