@@ -43,7 +43,8 @@ class Contest(models.Model):
   pass_rule = models.DecimalField(max_digits=8, decimal_places=3, default=0.8)
   tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
   team_count = models.IntegerField(default=0)
-  last_csv_upload_time = models.DateTimeField(null=True)
+  last_csv_upload_time = models.DateTimeField(null=True, blank=True)
+  last_promote_time = models.DateTimeField(null=True, blank=True)
 
   def __str__(self):
     return 'name:%s id%d' % (self.name, self.id)
