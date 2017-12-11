@@ -31,7 +31,13 @@
                   <ul class="nav nav-pills">
                     <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
                     <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
-                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_team" data-toggle="tab">我的队伍</a></li>
+                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_team" data-toggle="tab">
+                      {% if team_status == 0 %}
+                        我要参赛
+                      {% else %}
+                        我的队伍
+                      {% endif %}
+                    </a></li>
                     <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">讨论区</a></li>
                   </ul>
                 </div>
