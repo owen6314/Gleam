@@ -152,11 +152,11 @@ blockquote {
 	z-index: 2;
 }
 .dropdown-menu{
-    background-color:rgba(0, 0, 0, 0.5);
-    text-align:center;
+	background-color:rgba(0, 0, 0, 0.5);
+	text-align:center;
 }
 .dropdown-menu > li > a {
-  color: rgb(255, 255, 255);
+	color: rgb(255, 255, 255);
 }
 
 .subfooter {
@@ -540,8 +540,8 @@ textarea {
 @media (min-width:768px) {
 	.fixed-header-on .navbar-default .navbar-nav > li > input {
 		position:relative;
-        top:17px;
-        width:300px;
+		top:17px;
+		width:100%;
 	}
 }
 @media (max-width:991px) {
