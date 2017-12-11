@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
   {{ block.super }}
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 {% endblock stylesheet %}
 
 {% block content %}
@@ -11,7 +12,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
             <div class="x_panel">
               <div class="x_title" style="text-align: center" >
                 <h2>修改个人信息
@@ -24,75 +25,84 @@
                 <form id="profile—form" action="{% url 'profile-edit-contestant' %}" method="post" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
                   {% csrf_token %}
                   <div class="form-group">
+                    {{ form.email.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">邮箱
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input id="email" class="form-control col-md-7 col-xs-12"
-                             name="email" value="{{ email }}" disabled="disabled"type="text">
+                             name="email" value="{{ user.contestant_profile.email }}" disabled="disabled"type="text">
                     </div>
                   </div>
                   <div class="form-group">
+                    {{ form.nick_name.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">昵称
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="nick_name" name="nick_name" value="{{ nick_name }}"
+                      <input type="text" id="nick_name" name="nick_name" value="{{ user.contestant_profile.nick_name }}"
                              class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
                   <div class="form-group">
+                    {{ form.avatar.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">头像</span>
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="file" name="avatar" id="contestant-avatar" accept=".jpg,.png">
+                      <input type="file" name="avatar" id="avatar" accept=".jpg,.png">
                     </div>
                   </div>
                   <div class="form-group">
+                    {{ form.gender.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">性别</label>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                      <div id="gender" class="btn-group" data-toggle="buttons">
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                      <div id="gender" class="btn-group"  data-toggle="buttons">
                         <label class="btn btn-primary" data-toggle-class="btn-primary"
                                data-toggle-passive-class="btn-default">
-                          <input type="radio" name="gender" value="M"> &nbsp; 男 &nbsp;
+                          <input type="radio" name="gender" id="gender-m" value="M"> &nbsp; 男 &nbsp;
                         </label>
                         <label class="btn btn-primary" data-toggle-class="btn-primary"
                                data-toggle-passive-class="btn-default">
-                          <input type="radio" name="gender" value="F"> &nbsp; 女 &nbsp;
+                          <input type="radio" name="gender" id="gender-f" value="F"> &nbsp; 女 &nbsp;
                         </label>
                         <label class="btn btn-primary" data-toggle-class="btn-primary"
                                data-toggle-passive-class="btn-default">
-                          <input type="radio" name="gender" value="O"> &nbsp; O &nbsp;
+                          <input type="radio" name="gender" id="gender-o" value="O"> &nbsp; O &nbsp;
                         </label>
                       </div>
                     </div>
                   </div>
                   <div class="form-group">
+                    {{ form.school.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">所属学校
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                       <input id="school" class="form-control col-md-7 col-xs-12"
-                             name="school" value="{{ school }}" minlength="4" required="true" placeholder="清华大学" type="text">
+                             name="school" value="{{ user.contestant_profile.school }}" minlength="4"
+                             required="true" type="text">
                     </div>
                   </div>
                   <div class="form-group">
+                    {{ form.introduction.errors }}
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">个人简介
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="introduction" name="introduction" value="{{ introduction }}"
-                             class="form-control col-md-7 col-xs-12">
+                      <textarea rows="5"type="text" id="introduction" name="introduction"
+                                value="{{ user.contestant_profile.introduction }}" class="col-md-12 col-xs-12"></textarea>
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">身份证
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" id="resident_id" name="resident_id" value="{{ resident_id }}"
+                      <input type="text" id="resident_id" name="resident_id" value="{{ user.contestant_profile.resident_id }}"
                              class="form-control col-md-7 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-md-offset-3">
+                      <div id="validate" style="color:red; ">{{ form.resident_id.errors.0 }}</div>
                     </div>
                   </div>
                   <div class="ln_solid"></div>
                   <div class="form-group">
-                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                      <button class="btn btn-default" type="button" data-dismiss="modal">取消</button>
+                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3 col-sm-offset-3">
                       <button type="submit" form="profile—form" class="btn btn-success">提交</button>
                     </div>
                   </div>
@@ -108,10 +118,28 @@
 
 {% block javascripts %}
   {{ block.super }}
-  <!-- validator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
   <script>
     $(document).ready(function() {
-      $("#profile-form").validate();
-    });
+      $("#avatar").fileinput({
+        showUpload: false,
+        maxFileSize: 1024,
+        {% if user.contestant_profile.avatar.image %}
+          initialPreview: ['{{ user.contestant_profile.avatar.image.url }}'],
+          initialPreviewAsData: true,
+          initialPreviewFileType: 'image',
+        {% endif %}
+      });
+      {% if user.contestant_profile.gender == "M" %}
+        $("#gender-m").click();
+      {% endif %}
+      {% if user.contestant_profile.gender == "M" %}
+        $("#gender-f").click();
+      {% endif %}
+      {% if user.contestant_profile.gender == "M" %}
+        $("#gender-o").click();
+      {% endif %}
+    })
   </script>
 {% endblock %}

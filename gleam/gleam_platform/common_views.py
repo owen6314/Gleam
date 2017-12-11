@@ -25,18 +25,18 @@ class BadRequestView(View):
   # 返回坏请求页面
   @staticmethod
   def get(request):
-    return render(request, 'page_500.html')
+    return render(request, 'error/page_500.html')
 
 
 class PermissionDeniedView(View):
   # 返回拒绝页面
   @staticmethod
   def get(request):
-    return render(request, 'page_403.html')
+    return render(request, 'error/page_403.html')
 
 
 class NotFoundView(View):
   # 返回拒绝页面
   @staticmethod
   def get(request):
-    return render(request, 'page_404.html')
+    return render(request, 'error/page_404.html')

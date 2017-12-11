@@ -23,7 +23,7 @@ class CreateTournamentView(View):
     try:
       organizer = request.user.organizer_profile
     except:
-      return render(request, 'page_403.html')
+      return render(request, 'error/page_403.html')
     return render(request, 'tournament/tournament_creation.html')
 
   # 创建比赛
