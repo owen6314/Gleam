@@ -1141,11 +1141,11 @@
       </div>
     </div>
   </div>
-
 {% endblock content %}
 
 {% block javascripts %}
   {{ block.super }}
+  <script src='/static/assets/js/unlock.js'></script>
   <script>
     $(function () {
       $(".banner-image").backstretch('/static/images/banner.jpg');
@@ -1192,9 +1192,6 @@
         $("#register-organizer-form").submit();
       }
     });
-  </script>
-  <script src='/static/assets/js/unlock.js'></script>
-  <script>
     $('.bar-slide').slideToUnlock({
       text : '滑动以验证',
       succText : '验证成功',
@@ -1204,4 +1201,5 @@
       }
     });
   </script>
+
 {% endblock javascripts %}
