@@ -5,8 +5,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.utils import timezone
 
-from .forms import UserSignupForm, UserLoginForm, ProfileOrganizerForm
-from .models import Tournament, Organizer, User, Image, Contestant
+from .forms import UserSignupForm, UserLoginForm, ProfileOrganizerForm, AccountEditForm
+from .models import Tournament, Organizer, User, Image
 import gleam_platform.tools as tool
 
 
@@ -87,8 +87,8 @@ class HomeOrganizerView(View):
     # 已结束的比赛
     data['tournaments_finished'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                              overall_end_time__lte=timezone.now())
-    # # 已结束的比赛数目
-    # data['tournament_finished_num'] = len(data['tournaments_finished'])
+    # 已结束的比赛数目
+    data['tournament_finished_num'] = len(data['tournaments_finished'])
     # 即将开始的比赛
     data['tournaments_coming'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                            register_begin_time__gte=timezone.now())
@@ -205,3 +205,36 @@ class ProfileEditOrganizerView(View):
       return redirect('profile-organizer', request.user.id)
     else:
       return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
+
+
+@method_decorator(login_required, name='dispatch')
+class AccountEditOrganizerView(View):
+
+  @staticmethod
+  def get(request):
+    if request.user.type != 'O' or not request.user.organizer_profile:
+      return redirect('403')
+    form = AccountEditForm()
+    return render(request, 'organizer/account_edit.html', {'form': form})
+
+
+  @staticmethod
+  def post(request):
+    if request.user.type != 'O' or not request.user.organizer_profile:
+      return redirect('403')
+    form = AccountEditForm(request.POST)
+    if form.is_valid():
+      old_password = form.cleaned_data['old_password']
+      new_password = form.cleaned_data['new_password']
+      user = authenticate(username=request.user.email, password=old_password)
+
+      if user:
+        user.set_password(new_password)
+        user.save()
+        return redirect('home-organizer')
+      else:
+        form.add_error('old_password', u'原密码错误')
+        return render(request, 'organizer/account_edit.html', {'form': form})
+
+    else:
+      return render(request, 'organizer/account_edit.html', {'form': form})
