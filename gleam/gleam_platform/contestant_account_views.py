@@ -24,7 +24,7 @@ class SignupContestantView(View):
   @staticmethod
   def get(request):
     form = UserSignupForm()
-    return render(request, 'contestant/signup.html', {'form': form} )
+    return render(request, 'contestant/signup.html', {'form': form})
 
   # 注册参赛者
   # email password
