@@ -26,9 +26,9 @@
                 <div class="form-group">
                   <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
                   </label>
-                  <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="text" id="competition-name" name="name" maxlength="128" class="form-control col-md-7 col-xs-12" required>
-                    <div class="help-block with-errors"></div>
+                  <div class="col-md-6 xdisplay_inputx form-group has-feedback"> 
+                    <input type="text" id="competition-name" name="name" maxlength="128" class="form-control has-feedback-left col-md-7 col-xs-12" required>
+                    <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
 
@@ -44,7 +44,7 @@
                   <label class="control-label col-md-3" for="dataset-description">赛事图片 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="file" name="image" required="required" id="tournament-image" required="required" accept=".jpg,.png">
+                    <input type="file" name="image" required="required" id="tournament-image" required="required" accept=".jpg,.png" class="form-control has-feedback-left">
                   </div>
                 </div>
 
@@ -71,7 +71,7 @@
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                     <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" >
-                    <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
 
@@ -79,7 +79,8 @@
                   <label class="control-label col-md-3" for="max_team_member_num">队伍人数限制 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="number" id="max_team_member_num" maxlength="128" name="max_team_member_num" class="form-control col-md-7 col-xs-12" value="{{ tournament.max_team_member_num }}">
+                    <input type="number" id="max_team_member_num" min="0" step="1" name="max_team_member_num" class="form-control has-feedback-left col-md-7 col-xs-12" placeholder="输入0表示不限制人数">
+                    <span class="fa fa-users form-control-feedback left" aria-hidden="true"></span>
                   </div>
                 </div>
 
@@ -149,7 +150,7 @@
           <label class="control-label col-md-3" for="pass_rule_'+contest_creation_stage_cnt+'">晋级规则 <span class="required">*</span> \
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
-            <input type="number" class="form-control has-feedback-left" required="required" id="pass_rule_'+contest_creation_stage_cnt+'" name="pass_rule_'+contest_creation_stage_cnt+'" placeholder="此项大于1表示晋级人数，小于1表示晋级比例"> \
+            <input type="number" min="0.0001" step="0.0001" class="form-control has-feedback-left" required="required" id="pass_rule_'+contest_creation_stage_cnt+'" name="pass_rule_'+contest_creation_stage_cnt+'" placeholder="此项大于1表示晋级人数，小于1表示晋级比例"> \
             <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
@@ -174,7 +175,7 @@
           </label> \
           <div class="col-md-6 xdisplay_inputx form-group has-feedback"> \
             <input type="text" class="form-control has-feedback-left" required="required" id="release_time_'+contest_creation_stage_cnt+'" name="release_time_'+contest_creation_stage_cnt+'" > \
-            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span> \
+            <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span> \
           </div> \
         </div> \
       </div> \
@@ -189,6 +190,7 @@
       $("#release_time_"+contest_creation_stage_cnt).datetimepicker({
         format: 'yyyy-mm-dd hh:ii'
       });
+      $("#contest-form").validator();
     });
     $("#removeform").click(function(){
       $("#stage_form_"+contest_creation_stage_cnt).remove();
