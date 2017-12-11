@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 
-from .forms import UserSignupForm, UserLoginForm, ProfileContestantForm
+from .forms import UserSignupForm, UserLoginForm, ProfileContestantForm, AccountEditForm
 from .models import Tournament, Contestant, User, Image
 
 import gleam_platform.tools as tool
@@ -188,3 +188,39 @@ class ProfileEditContestantView(View):
       return redirect('profile-contestant', request.user.id)
     else:
       return render(request, 'contestant/profile_edit.html', {'form': form})
+
+@method_decorator(login_required, name='dispatch')
+class AccountEditContestantView(View):
+
+  @staticmethod
+  def get(request):
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
+    form = AccountEditForm()
+    return render(request, 'contestant/account_edit.html', {'form': form})
+
+
+  @staticmethod
+  def post(request):
+    if request.user.type != 'C' or not request.user.contestant_profile:
+      return redirect('403')
+    form = AccountEditForm(request.POST)
+    if form.is_valid():
+      old_password = form.cleaned_data['old_password']
+      new_password = form.cleaned_data['new_password']
+      user = authenticate(username=request.user.email, password=old_password)
+
+      if user:
+        user.set_password(new_password)
+        user.save()
+        return redirect('home-contestant')
+      else:
+        form.add_error('old_password', u'原密码错误')
+        return render(request, 'contestant/account_edit.html', {'form': form})
+
+    else:
+      return render(request, 'contestant/account_edit.html', {'form': form})
+
+
+
+

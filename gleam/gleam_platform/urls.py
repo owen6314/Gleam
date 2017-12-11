@@ -1,9 +1,9 @@
 from django.conf.urls import url
 from .common_views import LogoutView, IndexView, PermissionDeniedView, NotFoundView
 from .organizer_account_views import SignupOrganizerView, LoginOrganizerView, HomeOrganizerView, ProfileOrganizerView, \
-  ProfileEditOrganizerView
+  ProfileEditOrganizerView, AccountEditOrganizerView
 from .contestant_account_views import SignupContestantView, LoginContestantView, HomeContestantView, \
-  ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView
+  ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView, AccountEditContestantView
 from .organizer_tournament_views import CreateTournamentView, TournamentDetailOrganizerView, EditTournamentView, \
   ContestLeaderboardOrganizerView
 from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView, QuitTeamView
@@ -23,6 +23,7 @@ urlpatterns = [
   url(r'^home/organizer', HomeOrganizerView.as_view(), name='home-organizer'),
   url(r'^profile/organizer/([1-9][0-9]*)/', ProfileOrganizerView.as_view(), name='profile-organizer'),
   url(r'^profile-edit/organizer', ProfileEditOrganizerView.as_view(), name='profile-edit-organizer'),
+  url(r'^organizer/account-edit', AccountEditOrganizerView.as_view(), name='organizer-account-edit'),
 
   # Contestant Account Views
   url(r'^signup/contestant', SignupContestantView.as_view(), name='signup-contestant'),
@@ -33,6 +34,7 @@ urlpatterns = [
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', activate,
       name='activate'),
   url(r'^confirmation-email-send/([1-9][0-9]*)/$', SendConfirmationEmailView.as_view(), name='confirmation-email-send'),
+  url(r'^contestant/account-edit', AccountEditContestantView.as_view(), name='contestant-account-edit'),
 
   # Organizer Tournament Views
   url(r'^create-contest', CreateTournamentView.as_view(), name='create-contest'),
