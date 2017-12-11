@@ -92,8 +92,22 @@
               <li><a href="#" data-filter=".coming">即将到来</a></li>
             </ul>
           </div>
+          {% for tournament in tournamnets %}
+            <div class="col-sm-6 col-md-3 isotope-item join">
+              <div class="image-box">
+                <div class="overlay-container">
+                  <img src="/static/images/portfolio-3.jpg" alt="">
+                  <a class="overlay" data-toggle="modal" data-target="#project-3">
+                    <i class="fa fa-search-plus"></i>
+                    <span>已参加</span>
+                  </a>
+                </div>
+                <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+              </div>
+            </div>
+          {% endfor %}
           <div class="isotope-container row grid-space-20">
-            {% for tournament in tournaments %}
+            {% for tournament in tournaments_coming %}
               <div class="col-sm-6 col-md-3 isotope-item coming">
                 <div class="image-box">
                   <div class="overlay-container">
@@ -107,162 +121,20 @@
                 </div>
               </div>
             {% endfor %}
-            <div class="col-sm-6 col-md-3 isotope-item online">
-              <div class="image-box">
-                <div class="overlay-container">
-                  <img src="/static/images/portfolio-3.jpg" alt="">
-                  <a class="overlay" data-toggle="modal" data-target="#project-3">
-                    <i class="fa fa-search-plus"></i>
-                    <span>正在报名</span>
-                  </a>
+            {% for tournament in tournaments_online %}
+              <div class="col-sm-6 col-md-3 isotope-item online">
+                <div class="image-box">
+                  <div class="overlay-container">
+                    <img src="/static/images/portfolio-3.jpg" alt="">
+                    <a class="overlay" data-toggle="modal" data-target="#project-3">
+                      <i class="fa fa-search-plus"></i>
+                      <span>正在进行</span>
+                    </a>
+                  </div>
+                  <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
                 </div>
-                <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
               </div>
-            </div>
-            <div class="col-sm-6 col-md-3 isotope-item join">
-              <div class="image-box">
-                <div class="overlay-container">
-                  <img src="/static/images/portfolio-3.jpg" alt="">
-                  <a class="overlay" data-toggle="modal" data-target="#project-3">
-                    <i class="fa fa-search-plus"></i>
-                    <span>正在进行</span>
-                  </a>
-                </div>
-                <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
-              </div>
-            </div>
-            <!--<div class="col-sm-6 col-md-3 isotope-item app-development">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-2.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-2">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>App Development</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-2">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item web-design">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-3.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-3">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Web Design</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item site-building">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-4.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-4">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Site Building</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-4">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item app-development">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-5.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-5">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>App Development</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-5">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item web-design">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-6.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-6">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Web Design</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-6">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item site-building">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-7.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-7">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Site Building</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-7">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item web-design">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-8.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-8">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Web Design</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-8">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item web-design">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-9.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-9">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Web Design</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-9">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item site-building">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-10.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-10">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Site Building</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-10">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item web-design">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-11.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-11">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>Web Design</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-11">Project Title</a>
-                          </div>
-                      </div>
-                      <div class="col-sm-6 col-md-3 isotope-item app-development">
-                          <div class="image-box">
-                              <div class="overlay-container">
-                                  <img src="/static/images/portfolio-12.jpg" alt="">
-                                  <a class="overlay" data-toggle="modal" data-target="#project-12">
-                                      <i class="fa fa-search-plus"></i>
-                                      <span>App Development</span>
-                                  </a>
-                              </div>
-                              <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-12">Project Title</a>
-                          </div>
-                      </div>-->
+            {% endfor %}
           </div>
           <a class="pull-right" href="{% url 'tournament-list' %}">查看更多</a>
         </div>

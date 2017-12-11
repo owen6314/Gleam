@@ -39,6 +39,8 @@ urlpatterns = [
   url(r'^tournament-detail/organizer/([1-9][0-9]*)/', TournamentDetailOrganizerView.as_view(),
       name='tournament-detail-organizer'),
   url(r'^edit-tournament/([1-9][0-9]*)/', EditTournamentView.as_view(), name='edit-tournament'),
+  url(r'^contest-leaderboard/organizer/([1-9][0-9]*)/$', ContestLeaderboardOrganizerView.as_view(),
+      name='contest-leaderboard-organizer'),
 
   # Contestant Tournament Views
   url(r'^tournament-detail/contestant/([1-9][0-9]*)/', TournamentDetailContestantView.as_view(),
@@ -46,8 +48,7 @@ urlpatterns = [
   url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
   url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register'),
   url(r'^quit/([1-9][0-9]*)/', QuitTeamView.as_view(), name='quit'),
-  url(r'^contest-leaderboard/organizer/([1-9][0-9]*)/$', ContestLeaderboardOrganizerView.as_view(),
-      name='contest-leaderboard-organizer'),
+
 
   # Image Manage Urls
   url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),

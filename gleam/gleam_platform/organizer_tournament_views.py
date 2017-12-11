@@ -12,6 +12,7 @@ import datetime
 import csv
 import uuid
 import json
+import math
 
 
 @method_decorator(login_required, name='dispatch')
@@ -305,23 +306,37 @@ class ContestLeaderboardOrganizerView(View):
     index = 0
     for item in leader_board_items:
       leaderboard.append({
-        'id': item.team.id,
+        # 'id': item.team.id,
         'team_name': item.team_name,
         'score': item.score,
-        'time': item.time,
+        # 'time': item.time,
+        'submit_num': item.submit_num,
         'rank': index + 1,
         'members': item.team.members.all(),
+        'leader': item.team.leader,
         'tutor': item.team.tutor,
       })
       index += 1
     data = dict()
     data['leaderboard'] = leaderboard
-    data['contest_id'] = contest.id
+    data['update_time'] = contest.last_csv_upload_time
+    # data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
-      team_promoted = Team.objects.filter(contests__in=[contest_next])
-      team_promoted_ids = [team.id for team in team_promoted]
-      data['promoted'] = team_promoted_ids
+      if contest.last_promote_time:
+        team_promoted = Team.objects.filter(contests__in=[contest_next])
+        team_promoted_ids = [team.id for team in team_promoted]
+        data['promoted'] = team_promoted_ids
+
+      else:
+        if contest.pass_rule < 1:
+          total_num = leader_board_items.count()
+          promoted_num = int(math.floor(total_num * contest.pass_rule))
+          team_promoted_ids = [item.id for item in leader_board_items[:promoted_num]]
+        else:
+          team_promoted_ids = [item.id for item in leader_board_items[:contest.pass_rule]]
+        data['promoted'] = team_promoted_ids
+
     else:
       data['promoted'] = []
     return render(request, 'organizer/organizer_contest_leaderboard.html', data)
@@ -335,6 +350,10 @@ class ContestLeaderboardOrganizerView(View):
       return redirect('404')
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
+
+      contest.last_promote_time = timezone.now()
+      contest.save()
+
       leader_board_items = LeaderBoardItem.objects \
         .filter(contest=contest).order_by('-score').all()
       for item in leader_board_items:
