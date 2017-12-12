@@ -12,6 +12,9 @@
 .table-added{
   background-color:#ffffff;
 }
+.table-added th{
+  text-align: center;
+}
 .dropdown:hover{
   background-color:rgba(0,0,0,0);
 }
