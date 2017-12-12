@@ -33,11 +33,11 @@
 
               <div class="form-group">
                 {{ form.biography.errors }}
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="biography"> 简介(不超过140字)
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="biography"> 简介(不超过30字)
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
 
-                  <input maxlength="280" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.biography %}{{user.organizer_profile.biography}}{% endif %}">
+                  <input maxlength="30" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.biography %}{{user.organizer_profile.biography}}{% endif %}">
 
                 </div>
               </div>
