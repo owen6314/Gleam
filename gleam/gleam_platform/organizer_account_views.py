@@ -105,14 +105,14 @@ class HomeOrganizerView(View):
     data['ongoing_contestant_num'] = 0
     for tournament in data['tournaments_ongoing']:
       for team in tournament.team_set.all():
-        # 一个队长 + 队员数
-        data['ongoing_contestant_num'] += team.members.count + 1
+
+        data['ongoing_contestant_num'] += team.members.count()
     # 由该主办方主办的所有比赛，的参赛总人次。
     data['total_contestant_num'] = 0
     for tournament in tournaments:
       for team in tournament.team_set.all():
-        # 一个队长 + 队员数
-        data['total_contestant_num'] += team.members.count + 1
+
+        data['total_contestant_num'] += team.members.count()
 
     data['heat'] = organizer.profile_page_visit_num
 
@@ -147,15 +147,15 @@ class ProfileOrganizerView(View):
     data['ongoing_contestant_num'] = 0
     for tournament in tournaments_ongoing:
       for team in tournament.team_set.all():
-        # 一个队长 + 队员数
-        data['ongoing_contestant_num'] += team.members.count + 1
+
+        data['ongoing_contestant_num'] += team.members.count()
 
     data['tournament_finished_num'] = tournaments_finished.count()
     data['total_contestant_num'] = 0
     for tournament in tournaments_all:
       for team in tournament.team_set.all():
-        # 一个队长 + 队员数
-        data['total_contestant_num'] += team.members.count + 1
+
+        data['total_contestant_num'] += team.members.count()
 
     # ongoing_team_num = 0
     # for tournament in tournaments_ongoing:
