@@ -80,7 +80,6 @@ class CreateTournamentView(View):
                                                                      })
 
 
-
 @method_decorator(login_required, name='dispatch')
 class EditTournamentView(View):
   @staticmethod
