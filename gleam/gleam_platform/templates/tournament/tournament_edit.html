@@ -6,7 +6,6 @@
   {{ block.super }}
   <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
-  <style type="text/css">.errorlist {color: #FF0000;}</style>
 {% endblock stylesheets %}
 
 
@@ -97,58 +96,70 @@
                 <div id="stage_form_">
                   <h3>{{z.contest.name}}</h3>
                   <div class="form-group">
-                    {{ z.form.name.errors }}
                     <label class="control-label col-md-3" for="name_{{ z.contest.id }}">阶段名称
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <input type="text" class="form-control has-feedback-left" id="name_{{ z.contest.id }}" name="name_{{ z.contest.id }}" value="{{ z.contest.name }}">
                       <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
                     </div>
+                    {% if z.form.name.errors %}
+                      <div class="alert alert-danger">{{ z.form.name.errors }}</div>
+                    {% endif %}
                   </div>
                   <div class="form-group">
-                    {{ z.form.description.errors }}
                     <label class="control-label col-md-3" for="description_{{ z.contest.id }}">阶段描述
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <textarea class="resizable_textarea form-control" name="description_{{ z.contest.id }}" id="description_{{ z.contest.id }}">{{z.contest.description}}</textarea>
                     </div>
+                    {% if z.form.description.errors %}
+                      <div class="alert alert-danger">{{ z.form.description.errors }}</div>
+                    {% endif %}
                   </div>
 
                   <div class="form-group">
-                    {{ z.form.pass_rule.errors }}
                     <label class="control-label col-md-3" for="pass_rule_{{ z.contest.id }}">晋级规则 <span class="required">*</span>
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <input type="number" class="form-control has-feedback-left" required="required" id="pass_rule_{{ z.contest.id }}" name="pass_rule_{{ z.contest.id }}" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{ z.contest.pass_rule }}">
                       <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.form.pass_rule.errors %}
+                        <div class="alert alert-danger">{{ z.form.pass_rule.errors }}</div>
+                      {% endif %}
                     </div>
                   </div>
 
                   <div class="form-group">
-                    {{ z.form.submit_begin_time.errors }}
                     <label class="control-label col-md-3" for="submit_begin_time_{{ z.contest.id }}">阶段开始时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ z.contest.id }}" name="submit_begin_time_{{ z.contest.id }}" value="{{z.contest.submit_begin_time | date:'Y-m-d H:i'}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.form.submit_begin_time.errors %}
+                        <div class="alert alert-danger">{{ z.form.submit_begin_time.errors.0 }}</div>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="form-group">
-                    {{ z.form.submit_end_time.errors }}
                     <label class="control-label col-md-3" for="submit_end_time_{{ z.contest.id }}">阶段结束时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ z.contest.id }}" name="submit_end_time_{{ z.contest.id }}" value="{{z.contest.submit_end_time | date:'Y-m-d H:i'}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.form.submit_end_time.errors %}
+                        <div class="alert alert-danger">{{ z.form.submit_end_time.errors.0 }}</div>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="form-group">
-                    {{ z.form.release_time.errors }}
                     <label class="control-label col-md-3" for="release_time_{{ z.contest.id }}">公布阶段结果时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
                       <input type="text" class="form-control has-feedback-left" id="release_time_{{ z.contest.id }}" name="release_time_{{ z.contest.id }}"  value="{{z.contest.release_time | date:'Y-m-d H:i'}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.form.release_time.errors %}
+                        <div class="alert alert-danger">{{ z.form.release_time.errors.0 }}</div>
+                      {% endif %}
                     </div>
                   </div>
                 </div>

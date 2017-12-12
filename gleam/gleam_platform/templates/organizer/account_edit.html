@@ -21,17 +21,19 @@
             <form class="form-horizontal form-label-left" role="form" data-toggle="validator" action="#" method="post" id="pwd-form" enctype="multipart/form-data">
               {% csrf_token %}
 
+              {% if form.errors.old_password %}
+                <div class="alert alert-danger">{{ form.errors.old_password.0 }}</div>
+              {% endif %}
+
               <div class="form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="old_password"> 原密码 <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input type="password" maxlength="20" id="old_password" name="old_password" required="required" class="form-control col-md-7 col-xs-12" v>
-                  <div class="alert alert-danger">{{ form.errors.old_password.0 }}</div>
                 </div>
               </div>
 
               <div class="form-group">
-                {{ form.new_password.errors }}
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="new_password"> 新密码 <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">

@@ -22,8 +22,8 @@
             <br />
             <form class="form-horizontal form-label-left" role="form" data-toggle="validator" action="{% url 'profile-edit-organizer' %}" method="post" id="profile-form" enctype="multipart/form-data">
               {% csrf_token %}
-              <div class="form-group">
 
+              <div class="form-group">
                 {{ form.organization.errors }}
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organization"> 机构名称 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -36,9 +36,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="biography"> 简介(不超过30字)
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-
                   <input maxlength="30" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.biography %}{{user.organizer_profile.biography}}{% endif %}">
-
                 </div>
               </div>
 
