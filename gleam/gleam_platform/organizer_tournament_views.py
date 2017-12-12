@@ -31,22 +31,10 @@ class CreateTournamentView(View):
   def post(request):
     tournament_form = TournamentForm(request.POST)
     tournament = None
-    if tournament_form.is_valid():
-      tournament = tournament_form.save(commit=False)
-      tournament.image = request.FILES['image']
-      tournament.organizer = request.user.organizer_profile
-      tournament.status = Tournament.STATUS_SAVED
-      tournament.save()
-    # name = request.POST['name']
-    # description = request.POST['description']
-    # image = request.FILES['image']
-    # register_begin_time = request.POST['register_begin_time']
-    # register_end_time = request.POST['register_end_time']
-    # tournament.overall_end_time = request.POST['overall_end_time']
-    # organizer = request.user.organizer_profile
-    # tournament = Tournament(name=name, description=description, image=image, register_begin_time=register_begin_time,
-    #                         register_end_time=register_end_time, organizer=organizer, status=Tournament.STATUS_SAVED,
-    #                         max_team_member_num=3)
+    contest_forms = []
+    formfail = False
+    if not tournament_form.is_valid():
+      formfail = True
     form_len = (len(request.POST) - 7) // 6
     for i in range(1, form_len + 1):
       data = {
@@ -58,15 +46,39 @@ class CreateTournamentView(View):
         'pass_rule': request.POST['pass_rule_' + str(i)]
       }
       form = ContestForm(data)
-      if form.is_valid():
+      contest_forms.append(form)
+      if not form.is_valid():
+          formfail = True
+
+    prev_time = tournament_form.cleaned_data['register_end_time']
+    for form in contest_forms:
+      if form.cleaned_data['submit_begin_time'] and prev_time:
+        if form.cleaned_data['submit_begin_time'] > prev_time:
+          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+          formfail = True
+      prev_time = form.cleaned_data['release_time']
+    overall_end_time = tournament_form.cleaned_data['overall_end_time']
+    if overall_end_time and prev_time and overall_end_time < prev_time:
+      tournament_form.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
+      formfail = True
+
+    if not formfail:
+      tournament = tournament_form.save(commit=False)
+      tournament.image = request.FILES['image']
+      tournament.organizer = request.user.organizer_profile
+      tournament.status = Tournament.STATUS_SAVED
+      tournament.save()
+      for form in contest_forms:
         contest = form.save(commit=False)
         contest.tournament = tournament
         contest.team_count = 0
         contest.save()
-      else:
-        # form validate fail
-        pass
-    return redirect('home-organizer')
+      return redirect('home-organizer')
+    else:
+      return render(request, 'tournament/tournament_creation.html', {'tournament_form': tournament_form,
+                                                                     'contest_forms': contest_forms
+                                                                     })
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -124,18 +136,20 @@ class EditTournamentView(View):
     for z in zip:
       form = z['form']
       if form.is_valid():
-        if form.cleaned_data['submit_begin_time'] > prev_time:
-          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
-          formfail = True
-        else:
-          form.save()
+        if form.cleaned_data['submit_begin_time'] and prev_time:
+          if form.cleaned_data['submit_begin_time'] > prev_time:
+            form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+            formfail = True
+          else:
+            form.save()
       else:
         formfail = True
-        if form.cleaned_data['submit_begin_time'] > prev_time:
-          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+        if form.cleaned_data['submit_begin_time'] and prev_time:
+          if form.cleaned_data['submit_begin_time'] > prev_time:
+            form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
       prev_time = form.cleaned_data['release_time']
 
-    if tournament.overall_end_time < prev_time:
+    if tournament.overall_end_time and prev_time and tournament.overall_end_time < prev_time:
       tform.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
       formfail = True
 
