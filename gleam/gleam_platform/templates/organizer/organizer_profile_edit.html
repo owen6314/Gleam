@@ -27,7 +27,7 @@
                 {{ form.organization.errors }}
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="organization"> 机构名称 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" id="organization" maxlength="128" name="organization" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.organization}}">
+                  <input type="text" id="organization" maxlength="128" name="organization" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.organization %}{{user.organizer_profile.organization}}{% endif %}">
                 </div>
               </div>
 
@@ -37,7 +37,7 @@
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
 
-                  <input maxlength="280" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.biography}}">
+                  <input maxlength="280" type="text" id="biography" name="biography" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.biography %}{{user.organizer_profile.biography}}{% endif %}">
 
                 </div>
               </div>
@@ -47,7 +47,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="location"> 所在地
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" maxlength="140" id="location" name="location" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.location}}">
+                  <input type="text" maxlength="140" id="location" name="location" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.location %}{{user.organizer_profile.location}}{% endif %}">
                 </div>
               </div>
 
@@ -56,7 +56,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="field"> 行业
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" maxlength="140" id="field" name="field" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.field}}">
+                  <input type="text" maxlength="140" id="field" name="field" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.field %}{{user.organizer_profile.field}}{% endif %}">
                 </div>
               </div>
 
@@ -65,7 +65,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="website"> 主页(http或https开头)
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="url" id="website" name="website" class="form-control col-md-7 col-xs-12" value="{{user.organizer_profile.website}}">
+                  <input type="url" id="website" name="website" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.website %}{{user.organizer_profile.website}}{% endif %}">
                 </div>
               </div>
 
@@ -74,7 +74,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description"> 详细介绍
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <textarea class="resizable_textarea form-control" name="description" id="description">{{user.organizer_profile.description}}</textarea>
+                  <textarea class="resizable_textarea form-control" name="description" id="description">{% if user.organizer_profile.description %}{{user.organizer_profile.description}}{% endif %}</textarea>
                 </div>
               </div>
 
