@@ -1,6 +1,14 @@
-{% extends "base/base_index.html" %}
+{% extends "base/base_message.html" %}
 
 {% block title %} | 注册{% endblock title %}
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 {% block stylesheet %}
   {{ block.super }}
@@ -11,12 +19,21 @@
       opacity: 0.5;
     }
   </style>
+  <link rel="stylesheet" type="text/css" href="/static/assets/less/unlock.css">
+  <style type="text/css" media="screen">
+    .bar {
+      margin-left:0px;
+      height: 40px;
+      width: 300px;
+    }
+  </style>
+  <link href="/static/css/strength.css" rel="stylesheet">
 {% endblock stylesheet %}
 
 {% block content %}
   <div id="home" class="banner">
     <div class="banner-image"></div>
-    <div class="banner-caption" style="top:30%;">
+    <div class="banner-caption" style="top:20%;">
       <div class="container">
         <div class="row">
           <h1 class="text-center">加入<span>Gleam</span></h1>
@@ -28,28 +45,55 @@
                 <div class="form-group">
                   <label for="contestant-register-email" class="col-sm-3 control-label">邮箱</label>
                   <div class="col-sm-9">
-                    <input type="text" class="form-control transparent" id="contestant-register-email" name="email"
+                    <input type="text" class="form-control transparent" required="required"
+                           id="contestant-register-email" name="email"
                            placeholder="example@example.com">
                   </div>
+                  <div class="col-md-3 col-sm-3 col-xs-3">
+                      <div style="color:red;">{{ form.email.errors.0 }}</div>
+                    </div>
                 </div>
                 <div class="form-group">
-                  <label for="contestant-register-password" class="col-sm-3 control-label">密码</label>
-                  <div class="col-sm-9">
-                    <input type="password" class="form-control transparent" id="contestant-register-password" name="password"
-                           placeholder="password">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">密码
+                  </label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input id="contestant-register-password" class="form-control transparent"
+                           maxlength="16" minlength="8" name="password" required="required"
+                           placeholder="请设置密码" type="password">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="contestant-register-password" class="col-sm-3 control-label">再次输入密码</label>
-                  <div class="col-sm-9">
-                    <input type="password" class="form-control transparent" id="contestant-register-repeat-password" name="repeat_password"
-                           placeholder="password">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                  </label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <div id="strength" style="width:30%;text-align: center;color:gray; "></div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">确认密码
+                  </label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input id="contestant-register-repeat-password" class="form-control transparent"
+                           maxlength="16" minlength="8" name="repeat-password" required="required"
+                           placeholder="请再次输入新的密码" type="password">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                  </label>
+                  <div class="col-md-9 col-sm-9 col-xs-12">
+                    <div id="validate" style="color:red; "></div>
+                  </div>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                  <div class="col-md-9 col-md-offset-3 col-sm-9 col-sm-offset-3 col-xs-12" style="text-align: center;">
+                    <div class="bar-slide bar transparent" style="width:100%;" ></div>
                   </div>
                 </div>
                 <div class="ln_solid"></div>
                 <div class="form-group">
-                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                    <button type="submit" form="register-contestant-form"  class="btn btn-primary">注册</button>
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3 col-sm-offset-3">
+                    <button type="submit" form="register-contestant-form" id="register-button" class="btn btn-disabled" disabled="disabled">注册</button>
                   </div>
                 </div>
               </form>
@@ -64,5 +108,44 @@
 
 {% block javascripts %}
   {{ block.super }}
+  <script src='/static/assets/js/unlock.js'></script>
+  <script>
+    $('.bar-slide').slideToUnlock({
+      text : '滑动以验证',
+      succText : '验证成功',
+      successFunc: function() {
+        $("#register-button").attr("class","btn btn-primary");
+        $("#register-button").removeAttr("disabled");
+      }
+    });
+  </script>
+  <script>
+    $('#contestant-register-password').keyup(function() {
+      var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+      var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+      if (strongRegex.test($(this).val())) {
+        $('#strength').html("强");
+        $('#strength').attr("class","strong");
+      } else if (mediumRegex.test($(this).val())) {
+        $('#strength').html("中等");
+        $('#strength').attr("class","medium");
+      } else {
+        $('#strength').html("弱");
+        $('#strength').attr("class","weak");
+      }
+      return true;
+    });
+    $('#contestant-register-repeat-password').keyup(function() {
 
+      var pwd1 = $("#contestant-register-password").val();
+      var pwd2 = $("#contestant-register-repeat-password").val();
+      if (pwd1 !== pwd2) {
+        $('#validate').html("两次输入密码不相同！");
+      }
+      else{
+        $('#validate').html("");
+      }
+    });
+
+  </script>
 {% endblock javascripts %}

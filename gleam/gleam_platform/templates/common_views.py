@@ -348,7 +348,7 @@ class CreateTournamentView(View):
     try:
       organizer = request.user.organizer_profile
     except:
-      return render(request, 'page_403.html')
+      return render(request, 'error/page_403.html')
     return render(request, 'tournament/tournament_creation.html')
 
   # 创建比赛
@@ -937,13 +937,13 @@ class PermissionDeniedView(View):
   # 返回拒绝页面
   @staticmethod
   def get(request):
-    return render(request, 'page_403.html')
+    return render(request, 'error/page_403.html')
 
 
 class NotFoundView(View):
   # 返回拒绝页面
   @staticmethod
   def get(request):
-    return render(request, 'page_404.html')
+    return render(request, 'error/page_404.html')
 
 

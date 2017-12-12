@@ -12,6 +12,7 @@ import datetime
 import csv
 import uuid
 import json
+import math
 
 
 @method_decorator(login_required, name='dispatch')
@@ -22,7 +23,7 @@ class CreateTournamentView(View):
     try:
       organizer = request.user.organizer_profile
     except:
-      return render(request, 'page_403.html')
+      return render(request, 'error/page_403.html')
     return render(request, 'tournament/tournament_creation.html')
 
   # 创建比赛
@@ -83,15 +84,6 @@ class EditTournamentView(View):
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
-      i = contest.id
-      # data = {
-      #  'name': contest.name,
-      #  'description': contest.description,
-      #  'submit_begin_time': contest.submit_begin_time,
-      #  'submit_end_time': contest.submit_end_time,
-      #  'release_time': contest.release_time,
-      #  'pass_rule': contest.pass_rule
-      # }
       form = ContestForm(instance=contest)
       zip.append({'contest': contest, 'form': form})
     return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
@@ -113,12 +105,6 @@ class EditTournamentView(View):
     else:
       formfail = True
 
-    # tournament.name = request.POST['name']
-    # tournament.description = request.POST['description']
-    # tournament.register_begin_time = request.POST['register_begin_time']
-    # tournament.register_end_time = request.POST['register_end_time']
-    # tournament.overall_end_time = request.POST['overall_end_time']
-    # tournament.save()
     contests = tournament.contest_set.all()
     zip = []
     for contest in contests:
@@ -134,15 +120,32 @@ class EditTournamentView(View):
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
 
+    prev_time = tournament.register_end_time
     for z in zip:
       form = z['form']
       if form.is_valid():
-        form.save()
+        if form.cleaned_data['submit_begin_time'] > prev_time:
+          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+          formfail = True
+        else:
+          form.save()
       else:
         formfail = True
+        if form.cleaned_data['submit_begin_time'] > prev_time:
+          form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+      prev_time = form.cleaned_data['release_time']
+
+    if tournament.overall_end_time < prev_time:
+      tform.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
+      formfail = True
+
     if formfail:
+      tournament.status = Tournament.STATUS_SAVED
+      tournament.save()
       return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
+      tournament.status = Tournament.STATUS_PUBLISHED
+      tournament.save()
       return redirect('tournament-detail-organizer', tournament_id)
 
 
@@ -305,23 +308,37 @@ class ContestLeaderboardOrganizerView(View):
     index = 0
     for item in leader_board_items:
       leaderboard.append({
-        'id': item.team.id,
+        # 'id': item.team.id,
         'team_name': item.team_name,
         'score': item.score,
-        'time': item.time,
+        # 'time': item.time,
+        'submit_num': item.submit_num,
         'rank': index + 1,
         'members': item.team.members.all(),
+        'leader': item.team.leader,
         'tutor': item.team.tutor,
       })
       index += 1
     data = dict()
     data['leaderboard'] = leaderboard
-    data['contest_id'] = contest.id
+    data['update_time'] = contest.last_csv_upload_time
+    # data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
-      team_promoted = Team.objects.filter(contests__in=[contest_next])
-      team_promoted_ids = [team.id for team in team_promoted]
-      data['promoted'] = team_promoted_ids
+      if contest.last_promote_time:
+        team_promoted = Team.objects.filter(contests__in=[contest_next])
+        team_promoted_ids = [team.id for team in team_promoted]
+        data['promoted'] = team_promoted_ids
+
+      else:
+        if contest.pass_rule < 1:
+          total_num = leader_board_items.count()
+          promoted_num = int(math.floor(total_num * contest.pass_rule))
+          team_promoted_ids = [item.id for item in leader_board_items[:promoted_num]]
+        else:
+          team_promoted_ids = [item.id for item in leader_board_items[:contest.pass_rule]]
+        data['promoted'] = team_promoted_ids
+
     else:
       data['promoted'] = []
     return render(request, 'organizer/organizer_contest_leaderboard.html', data)
@@ -335,6 +352,10 @@ class ContestLeaderboardOrganizerView(View):
       return redirect('404')
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
+
+      contest.last_promote_time = timezone.now()
+      contest.save()
+
       leader_board_items = LeaderBoardItem.objects \
         .filter(contest=contest).order_by('-score').all()
       for item in leader_board_items:

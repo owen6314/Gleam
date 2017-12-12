@@ -83,7 +83,7 @@
       <p class="lead text-center">这里包含了本平台发布的所有比赛<br>点击标签来查看</p>
       <br>
       <div class="row object-non-visible" data-animation-effect="fadeIn">
-        <div class="col-md-12">
+        <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="filters text-center">
             <ul class="nav nav-pills">
               <li class="active"><a href="#" data-filter="*">全部</a></li>
@@ -93,7 +93,7 @@
             </ul>
           </div>
           {% for tournament in tournamnets %}
-            <div class="col-sm-6 col-md-3 isotope-item join">
+            <div class="col-sm-6 col-md-3 col-xs-6 isotope-item join">
               <div class="image-box">
                 <div class="overlay-container">
                   <img src="/static/images/portfolio-3.jpg" alt="">
@@ -108,7 +108,7 @@
           {% endfor %}
           <div class="isotope-container row grid-space-20">
             {% for tournament in tournaments_coming %}
-              <div class="col-sm-6 col-md-3 isotope-item coming">
+              <div class="col-sm-6 col-md-3 col-xs-6 isotope-item coming">
                 <div class="image-box">
                   <div class="overlay-container">
                     <img src="/static/images/portfolio-1.jpg" alt="">
@@ -122,7 +122,7 @@
               </div>
             {% endfor %}
             {% for tournament in tournaments_online %}
-              <div class="col-sm-6 col-md-3 isotope-item online">
+              <div class="col-sm-6 col-md-3 col-xs-6 isotope-item online">
                 <div class="image-box">
                   <div class="overlay-container">
                     <img src="/static/images/portfolio-3.jpg" alt="">

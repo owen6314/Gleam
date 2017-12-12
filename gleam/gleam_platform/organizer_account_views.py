@@ -1,14 +1,12 @@
-from django.contrib import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.decorators import method_decorator
-
 from django.utils import timezone
-from .forms import UserSignupForm, UserLoginForm, ProfileOrganizerForm
-from .models import Tournament, Organizer, User, Image
 
+from .forms import UserSignupForm, UserLoginForm, ProfileOrganizerForm, AccountEditForm
+from .models import Tournament, Organizer, User, Image
 import gleam_platform.tools as tool
 
 
@@ -55,13 +53,13 @@ class LoginOrganizerView(View):
     return redirect('index')
 
 
-@method_decorator(login_required, name='dispatch')
-class LogoutOrganizerView(View):
-  # 登出
-  @staticmethod
-  def get(request):
-    auth.logout(request)
-    return redirect('index')
+# @method_decorator(login_required, name='dispatch')
+# class LogoutOrganizerView(View):
+#   # 登出
+#   @staticmethod
+#   def get(request):
+#     auth.logout(request)
+#     return redirect('index')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -69,47 +67,57 @@ class HomeOrganizerView(View):
   # 显示赛事方主页
   @staticmethod
   def get(request):
-    try:
+    if request.user.type != 'O' or not request.user.organizer_profile:
+      return redirect('403')
+    else:
       organizer = request.user.organizer_profile
-    except:
-      # 403 permission denied
-      return redirect('index')
 
     # 该主办方创建的所有比赛，按比赛开始注册时间逆序排列
     tournaments = Tournament.objects.filter(organizer=organizer).order_by('-register_begin_time')
 
     data = dict()
 
-    data['user'] = request.user
-
-    # 参加该主办方主办的所有比赛的所有队伍数
-    data['total_team_num'] = 0
-    for tournament in tournaments:
-      data['total_team_num'] += len(tournament.team_set.all())
+    # # 参加该主办方主办的所有比赛的所有队伍数
+    # data['total_team_num'] = 0
+    # for tournament in tournaments:
+    #   data['total_team_num'] += len(tournament.team_set.all())
 
     # 已保存的比赛
-    data['tournaments_saved'] = Tournament.objects.filter(status=Tournament.STATUS_SAVED)
-
+    data['tournaments_saved'] = tournaments.filter(status=Tournament.STATUS_SAVED)
     # 已结束的比赛
-    data['tournaments_finished'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_finished'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                              overall_end_time__lte=timezone.now())
-
     # 已结束的比赛数目
     data['tournament_finished_num'] = len(data['tournaments_finished'])
-
     # 即将开始的比赛
-    data['tournaments_coming'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
+    data['tournaments_coming'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
                                                            register_begin_time__gte=timezone.now())
-
-    # 即将开始的比赛数目
-    data['tournament_coming_num'] = len(data['tournaments_coming'])
-
+    # # 即将开始的比赛数目
+    # data['tournament_coming_num'] = len(data['tournaments_coming'])
     # 正在进行的比赛
-    data['tournaments_ongoing'] = Tournament.objects.filter(status=Tournament.STATUS_PUBLISHED,
-                                                            register_begin_time__lte=timezone.now())
-
+    data['tournaments_ongoing'] = tournaments.filter(status=Tournament.STATUS_PUBLISHED,
+                                                     register_begin_time__lte=timezone.now(),
+                                                     overall_end_time__gt=timezone.now())
     # 正在进行的比赛数目
     data['tournament_ongoing_num'] = len(data['tournaments_ongoing'])
+    # 由该主办方主办，当前正在进行（register_begin_time <= now overall_end_time）的
+    # 所有比赛，的参赛总人次。
+    data['ongoing_contestant_num'] = 0
+    for tournament in data['tournaments_ongoing']:
+      for team in tournament.team_set.all():
+        # 一个队长 + 队员数
+        data['ongoing_contestant_num'] += team.members.count + 1
+    # 由该主办方主办的所有比赛，的参赛总人次。
+    data['total_contestant_num'] = 0
+    for tournament in tournaments:
+      for team in tournament.team_set.all():
+        # 一个队长 + 队员数
+        data['total_contestant_num'] += team.members.count + 1
+
+    data['heat'] = organizer.profile_page_visit_num
+
+    # 贡献度
+    data['contribution'] = tool.get_contribution(organizer)
 
     return render(request, 'organizer/organizer_home.html', data)
 
@@ -126,25 +134,41 @@ class ProfileOrganizerView(View):
       organizer = user.organizer_profile
     except:
       return redirect('404')
-    data['organizer'] = organizer
+    # 每次被访问，点击数加一
+    organizer.profile_page_visit_num += 1
+    organizer.save()
 
+    tournaments_all = tool.get_conditional_tournaments(organizer=organizer, type='ALL')
     tournaments_coming = tool.get_conditional_tournaments(organizer=organizer, type='COMING')
     tournaments_ongoing = tool.get_conditional_tournaments(organizer=organizer, type='ONGOING')
     tournaments_finished = tool.get_conditional_tournaments(organizer=organizer, type='FINISHED')
 
     data['tournament_ongoing_num'] = tournaments_ongoing.count()
-    ongoing_team_num = 0
+    data['ongoing_contestant_num'] = 0
     for tournament in tournaments_ongoing:
-      ongoing_team_num += tournament.team_set.count()
-    data['ongoing_team_num'] = ongoing_team_num
+      for team in tournament.team_set.all():
+        # 一个队长 + 队员数
+        data['ongoing_contestant_num'] += team.members.count + 1
+
     data['tournament_finished_num'] = tournaments_finished.count()
-    finished_team_num = 0
-    for tournament in tournaments_finished:
-      finished_team_num += tournament.team_set.count()
-    data['total_team_num'] = ongoing_team_num + finished_team_num
+    data['total_contestant_num'] = 0
+    for tournament in tournaments_all:
+      for team in tournament.team_set.all():
+        # 一个队长 + 队员数
+        data['total_contestant_num'] += team.members.count + 1
+
+    # ongoing_team_num = 0
+    # for tournament in tournaments_ongoing:
+    #   ongoing_team_num += tournament.team_set.count()
+    # data['ongoing_team_num'] = ongoing_team_num
+    # finished_team_num = 0
+    # for tournament in tournaments_finished:
+    #   finished_team_num += tournament.team_set.count()
+    # data['total_team_num'] = ongoing_team_num + finished_team_num
 
     # TODO 贡献度算法
-    data['contribution'] = 0.5
+    data['contribution'] = tool.get_contribution(organizer)
+    data['heat'] = organizer.profile_page_visit_num
 
     data['tournaments_recent'] = tournaments_ongoing | tournaments_coming
     data['tournaments_faraway'] = tournaments_finished
@@ -180,4 +204,36 @@ class ProfileEditOrganizerView(View):
 
       return redirect('profile-organizer', request.user.id)
     else:
-      return render(request, 'contestant/profile_edit.html', {'form': form})
+      return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
+
+
+@method_decorator(login_required, name='dispatch')
+class AccountEditOrganizerView(View):
+
+  @staticmethod
+  def get(request):
+    if request.user.type != 'O' or not request.user.organizer_profile:
+      return redirect('403')
+    form = AccountEditForm()
+    return render(request, 'organizer/account_edit.html', {'form': form})
+
+  @staticmethod
+  def post(request):
+    if request.user.type != 'O' or not request.user.organizer_profile:
+      return redirect('403')
+    form = AccountEditForm(request.POST)
+    if form.is_valid():
+      old_password = form.cleaned_data['old_password']
+      new_password = form.cleaned_data['new_password']
+      user = authenticate(username=request.user.email, password=old_password)
+
+      if user:
+        user.set_password(new_password)
+        user.save()
+        return redirect('home-organizer')
+      else:
+        form.add_error('old_password', u'原密码错误')
+        return render(request, 'organizer/account_edit.html', {'form': form})
+
+    else:
+      return render(request, 'organizer/account_edit.html', {'form': form})

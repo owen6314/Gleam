@@ -27,7 +27,7 @@
                 <small>
                   <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
                 </small></h2>
-              <h4>{{ user.contestant_profile.email }}</h4>
+              <h4>{{ user.email }}</h4>
               {% if user.contestant_profile.gender == 'M' %}
                 <div>男</div>
               {% elif user.contestant_profile.gender == 'F' %}

@@ -10,6 +10,18 @@
   </ul>
 {% endif %}
 
+{% block stylesheet %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="/static/assets/less/unlock.css">
+  <style type="text/css" media="screen">
+    .bar {
+      margin: auto;
+      height: 40px;
+      width: 320px;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
   <div id="home" class="banner">
     <div class="banner-image"></div>
@@ -34,85 +46,51 @@
   </div>
   <div class="modal fade bs-example-modal-md" tabindex="-1" id="user-modal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
-      <div class="modal-content">
+      <div class="modal-content ">
 
-        <div class="modal-header">
+        <div class="modal-header" style="background-color: white;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                  aria-hidden="true">×</span>
+                  aria-hidden="true" style="color:black;">×</span>
           </button>
-          <h4 class="modal-title" id="1">参加比赛</h4>
+          <h4 class="modal-title"><span>登录</span></h4>
         </div>
         <div class="modal-body">
-          <div class="" role="tabpanel" data-example-id="togglable-tabs">
-            <ul id="myTab1" class="nav nav-tabs bar_tabs" role="tablist">
-              <li role="presentation" class="active"><a id="signin-tab1" role="tab"
-                                                        data-toggle="tab" aria-expanded="true">登录</a>
-              </li>
-              <li role="presentation" class=""><a role="tab"
-                                                  id="register-tab1" data-toggle="tab"
-                                                  aria-expanded="false">注册</a>
-              </li>
-            </ul>
-            <div id="myTabContent1" class="tab-content">
-              <div role="tabpanel" class="tab-pane fade in" id="user-sign-in"
-                   aria-labelledby="signin-tab">
-                <br>
-                <div>
-                  <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="form-group">
-                      <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="contestant-login-email" name="email"
-                               placeholder="example@example.com">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
-                      <div class="col-sm-10">
-                        <input type="password" class="form-control" id="contestant-login-password" name="password"
-                               placeholder="password">
-                      </div>
-                    </div>
-                  </form>
+          <h1 style="text-align: center;"><a href="{% url 'index' %}">Gleam</a></h1>
+          <div>
+            <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="contestant-login-email" class="col-sm-3 control-label">邮箱</label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="contestant-login-email" name="email"
+                         placeholder="example@example.com">
+                </div>
+                <div class="col-sm-2"></div>
+              </div>
+              <div class="form-group">
+                <label for="contestant-login-password" class="col-sm-3 control-label">密码</label>
+                <div class="col-sm-7">
+                  <input type="password" class="form-control" id="contestant-login-password" name="password"
+                         placeholder="password">
+                </div>
+                <div class="col-md-3 col-md-offset-3 col-sm-3 col-sm-offset-3">
+                  <div style="color:red;">{{ form.login.errors.0 }}</div>
                 </div>
               </div>
-              <div role="tabpanel" class="tab-pane fade in" id="user-register"
-                   aria-labelledby="register-tab">
-                <br>
-                <div>
-                  <form id="register-contestant-form" class="form-horizontal" role="form" action="{% url 'signup-contestant' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="form-group">
-                      <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="contestant-register-email" name="email"
-                               placeholder="example@example.com">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
-                      <div class="col-sm-10">
-                        <input type="password" class="form-control" id="contestant-register-password" name="password"
-                               placeholder="password">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="contestant-login-password" class="col-sm-2 control-label">再次输入密码</label>
-                      <div class="col-sm-10">
-                        <input type="password" class="form-control" id="contestant-register-repeat-password" name="repeat_password"
-                               placeholder="password">
-                      </div>
-                    </div>
-                  </form>
+              <div class="form-group">
+                <div class="col-md-7 col-md-offset-3 col-sm-7 col-sm-offset-3 col-xs-12" style="text-align: center;">
+                  <div class="bar-slide bar"></div>
                 </div>
               </div>
-            </div>
+              <div class="col-md-3 col-md-offset-8 col-sm-3 col-sm-offset-8 col-xs-6 col-xs-offset-5">
+                <a href="{% url 'signup-contestant' %}" class="pull-right">还没有账号？</a>
+              </div>
+              <br/>
+            </form>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="submit" id="contestant-form" class="btn btn-default" >登录</button>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="submit" id="contestant-form" class="btn btn-disabled" disabled="disabled" >登录</button>
         </div>
       </div>
     </div>
@@ -1163,11 +1141,11 @@
       </div>
     </div>
   </div>
-
 {% endblock content %}
 
 {% block javascripts %}
   {{ block.super }}
+  <script src='/static/assets/js/unlock.js'></script>
   <script>
     $(function () {
       $(".banner-image").backstretch('/static/images/banner.jpg');
@@ -1214,5 +1192,14 @@
         $("#register-organizer-form").submit();
       }
     });
+    $('.bar-slide').slideToUnlock({
+      text : '滑动以验证',
+      succText : '验证成功',
+      successFunc: function() {
+        $("#contestant-form").attr("class","btn btn-primary");
+        $("#contestant-form").removeAttr("disabled");
+      }
+    });
   </script>
+
 {% endblock javascripts %}
