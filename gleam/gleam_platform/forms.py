@@ -16,15 +16,13 @@ MAX_RID_LEN = 18
 
 class ResidentIDField(forms.Field):
   def to_python(self, value):
-    """Normalize data to a list of strings."""
-    # Return an empty list if no input was given.
+
     if not value:
-      return []
-    return value.split(',')
+      return ''
+    return value
 
   def validate(self, value):
-    """Check if value consists only of valid emails."""
-    # Use the parent's handling of required fields, etc.
+
     super(ResidentIDField, self).validate(value)
     if not tool.validate_rid(value):
       raise forms.ValidationError('身份证号错误')
