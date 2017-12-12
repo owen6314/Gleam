@@ -7,36 +7,36 @@
 {% endblock stylesheet %}
 
 {% block content %}
-  <div style="height:100px;"></div>
-  <div class="container">
-    <div class="row">
-      <div id="myCarousel" class="carousel slide">
-        <ol class="carousel-indicators">
-          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel" data-slide-to="1"></li>
-          <li data-target="#myCarousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="item active">
-            <img src="/static/images/banner.jpg" alt="First slide">
+  <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+    <div class="container">
+      <div class="row">
+        <div id="myCarousel" class="carousel slide">
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="item active">
+              <img src="/static/images/banner.jpg" alt="First slide">
+            </div>
+            <div class="item">
+              <img src="/static/images/bg-image-1.jpg" alt="Second slide">
+            </div>
+            <div class="item">
+              <img src="/static/images/bg-image-2.jpg" alt="Third slide">
+            </div>
           </div>
-          <div class="item">
-            <img src="/static/images/bg-image-1.jpg" alt="Second slide">
-          </div>
-          <div class="item">
-            <img src="/static/images/bg-image-2.jpg" alt="Third slide">
-          </div>
+          <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+          </a>
+          <a class="carousel-control right" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+          </a>
         </div>
-        <a class="carousel-control left" href="#myCarousel" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="carousel-control right" href="#myCarousel" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right"></span>
-        </a>
       </div>
     </div>
   </div>
-  <div style="height:80px;"></div>
 
   <div class="container object-non-visible" data-animation-effect="fadeIn">
     <h1 id="contest"  class="text-center title">我参加的比赛</h1>
@@ -74,7 +74,6 @@
         </tbody>
       </table>
     </div>
-  </div>
   </div>
   <div class="section">
     <div class="container">
