@@ -30,41 +30,51 @@ class CreateTournamentView(View):
   @staticmethod
   def post(request):
     tournament_form = TournamentForm(request.POST)
+    data = {
+      'name': request.POST.get('name'),
+      'description': request.POST.get('description'),
+      'submit_begin_time': request.POST.get('submit_begin_time'),
+      'submit_end_time': request.POST.get('submit_end_time'),
+      'overall_end_time': request.POST.get('overall_end_time'),
+      'max_team_member_num': request.POST.get('max_team_member_num'),
+    }
     tournament = None
     contest_forms = []
     formfail = False
     if not tournament_form.is_valid():
       formfail = True
+
     form_len = (len(request.POST) - 7) // 6
     for i in range(1, form_len + 1):
       data = {
-        'name': request.POST['name_' + str(i)],
-        'description': request.POST['description_' + str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
-        'submit_end_time': request.POST['submit_end_time_' + str(i)],
-        'release_time': request.POST['release_time_' + str(i)],
-        'pass_rule': request.POST['pass_rule_' + str(i)]
+        'name': request.POST.get('name_' + str(i)),
+        'description': request.POST.get('description_' + str(i)),
+        'submit_begin_time': request.POST.get('submit_begin_time_' + str(i)),
+        'submit_end_time': request.POST.get('submit_end_time_' + str(i)),
+        'release_time': request.POST.get('release_time_' + str(i)),
+        'pass_rule': request.POST.get('pass_rule_' + str(i))
       }
       form = ContestForm(data)
       contest_forms.append(form)
       if not form.is_valid():
           formfail = True
 
-    prev_time = tournament_form.cleaned_data['register_end_time']
+    prev_time = tournament_form.cleaned_data.get('register_end_time')
     for form in contest_forms:
-      if form.cleaned_data['submit_begin_time'] and prev_time:
-        if form.cleaned_data['submit_begin_time'] > prev_time:
+      if form.cleaned_data.get('submit_begin_time') and prev_time:
+        if form.cleaned_data.get('submit_begin_time') < prev_time:
           form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
           formfail = True
-      prev_time = form.cleaned_data['release_time']
-    overall_end_time = tournament_form.cleaned_data['overall_end_time']
+      prev_time = form.cleaned_data.get('release_time')
+
+    overall_end_time = tournament_form.cleaned_data.get('overall_end_time')
     if overall_end_time and prev_time and overall_end_time < prev_time:
       tournament_form.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
       formfail = True
 
     if not formfail:
       tournament = tournament_form.save(commit=False)
-      tournament.image = request.FILES['image']
+      tournament.image = request.FILES.get('image')
       tournament.organizer = request.user.organizer_profile
       tournament.status = Tournament.STATUS_SAVED
       tournament.save()
@@ -121,12 +131,12 @@ class EditTournamentView(View):
     for contest in contests:
       i = contest.id
       data = {
-        'name': request.POST['name_' + str(i)],
-        'description': request.POST['description_' + str(i)],
-        'submit_begin_time': request.POST['submit_begin_time_' + str(i)],
-        'submit_end_time': request.POST['submit_end_time_' + str(i)],
-        'release_time': request.POST['release_time_' + str(i)],
-        'pass_rule': request.POST['pass_rule_' + str(i)]
+        'name': request.POST.get('name_' + str(i)),
+        'description': request.POST.get('description_' + str(i)),
+        'submit_begin_time': request.POST.get('submit_begin_time_' + str(i)),
+        'submit_end_time': request.POST.get('submit_end_time_' + str(i)),
+        'release_time': request.POST.get('release_time_' + str(i)),
+        'pass_rule': request.POST.get('pass_rule_' + str(i))
       }
       form = ContestForm(data, instance=contest)
       zip.append({'contest': contest, 'form': form})
@@ -135,18 +145,18 @@ class EditTournamentView(View):
     for z in zip:
       form = z['form']
       if form.is_valid():
-        if form.cleaned_data['submit_begin_time'] and prev_time:
-          if form.cleaned_data['submit_begin_time'] > prev_time:
-            form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+        if form.cleaned_data.get('submit_begin_time') and prev_time:
+          if form.cleaned_data.get('submit_begin_time') < prev_time:
+            form.add_error('submit_begin_time', "提交开始时间应位于上一阶段结束之后")
             formfail = True
           else:
             form.save()
       else:
         formfail = True
-        if form.cleaned_data['submit_begin_time'] and prev_time:
-          if form.cleaned_data['submit_begin_time'] > prev_time:
+        if form.cleaned_data.get('submit_begin_time') and prev_time:
+          if form.cleaned_data.get('submit_begin_time') < prev_time:
             form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
-      prev_time = form.cleaned_data['release_time']
+      prev_time = form.cleaned_data.get('release_time')
 
     if tournament.overall_end_time and prev_time and tournament.overall_end_time < prev_time:
       tform.add_error('overall_end_time', '比赛结束时间应位于所有阶段结束之后')
