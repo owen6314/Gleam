@@ -57,7 +57,7 @@
                   <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" required="required" id="register_begin_time" name="register_begin_time" value="{{ tournament_form.register_begin_time.value | date:'Y-m-d H:i' }}">
+                    <input type="text" class="form-control has-feedback-left" required="required" id="register_begin_time" name="register_begin_time" value="{{ tournament_form.register_begin_time.value}}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                     {% if tournament_form.register_begin_time.errors %}
                       <div class="alert alert-danger">{{ tournament_form.register_begin_time.errors.0 }}</div>
@@ -69,7 +69,7 @@
                   <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="register_end_time" required="required" name="register_end_time"  value="{{ tournament_form.register_end_time.value | date:'Y-m-d H:i' }}">
+                    <input type="text" class="form-control has-feedback-left" id="register_end_time" required="required" name="register_end_time"  value="{{ tournament_form.register_end_time.value}}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                     {% if tournament_form.register_end_time.errors %}
                       <div class="alert alert-danger">{{ tournament_form.register_end_time.errors.0 }}</div>
@@ -81,7 +81,7 @@
                   <label class="control-label col-md-3" for="overall_end_time">总成绩公布时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" value="{{ tournament_form.overall_end_time.value | date:'Y-m-d H:i' }}">
+                    <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" value="{{ tournament_form.overall_end_time.value }}">
                     <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                     {% if tournament_form.overall_end_time.errors %}
                       <div class="alert alert-danger">{{ tournament_form.overall_end_time.errors.0 }}</div>
@@ -142,7 +142,7 @@
                     <label class="control-label col-md-3" for="submit_begin_time_{{ forloop.counter }}">阶段开始时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ forloop.counter }}" name="submit_begin_time_{{ forloop.counter }}" value="{{z.submit_begin_time.value | date:'Y-m-d H:i'}}">
+                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ forloop.counter }}" name="submit_begin_time_{{ forloop.counter }}" value="{{z.submit_begin_time.value}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                       {% if z.submit_begin_time.errors %}
                         <div class="alert alert-danger">{{ z.submit_begin_time.errors.0 }}</div>
@@ -153,7 +153,7 @@
                     <label class="control-label col-md-3" for="submit_end_time_{{ forloop.counter }}">阶段结束时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ forloop.counter }}" name="submit_end_time_{{ forloop.counter }}" value="{{z.submit_end_time.value | date:'Y-m-d H:i'}}">
+                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ forloop.counter }}" name="submit_end_time_{{ forloop.counter }}" value="{{z.submit_end_time.value}}">
                       <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
                       {% if z.submit_end_time.errors %}
                         <div class="alert alert-danger">{{ z.submit_end_time.errors.0 }}</div>
@@ -164,7 +164,7 @@
                     <label class="control-label col-md-3" for="release_time_{{ forloop.counter }}">公布阶段结果时间
                     </label>
                     <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ forloop.counter }}" name="release_time_{{ forloop.counter }}"  value="{{z.release_time.value | date:'Y-m-d H:i'}}">
+                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ forloop.counter }}" name="release_time_{{ forloop.counter }}"  value="{{z.release_time.value}}">
                       <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                       {% if z.release_time.errors %}
                         <div class="alert alert-danger">{{ z.release_time.errors.0 }}</div>
