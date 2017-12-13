@@ -359,12 +359,12 @@
                       <table class="table table-hover">
                         <thead>
                         <tr>
-                          <th>名次</th>
-                          <th>队伍名</th>
-                          <th>队长</th>
-                          <th>指导教师</th>
-                          <th>成绩</th>
-                          <th>提交时间</th>
+                          <th class="text-center">名次</th>
+                          <th class="text-center">队伍名</th>
+                          <th class="text-center">队长</th>
+                          <th class="text-center">指导教师</th>
+                          <th class="text-center">成绩</th>
+                          <th class="text-center">提交时间</th>
                         </tr>
                         </thead>
 
@@ -406,16 +406,19 @@
                       <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                           <h2>我的队伍: {{ team.team_name }}</h2>
-                          {% if team.unique_id != "0" %}
+                          {% if team.unique_id != "0" and request.user.id == team.leader.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
                           {% endif %}
                           <h3>队长:
-                            <a>{{ team.leader.nick_name }}</a>
+                            <a href="{% url 'profile-contestant' team.leader.id %}">{{ team.leader.nick_name }}</a>
                           </h3>
                           <h3>队员:
                             {% for contestant in team.members %}
-                              <a>{{ contestant.nick_name }}</a>
+                              <a href="{% url 'profile-contestant' contestant.id %}">{{ contestant.nick_name }}</a>
+                              {% if request.user.id == team.leader.id %}
+                                <a href="{% url 'tournament-list' %}"><i class="fa fa-wrench"></i></a>
+                              {% endif %}
                             {%  endfor %}
                           </h3>
                           <h3>指导教师: <a>{{ team.tutor }}</a></h3>
