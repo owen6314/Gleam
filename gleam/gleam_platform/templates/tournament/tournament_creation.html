@@ -27,8 +27,11 @@
                   <label class="control-label col-md-3" for="competition-name">比赛名称 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" id="competition-name" name="name" maxlength="128" class="form-control has-feedback-left col-md-7 col-xs-12" required>
+                    <input type="text" id="competition-name" name="name" maxlength="128" class="form-control has-feedback-left col-md-7 col-xs-12" value="{{ tournament_form.name.value }}" required>
                     <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
+                    {% if tournament_form.name.errors %}
+                      <div class="alert alert-danger">{{ tournament_form.name.errors.0 }}</div>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -36,7 +39,9 @@
                   <label class="control-label col-md-3" for="competition-description">比赛描述 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" required="required"></textarea>
+                    <textarea class="resizable_textarea form-control" name="description" id="competition-description" required="required">
+                      {{ tournament_form.description.value }}
+                    </textarea>
                   </div>
                 </div>
 
@@ -52,8 +57,11 @@
                   <label class="control-label col-md-3" for="register_begin_time">报名开始时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" required="required" id="register_begin_time" name="register_begin_time">
+                    <input type="text" class="form-control has-feedback-left" required="required" id="register_begin_time" name="register_begin_time" value="{{ tournament_form.register_begin_time.value | date:'Y-m-d H:i' }}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    {% if tournament_form.register_begin_time.errors %}
+                      <div class="alert alert-danger">{{ tournament_form.register_begin_time.errors.0 }}</div>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -61,8 +69,11 @@
                   <label class="control-label col-md-3" for="register_end_time">报名结束时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="register_end_time" required="required" name="register_end_time" >
+                    <input type="text" class="form-control has-feedback-left" id="register_end_time" required="required" name="register_end_time"  value="{{ tournament_form.register_end_time.value | date:'Y-m-d H:i' }}">
                     <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                    {% if tournament_form.register_end_time.errors %}
+                      <div class="alert alert-danger">{{ tournament_form.register_end_time.errors.0 }}</div>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -70,8 +81,11 @@
                   <label class="control-label col-md-3" for="overall_end_time">总成绩公布时间 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 xdisplay_inputx form-group has-feedback">
-                    <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" >
+                    <input type="text" class="form-control has-feedback-left" id="overall_end_time" required="required" name="overall_end_time" value="{{ tournament_form.overall_end_time.value | date:'Y-m-d H:i' }}">
                     <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                    {% if tournament_form.overall_end_time.errors %}
+                      <div class="alert alert-danger">{{ tournament_form.overall_end_time.errors.0 }}</div>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -79,10 +93,86 @@
                   <label class="control-label col-md-3" for="max_team_member_num">队伍人数限制 <span class="required">*</span>
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="number" id="max_team_member_num" min="0" step="1" name="max_team_member_num" class="form-control has-feedback-left col-md-7 col-xs-12" placeholder="输入0表示不限制人数" required="required">
+                    <input type="number" id="max_team_member_num" min="0" step="1" name="max_team_member_num" class="form-control has-feedback-left col-md-7 col-xs-12" placeholder="输入0表示不限制人数" required="required"  value="{{ tournament_form.max_team_member_num.value }}">
                     <span class="fa fa-users form-control-feedback left" aria-hidden="true"></span>
+                    {% if tournament_form.max_team_member_num.errors %}
+                      <div class="alert alert-danger">{{ tournament_form.max_team_member_num.errors.0 }}</div>
+                    {% endif %}
                   </div>
                 </div>
+
+                {% for z in contest_forms %}
+                <div id="stage_form_">
+                  <h3>{{z.name.value}}</h3>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="name_{{ forloop.counter }}">阶段名称
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="name_{{ forloop.counter }}" name="name_{{ forloop.counter }}" value="{{ z.name.value }}">
+                      <span class="fa fa-pencil form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                    {% if z.name.errors %}
+                      <div class="alert alert-danger">{{ z.name.errors }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="description_{{ forloop.counter }}">阶段描述
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <textarea class="resizable_textarea form-control" name="description_{{ forloop.counter }}" id="description_{{ forloop.counter }}">{{z.description.value}}</textarea>
+                    </div>
+                    {% if z.description.errors %}
+                      <div class="alert alert-danger">{{ z.description.errors }}</div>
+                    {% endif %}
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="pass_rule_{{ forloop.counter }}">晋级规则 <span class="required">*</span>
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="number" class="form-control has-feedback-left" required="required" id="pass_rule_{{ forloop.counter }}" name="pass_rule_{{ forloop.counter }}" placeholder="此项大于1表示晋级人数，小于1表示晋级比例" value="{{ z.pass_rule.value }}">
+                      <span class="fa fa-flag-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.pass_rule.errors %}
+                        <div class="alert alert-danger">{{ z.pass_rule.errors }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="submit_begin_time_{{ forloop.counter }}">阶段开始时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="submit_begin_time_{{ forloop.counter }}" name="submit_begin_time_{{ forloop.counter }}" value="{{z.submit_begin_time.value | date:'Y-m-d H:i'}}">
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.submit_begin_time.errors %}
+                        <div class="alert alert-danger">{{ z.submit_begin_time.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="submit_end_time_{{ forloop.counter }}">阶段结束时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="submit_end_time_{{ forloop.counter }}" name="submit_end_time_{{ forloop.counter }}" value="{{z.submit_end_time.value | date:'Y-m-d H:i'}}">
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.submit_end_time.errors %}
+                        <div class="alert alert-danger">{{ z.submit_end_time.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="release_time_{{ forloop.counter }}">公布阶段结果时间
+                    </label>
+                    <div class="col-md-6 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="release_time_{{ forloop.counter }}" name="release_time_{{ forloop.counter }}"  value="{{z.release_time.value | date:'Y-m-d H:i'}}">
+                      <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                      {% if z.release_time.errors %}
+                        <div class="alert alert-danger">{{ z.release_time.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
 
                 <div id="formpart"></div>
                 <div id="form_btn_group" class="pull-right">
@@ -125,7 +215,11 @@
     })
 
     // for dynamic form
-    var contest_creation_stage_cnt = 0;
+    {% if contest_forms %}
+      var contest_creation_stage_cnt = {{ contest_forms.length }};
+    {% else %}
+      var contest_creation_stage_cnt = 0;
+    {% endif %}
     $("#addform").click(function(){
       contest_creation_stage_cnt += 1;
       var new_stage_form = ' \
