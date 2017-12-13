@@ -3,7 +3,6 @@
     <div class="row">
       <div class="col-md-4">
         <div class="header-left clearfix">
-
           <div class="logo smooth-scroll">
             <a href="{% url 'home-contestant' %}"><img id="logo" src="/static/images/gleam-logo.png" style="width:60px;height:60px;"></a>
           </div>
@@ -21,18 +20,22 @@
                 <div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
                   <ul class="nav navbar-nav navbar-right">
                     <li><input placeholder="Search" style="width:100%;color:black;"/></li>
-                    <li><a href="#search"><i class="fa fa-search"></i> </a></li>
-                    <li><a href="{% url 'tournament-list' %}">竞赛</a></li>
-                    <li><a href="#discuss">讨论</a></li>
+                    <li><a id="search" ><i class="fa fa-search"></i> </a></li>
+                    <li><a id="tournament-list" href="{% url 'tournament-list' %}">竞赛</a></li>
+                    <li><a style="cursor: pointer;" id="discuss" onclick="info();">讨论</a></li>
                     <li class="dropdown">
                       <a href="#" data-toggle="dropdown">
-                        <i class="glyphicon glyphicon-user"></i> {{ request.user.contestant_profile.nick_name }}
+                        {% if request.user.contestant_file.avatar.image.url %}
+                          <img src="{{ request.user.contestant_file.avatar.image.url }}" class="img-circle" align="left" style="width:23px;height:23px;">
+                        {% else %}
+                          <img src="/static/images/default-img.jpg" class="img-circle" align="left" style="width:23px;height:23px;">
+                        {% endif %}
+                        &nbsp;{{ request.user.contestant_profile.nick_name }}
                       </a>
                       <ul class="dropdown-menu" style="min-width:110px;background-color:rgba(0, 0, 0, 0.5);text-align:center;">
                         <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'home-contestant' %}">个人主页</a></li>
                         <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'profile-contestant' request.user.id %}">个人信息</a></li>
                         <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'contestant-account-edit' %}">账户设置</a></li>
-                        <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="#help">帮助</a></li>
                         <li class="divider"></li>
                         <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'logout' %}">登出</a></li>
                       </ul>
