@@ -4,7 +4,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from .models import Tournament, Contest, Team, Record
+from .models import Tournament, Contest, Team, Record, Contestant
 import hashlib
 
 
@@ -129,12 +129,15 @@ class RegisterView(View):
   def post(request, *args):
     tournament_id = int(args[0])
     md5 = hashlib.md5()
+    now = timezone.now()
     try:
       tournament = Tournament.objects.get(pk=tournament_id)
       contestant = request.user.contestant_profile
     except:
       # Invalid infomation
       return redirect('index')
+    if now < tournament.register_begin_time or now > tournament.register_end_time:
+      return redirect('tournament-detail-contestant', tournament_id)
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     target_team = None
     if 'unique_id' in request.POST.keys() and request.POST['unique_id']:
@@ -211,8 +214,54 @@ class QuitTeamView(View):
     if team.members.count() == 1:
       team.delete()
     else:
-      # todo : fix it
-      team.members.remove(contestant)
       if team.leader == contestant:
-        team.leader = team.members.first()
+        return redirect('tournament-detail-contestant', tournament_id)
+      team.members.remove(contestant)
+      team.save()
+    return redirect('tournament-detail-contestant', tournament_id)
+
+
+@method_decorator(login_required, name='dispatch')
+class KickContestantView(View):
+  @staticmethod
+  def get(request, *args):
+    tournament_id = int(args[0])
+    team_id = int(args[1])
+    contestant_id = int(args[2])
+    try:
+      tournament = Tournament.objects.get(pk=tournament_id)
+      team = Team.objects.get(pk=team_id)
+      contestant = Contestant.objects.get(pk=contestant_id)
+      user = request.user.contestant_profile
+    except ObjectDoesNotExist:
+      return redirect('tournament-detail-contestant', tournament_id)
+
+    if tournament.register_begin_time <= timezone.now() <= tournament.register_end_time:
+      if user == team.leader and contestant in team.members.all():
+        team.members.remove(contestant)
+        team.save()
+
+    return redirect('tournament-detail-contestant', tournament_id)
+
+
+@method_decorator(login_required, name='dispatch')
+class TransferLeaderView(View):
+  @staticmethod
+  def get(request, *args):
+    tournament_id = int(args[0])
+    team_id = int(args[1])
+    contestand_id = int(args[2])
+    try:
+      tournament = Tournament.objects.get(pk=tournament_id)
+      team = Team.objects.get(pk=team_id)
+      contestant = Contestant.objects.get(pk=contestand_id)
+      user = request.user.contestant_profile
+    except ObjectDoesNotExist:
+      return redirect('tournament-detail-contestant', tournament_id)
+
+    if tournament.register_begin_time <= timezone.now() <= tournament.register_end_time:
+      if user == team.leader and contestant in team.members.all() and contestant != team.leader:
+        team.leader = contestant
+        team.save()
+
     return redirect('tournament-detail-contestant', tournament_id)

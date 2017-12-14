@@ -6,7 +6,8 @@ from .contestant_account_views import SignupContestantView, LoginContestantView,
   ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView, AccountEditContestantView
 from .organizer_tournament_views import CreateTournamentView, TournamentDetailOrganizerView, EditTournamentView, \
   ContestLeaderboardOrganizerView
-from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView, QuitTeamView
+from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView,\
+  QuitTeamView, KickContestantView, TransferLeaderView
 import gleam.settings as settings
 from .image_manage import serve_image
 
@@ -50,6 +51,8 @@ urlpatterns = [
   url(r'^tournament-list', TournamentListView.as_view(), name='tournament-list'),
   url(r'^register/([1-9][0-9]*)/', RegisterView.as_view(), name='register'),
   url(r'^quit/([1-9][0-9]*)/', QuitTeamView.as_view(), name='quit'),
+  url(r'^kick/([1-9][0-9]*)/([1-9][0-9]*)/([1-9][0-9]*)/', KickContestantView.as_view(), name='kick'),
+  url(r'^transfer/([1-9][0-9]*)/([1-9][0-9]*)/([1-9][0-9]*)/', TransferLeaderView.as_view(), name='transfer'),
 
 
   # Image Manage Urls
