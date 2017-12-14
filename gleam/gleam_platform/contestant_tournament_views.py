@@ -265,4 +265,3 @@ class TransferLeaderView(View):
         team.save()
 
     return redirect('tournament-detail-contestant', tournament_id)
-  
