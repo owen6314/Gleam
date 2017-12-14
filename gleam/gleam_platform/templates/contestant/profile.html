@@ -16,38 +16,132 @@
             <div class="col-md-3 col-sm-3 col-xs-12">
               <div class="profile_img">
                 <div id="crop-avatar">
-                  {% if user.contestant_profile.avatar %}
-                    <img class="img-responsive avatar-view" src="{{ user.contestant_profile.avatar.image.url }}" height="220" width="220" alt="Avatar">
+                  {% if avatar %}
+                    <img class="img-responsive img-circle avatar-view" src="{{ avatar.image.url }}" style="height:220px;width:220px;" alt="Avatar">
                   {% else %}
-                    <img class="img-responsive avatar-view" src="/static/images/default-img.jpg" height="220" width="220" alt="Avatar">
+                    <img class="img-responsive img-circle avatar-view" src="/static/images/default-img.jpg" style="height:220px;width:220px;" alt="Avatar">
                   {% endif %}
                 </div>
               </div>
-              <h2><b>{{ user.contestant_profile.nick_name }}</b>
-                <small>
-                  <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
-                </small></h2>
-              <h4>{{ user.email }}</h4>
-              {% if user.contestant_profile.gender == 'M' %}
-                <div>男</div>
-              {% elif user.contestant_profile.gender == 'F' %}
-                <div>女</div>
-              {% elif user.contestant_profile.gender ==  'O' %}
-                <div>正常的性别</div>
+              <h2><b>{{ nick_name }}</b>
+                {% if request.user.id == id %}
+                  <small>
+                    <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
+                  </small></h2>
+                {% endif %}
+              <h4>{{ email }}</h4>
+              <br/>
+              {% if gender == 'M' %}
+                <div><strong>男</strong></div>
+              {% elif gender == 'F' %}
+                <div><strong>女</strong></div>
+              {% elif gender ==  'O' %}
+                <div><strong>正常的性别</strong></div>
               {% endif %}
-              <div>所属学校: {{ user.contestant_profile.school }}</div>
+              <br/>
+              <div><strong>所属学校: </strong>
+                <br/><a>{{ school }}</a>
+              </div>
+              <br/>
+              <div style="word-wrap:break-word; word-break:break-all;display:block;"><strong>个人介绍: </strong>
+                <p>{{ introduction }}</p>
+              </div>
               <ul class="social-links">
                 <li class="facebook"><a target="_blank"
-                                        href="https://www.facebook.com/pages/HtmlCoder/714570988650168"><i
+                                        href="https://www.facebook.com"><i
                         class="fa fa-facebook"></i></a></li>
-                <li class="twitter"><a target="_blank" href="https://twitter.com/HtmlcoderMe"><i
+                <li class="twitter"><a target="_blank" href="https://twitter.com"><i
                         class="fa fa-twitter"></i></a></li>
                 <li class="googleplus"><a target="_blank" href="http://plus.google.com"><i
                         class="fa fa-google-plus"></i></a></li>
               </ul>
             </div>
             <div class="col-md-9 col-sm-9 col-xs-12">
-              <div class="x_panel">
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <h1 class="text-center title">近期动态</h1>
+                {% if tournaments_list %}
+                  <div class="container">
+                    <h1 class="text-center title"><small>点击磁贴来查看详情</small></h1>
+                    {% for tournament in tournamnets_list %}
+                      <div class="col-sm-6 col-md-3 col-xs-6 isotope-item">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="{{ tournament.image.url }}">
+                            <a class="overlay" href="{% url 'tournament-detail-contestant' tournament.id %}">
+                              <i class="fa fa-search-plus"></i>
+                              <span>{{ tournament.name }}</span>
+                            </a>
+                          </div>
+                          <div class="btn btn-default btn-block">
+                            <br/>
+                            <p>{{ tournament.register_start_time }}</p>
+                            <p>to</p>
+                            <p>{{ tournament.overall_end_time }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    <!--
+                      <div class="col-sm-6 col-md-3 isotope-item app-development">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-2.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-2">
+                              <i class="fa fa-search-plus"></i>
+                              <span>App Development</span>
+                            </a>
+                          </div>
+                          <div class="btn btn-default btn-block" data-toggle="modal" data-target="#project-2">
+                            <br/>
+                            <p>2017-12-11 17:00</p>
+                            <p>to</p>
+                            <p>2017-12-11 17:00</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item web-design">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-3.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-3">
+                              <i class="fa fa-search-plus"></i>
+                              <span>Web Design</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item app-development">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-5.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-5">
+                              <i class="fa fa-search-plus"></i>
+                              <span>App Development</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-5">Project Title</a>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item web-design">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-6.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-6">
+                              <i class="fa fa-search-plus"></i>
+                              <span>Web Design</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-6">Project Title</a>
+                        </div>
+                      </div>
+                    </div>
+
+      -->
+                    <!--<div class="x_panel">
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                   <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#tab_content1" id="profile-tab-1" role="tab" data-toggle="tab" aria-expanded="true">近期动态</a>
@@ -58,7 +152,7 @@
                   <div class="space"></div>
                   <div id="myTabContent" class="tab-content">
                     <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="profile-tab-1">
-                      <table class="table table-striped table-bordered">
+                      <!--<table class="table table-striped table-bordered">
                         <thead>
                         <tr>
                           <th>比赛名称</th>
@@ -68,7 +162,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for t in tournaments_faraway %}
+                        {% for t in tournaments_list %}
                           <tr>
                             <td>{{t.name}}</td>
                             <td>{{t.register_begin_time}}</td>
@@ -78,12 +172,130 @@
                         {% endfor %}
                         </tbody>
                       </table>
+                      {% for tournament in tournamnets_list %}
+                        <div class="col-sm-6 col-md-3 col-xs-6 isotope-item">
+                          <div class="image-box">
+                            <div class="overlay-container">
+                              <img src="/static/images/portfolio-3.jpg" alt="">
+                              <a class="overlay" data-toggle="modal" data-target="#project-3">
+                                <i class="fa fa-search-plus"></i>
+                                <span>已参加</span>
+                              </a>
+                            </div>
+                            <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                      <div class="col-sm-6 col-md-3 isotope-item app-development">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-2.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-2">
+                              <i class="fa fa-search-plus"></i>
+                              <span>App Development</span>
+                            </a>
+                          </div>
+                          <div class="btn btn-default btn-block" data-toggle="modal" data-target="#project-2">
+                            <br/>
+                            <p>2017-12-11 17:00</p>
+                            <p>to</p>
+                            <p>2017-12-11 17:00</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item web-design">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-3.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-3">
+                              <i class="fa fa-search-plus"></i>
+                              <span>Web Design</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">Project Title</a>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item app-development">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-5.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-5">
+                              <i class="fa fa-search-plus"></i>
+                              <span>App Development</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-5">Project Title</a>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6 col-md-3 isotope-item web-design">
+                        <div class="image-box">
+                          <div class="overlay-container">
+                            <img src="/static/images/portfolio-6.jpg" alt="">
+                            <a class="overlay" data-toggle="modal" data-target="#project-6">
+                              <i class="fa fa-search-plus"></i>
+                              <span>Web Design</span>
+                            </a>
+                          </div>
+                          <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-6">Project Title</a>
+                        </div>
+                      </div>
                     </div>
                     <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab-2">
-                      <p>{{ user.contestant_profile.introduction }}</p>
+                      <div class="col-md-12" style="word-wrap:break-word; word-break:break-all;display:block;">
+                        <p>{{ introduction }}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>-->
+
+                  </div>
+                {% else %}
+                  <h3 class="text-center">
+                    {% if request.user.id == id %}
+                      你最近好像什么都没有做QAQ
+                    {% else %}
+                      这个人最近什么都没做QAQ
+                    {% endif %}
+                  </h3>
+                {% endif %}
+                <hr/>
+                <h2 class="text-center title"><strong>参赛经历</strong></h2>
+                {% if history_list %}
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                      <th class="text-center">比赛名称</th>
+                      <th class="text-center">开始时间</th>
+                      <th class="text-center">结束时间</th>
+                      <th class="text-center">参赛结果</th>
+                      <th class="text-center">比赛主页</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for t in history_list %}
+                      <tr>
+                        <td>{{ t.name }}</td>
+                        <td>{{ t.register_begin_time }}</td>
+                        <td>{{ t.overall_end_time }}</td>
+                        <td>{{ t.result }}
+                          {% if t.rank %}
+                            名次:{{ t.rank }}
+                          {% endif %}
+                        </td>
+                        <td><a href="{% url 'tournament-detail-contestant' t.id %}">{{ t.name }}</a></td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                {% else %}
+                  <h3 class="text-center">
+                    {% if request.user.id == id %}你{% else %}他{% endif %}还没有参加过比赛QAQ
+                  </h3>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -95,10 +307,4 @@
 
 {% block javascripts %}
   {{ block.super }}
-  <!-- validator -->
-  <script>
-    $(document).ready(function() {
-      $("#profile-form").validate();
-    });
-  </script>
 {% endblock javascripts %}

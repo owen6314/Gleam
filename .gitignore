@@ -1,4 +1,4 @@
-# personal files
+# deploy script
 fabfile.py
 # uwsgi
 uwsgi.ini
