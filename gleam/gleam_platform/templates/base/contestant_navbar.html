@@ -20,9 +20,9 @@
                 <div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
                   <ul class="nav navbar-nav navbar-right">
                     <li><input placeholder="Search" style="width:100%;color:black;"/></li>
-                    <li><a id="search" ><i class="fa fa-search"></i> </a></li>
+                    <li><a style="cursor: pointer;" onclick="info();"><i class="fa fa-search"></i> </a></li>
                     <li><a id="tournament-list" href="{% url 'tournament-list' %}">竞赛</a></li>
-                    <li><a style="cursor: pointer;" id="discuss" onclick="info();">讨论</a></li>
+                    <li><a style="cursor: pointer;" onclick="info();">讨论</a></li>
                     <li class="dropdown">
                       <a href="#" data-toggle="dropdown">
                         {% if request.user.contestant_file.avatar.image.url %}
