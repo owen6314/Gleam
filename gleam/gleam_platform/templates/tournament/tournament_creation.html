@@ -212,11 +212,24 @@
           showUpload: false,
           maxFileSize: 1024,
       });
+
+      {% for z in contest_forms %}
+        $("#submit_begin_time_"+{{ forloop.counter }}).datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+        $("#submit_end_time_"+{{ forloop.counter }}).datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+        $("#release_time_"+{{ forloop.counter }}).datetimepicker({
+          format: 'yyyy-mm-dd hh:ii'
+        });
+        $("#contest-form").validator();
+      {% endfor %}
     })
 
     // for dynamic form
     {% if contest_forms %}
-      var contest_creation_stage_cnt = {{ contest_forms.length }};
+      var contest_creation_stage_cnt = {{ some_list|length }};
     {% else %}
       var contest_creation_stage_cnt = 0;
     {% endif %}
