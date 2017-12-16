@@ -406,18 +406,19 @@
                       <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                           <h2>我的队伍: {{ team.team_name }}</h2>
-                          {% if team.unique_id != "0" and request.user.id == team.leader.id %}
+                          {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
                           {% endif %}
                           <h3>队长:
-                            <a href="{% url 'profile-contestant' team.leader.id %}">{{ team.leader.nick_name }}</a>
+                            <a href="{% url 'profile-contestant' team.leader.user.id %}">{{ team.leader.nick_name }}</a>
                           </h3>
                           <h3>队员:
-                            {% for contestant in team.members %}
-                              <a href="{% url 'profile-contestant' contestant.id %}">{{ contestant.nick_name }}</a>
-                              {% if request.user.id == team.leader.id %}
-                                <a href="{% url 'tournament-list' %}"><i class="fa fa-wrench"></i></a>
+                            {% for member in team.members %}
+                              <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
+                              {% if request.user.id == team.leader.user.id %}
+                                <a href=""><i class="fa fa-wrench"></i></a>
+                                <a href=""><i class="fa fa-close"></i></a>
                               {% endif %}
                             {%  endfor %}
                           </h3>
@@ -535,5 +536,33 @@
       var status = (now_time-start_time)/(end_time-start_time);
       $("#contest-status").width(toPercent(status));
     });
+    $("#transfer").click(function () {
+      $.confirm({
+        title: '确认',
+        content: '确认将他任命为队长么？',
+        confirmButton: '确认',
+        cancelButton: '取消',
+        confirmButtonClass: 'btn-info',
+        cancelButtonClass: 'btn-danger',
+        animation: 'RotateX',
+        closeAnimation: 'RotateX',
+        backgroundDismiss: true,
+        autoClose: 'cancel|6000',
+        confirm: function(){
+          $.ajax({
+            url : "{% url 'kick' %}?",
+            async : true,
+            dataType : 'text',
+            error : function(xhr) {
+
+            },
+            success : function(data) {
+
+            }
+          });
+        }
+      });
+    });
+
   </script>
 {% endblock javascripts %}
