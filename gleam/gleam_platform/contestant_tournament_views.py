@@ -189,7 +189,6 @@ class RegisterView(View):
       return redirect('tournament-detail-contestant', tournament_id)
 
 
-
 @method_decorator(login_required, name='dispatch')
 class QuitTeamView(View):
   @staticmethod
@@ -238,7 +237,7 @@ class KickContestantView(View):
     if user != team.leader:
       messages.add_message(request, messages.ERROR, '您不是队长，无权踢出成员')
       return redirect('tournament-detail-contestant', tournament_id)
-    if not contestant in team.members.all():
+    if contestant not in team.members.all():
       messages.add_message(request, messages.ERROR, '你指定的人不在队伍里面')
       return redirect('tournament-detail-contestant', tournament_id)
     team.members.remove(contestant)
@@ -264,7 +263,7 @@ class TransferLeaderView(View):
     if user != team.leader:
       messages.add_message(request, messages.ERROR, '你不是队长，无法移交队长')
       return redirect('tournament-detail-contestant', tournament_id)
-    if not contestant in team.members.all():
+    if contestant not in team.members.all():
       messages.add_message(request, messages.ERROR, '您指定的人不在队内')
       return redirect('tournament-detail-contestant', tournament_id)
     team.leader = contestant

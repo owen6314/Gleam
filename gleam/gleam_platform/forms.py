@@ -52,17 +52,16 @@ class ContestForm(forms.ModelForm):
     exclude = ['tournament', 'team_count', 'last_csv_upload_time']
 
   def clean_register_end_time(self):
-    submit_begin_time = self.cleaned_data['submit_begin_time']
-    submit_end_time = self.cleaned_data['submit_end_time']
-    if submit_begin_time > submit_end_time:
+    submit_begin_time = self.cleaned_data.get('submit_begin_time')
+    submit_end_time = self.cleaned_data.get('submit_end_time')
+    if submit_begin_time and submit_end_time and submit_begin_time > submit_end_time:
       raise forms.ValidationError('阶段结束时间应位于阶段开始时间之后')
 
-  def clean_register_end_time(self):
-    submit_end_time = self.cleaned_data['submit_end_time']
-    release_time = self.cleaned_data['release_time']
-    if submit_end_time > release_time:
+  def clean_release_time(self):
+    submit_end_time = self.cleaned_data.get('submit_end_time')
+    release_time = self.cleaned_data.get('release_time')
+    if submit_end_time and release_time and submit_end_time > release_time:
       raise forms.ValidationError('成绩公布时间应位于阶段结束时间之后')
-
 
   def clean_pass_rule(self):
     pass_rule = self.cleaned_data['pass_rule']
