@@ -417,10 +417,10 @@
                             {% for member in team.members %}
                               <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
                               {% if request.user.id == team.leader.user.id %}
-                                <a id="{{ member.user.id }}"><i class="transfer fa fa-wrench"></i></a>
-                                <a id="transfer_{{ member.user.id }}" href="{% url 'transfer' tournament_id team.id member.user.id %}"></a>
-                                <a id="{{ member.user.id }}"><i class="kick fa fa-close"></i></a>
-                                <a id="kick_{{ member.user.id }}" href="{% url 'kick' tournament_id team.id member.user.id %}"></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="transfer fa fa-wrench"></i></a>
+                                <a id="transfer_{{ member.user.contestant_profile.id }}" href="{% url 'transfer' tournament_id team.id member.user.contestant_profile.id %}"></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="kick fa fa-close"></i></a>
+                                <a id="kick_{{ member.user.contestant_profile.id }}" href="{% url 'kick' tournament_id team.id member.user.contestant_profile.id %}"></a>
                               {% endif %}
                             {%  endfor %}
                           </h3>
