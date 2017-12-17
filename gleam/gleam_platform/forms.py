@@ -44,6 +44,7 @@ class TournamentForm(forms.ModelForm):
     register_end_time = self.cleaned_data['register_end_time']
     if register_begin_time > register_end_time:
       raise forms.ValidationError('报名截止时间应位于报名开始时间之后')
+    return register_end_time
 
 
 class ContestForm(forms.ModelForm):

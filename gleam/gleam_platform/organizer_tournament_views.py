@@ -29,15 +29,15 @@ class CreateTournamentView(View):
   # 创建比赛
   @staticmethod
   def post(request):
-    tournament_form = TournamentForm(request.POST)
     data = {
       'name': request.POST.get('name'),
       'description': request.POST.get('description'),
-      'submit_begin_time': request.POST.get('submit_begin_time'),
-      'submit_end_time': request.POST.get('submit_end_time'),
+      'register_begin_time': request.POST.get('register_begin_time'),
+      'register_end_time': request.POST.get('register_end_time'),
       'overall_end_time': request.POST.get('overall_end_time'),
       'max_team_member_num': request.POST.get('max_team_member_num'),
     }
+    tournament_form = TournamentForm(data)
     tournament = None
     contest_forms = []
     formfail = False
@@ -45,6 +45,9 @@ class CreateTournamentView(View):
       formfail = True
 
     form_len = (len(request.POST) - 7) // 6
+    if form_len == 0:
+      tournament_form.add_error('overall_end_time', '请最少添加一个阶段')
+      formfail = True
     for i in range(1, form_len + 1):
       data = {
         'name': request.POST.get('name_' + str(i)),
