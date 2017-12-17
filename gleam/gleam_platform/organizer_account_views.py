@@ -30,7 +30,8 @@ class SignupOrganizerView(View):
       # 注册完成后，直接登录
       login(request, user)
       return redirect('home-organizer')
-    return redirect('index')
+    # 跳转到index
+    return render(request, 'organizer/signup.html', {'form': form})
 
 
 class LoginOrganizerView(View):
