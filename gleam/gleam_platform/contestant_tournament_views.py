@@ -32,6 +32,7 @@ class TournamentDetailContestantView(View):
     data = dict()
 
     data['tournament_id'] = tournament_id
+    data['image'] = tournament.image.image
     data['description'] = tournament.description
     data['name'] = tournament.name
     data['organization'] = tournament.organizer.organization

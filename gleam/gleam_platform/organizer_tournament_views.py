@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.utils import timezone
 from .forms import ContestForm, TournamentForm
-from .models import Tournament, Contest, Team, Record, LeaderBoardItem
+from .models import Tournament, Contest, Team, Record, LeaderBoardItem, Image
 
 import datetime
 import csv
@@ -77,7 +77,9 @@ class CreateTournamentView(View):
 
     if not formfail:
       tournament = tournament_form.save(commit=False)
-      tournament.image = request.FILES.get('image')
+      image = Image(image=request.FILES.get('image'), type='P', owner=request.user)
+      image.save()
+      tournament.image = image
       tournament.organizer = request.user.organizer_profile
       tournament.status = Tournament.STATUS_SAVED
       tournament.save()
@@ -120,8 +122,8 @@ class EditTournamentView(View):
     except:
       return redirect('permission-denied-403')
     if 'image' in request.FILES.keys() and request.FILES['image']:
-      tournament.image = request.FILES['image']
-      tournament.save()
+      tournament.image.image = request.FILES['image']
+      tournament.image.save()
     tform = TournamentForm(request.POST, instance=tournament)
     formfail = False
     if tform.is_valid():
