@@ -70,6 +70,7 @@ class TournamentDetailContestantView(View):
     if team:
       data['team_status'] = 1
       data['team'] = dict()
+      data['team']['id'] = team.id
       data['team']['team_name'] = team.name
       data['team']['leader'] = team.leader
       data['team']['members'] = team.members.all()
@@ -240,6 +241,8 @@ class KickContestantView(View):
     if contestant not in team.members.all():
       messages.add_message(request, messages.ERROR, '你指定的人不在队伍里面')
       return redirect('tournament-detail-contestant', tournament_id)
+    if contestant == user:
+      messages.add_message(request, messages.ERROR, '你不能直接踢出自己')
     team.members.remove(contestant)
     team.save()
     messages.add_message(request, messages.SUCCESS, '踢出成员成功')
