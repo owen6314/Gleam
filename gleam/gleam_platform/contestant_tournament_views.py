@@ -142,7 +142,7 @@ class RegisterView(View):
     except:
       return redirect('index')
     if now < tournament.register_begin_time or now > tournament.register_end_time:
-      messages.add_message(request, messages.ERROR, '目前已不在报名之间内')
+      messages.add_message(request, messages.ERROR, '目前已不在报名时间内')
       return redirect('tournament-detail-contestant', tournament_id)
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     target_team = None

@@ -529,6 +529,7 @@
             text: '{{ message }}',
             type: '{{ message.tags }}',
             animate_speed: 'fast',
+            delay:3000,
             styling: 'bootstrap3',
             hide:true,
             shadow:true,
@@ -546,6 +547,7 @@
       var status = (now_time-start_time)/(end_time-start_time);
       $("#contest-status").width(toPercent(status));
     });
+    {% if team_status == 1 %}
     $("#team_edit").click(function () {
       $.confirm({
         icon: 'fa fa-wrench',
@@ -662,5 +664,6 @@
         }
       });
     });
+    {% endif %}
   </script>
 {% endblock javascripts %}

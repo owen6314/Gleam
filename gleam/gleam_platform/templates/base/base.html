@@ -53,6 +53,7 @@
           text: '其实我们根本就不准备做这个QAQ',
           type: 'info',
           animate_speed: 'fast',
+          delay:3000,
           styling: 'bootstrap3',
           hide:true,
           shadow:true,
@@ -61,6 +62,23 @@
           },
         });
       };
+    {% if messages %}
+      {% for message in messages %}
+        new PNotify({
+          title: '{{ message.tags }}',
+          text: '{{ message }}',
+          type: '{{ message.tags }}',
+          animate_speed: 'fast',
+          delay:3000,
+          styling: 'bootstrap3',
+          hide:true,
+          shadow:true,
+          nonblock: {
+            nonblock: true
+          },
+        });
+      {% endfor %}
+    {% endif %}
     </script>
   {% endblock %}
 {% endblock body %}

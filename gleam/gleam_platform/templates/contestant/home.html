@@ -104,7 +104,7 @@
                     <span>已参加</span>
                   </a>
                 </div>
-                <a class="btn btn-default btn-block" >{{ tournament.name }}</a>
+                <a class="btn btn-default btn-block" href="{% url 'tournament-detail-contestant' tournament.id %}">{{ tournament.name }}</a>
               </div>
             </div>
           {% endfor %}
