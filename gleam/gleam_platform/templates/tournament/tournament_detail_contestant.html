@@ -417,8 +417,10 @@
                             {% for member in team.members %}
                               <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
                               {% if request.user.id == team.leader.user.id %}
-                                <a id="transfer"><i class="fa fa-wrench"></i></a>
-                                <a id="kick"><i class="fa fa-close"></i></a>
+                                <a id="{{ member.user.id }}"><i class="transfer fa fa-wrench"></i></a>
+                                <a id="transfer_{{ member.user.id }}" href="{% url 'transfer' tournament_id team.id member.user.id %}"></a>
+                                <a id="{{ member.user.id }}"><i class="kick fa fa-close"></i></a>
+                                <a id="kick_{{ member.user.id }}" href="{% url 'kick' tournament_id team.id member.user.id %}"></a>
                               {% endif %}
                             {%  endfor %}
                           </h3>
@@ -427,7 +429,7 @@
                           <div>
                             <button class="btn btn-success">提交结果</button>
                             <button class="btn btn-primary">查看过往提交</button>
-                            <a class="btn btn-warning" id="quit"">我要退赛</a>
+                            <a class="btn btn-warning" id="quit">我要退赛</a>
                           </div>
                         </div>
                       </div>
@@ -541,7 +543,7 @@
         icon: 'fa fa-wrench',
         title:'修改队伍名',
         content: '' +
-        '<form action="" class="formName">' +
+        '<form action="" class="team_edit">' +
         '<div class="form-group">' +
         '<input type="text" value="' +
         "{{ team.team_name }}" +
@@ -556,18 +558,23 @@
         buttons: {
           confirm: {
             text: '确认',
-            btnClass:'btn-info',
+            btnClass: 'btn-info',
             action: function () {
-              }
+              $.ajax({
+                dataType: "json",
+                type: "post",
+              })
             }
           },
           cancel: {
             text: '取消',
             btnClass: 'btn-danger'
           }
+        }
       });
     });
     $("#transfer").click(function () {
+      var contestant_id = $(this).parent().attr("id");
       $.confirm({
         icon: 'fa fa-warning',
         title: '提示',
@@ -575,20 +582,13 @@
         animation: 'RotateX',
         closeAnimation: 'RotateX',
         backgroundDismiss: true,
+        autoClose: 'cancel|10000',
         buttons: {
           confirm: {
             text: '确认',
             btnClass:'btn-info',
             action: function () {
-              var id = "{{ tournament_id }}";
-              $.ajax({
-                type:'get',
-                dataType:'text',
-                url:"http://127.0.0.1:8000/transfer/"+id,
-                success:function () {
-                  $("#team").text("我要参赛");
-                }
-              })
+              $("#transfer_"+contestant_id)[0].click();
             }
           },
           cancel:{
@@ -598,7 +598,8 @@
         }
       });
     });
-    $("#kick").click(function () {
+    $(".kick").click(function () {
+      var contestant_id = $(this).parent().attr("id");
       $.confirm({
         icon: 'fa fa-warning',
         title: '提示',
@@ -606,11 +607,13 @@
         animation: 'RotateX',
         closeAnimation: 'RotateX',
         backgroundDismiss: true,
+        autoClose: 'cancel|10000',
         buttons: {
           confirm: {
             text: '确认',
             btnClass:'btn-info',
             action: function () {
+              $("#kick_"+contestant_id)[0].click();
             }
           },
           cancel:{
@@ -635,7 +638,7 @@
             text: '确认',
             btnClass:'btn-info',
             action: function () {
-              window.location.href = "{% url 'quit' tournament_id %}"
+              window.location.href = "{% url 'quit' tournament_id %}";
             }
           },
           cancel:{
