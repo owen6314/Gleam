@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
   {{ block.super }}
-  <link rel="stylesheet" type="text/css" href="/static/vendors/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+  <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 {% endblock stylesheets %}
 
@@ -180,30 +180,30 @@
 
 {% block javascripts %}
   {{ block.super}}
-  <script type="text/javascript" src="/static/vendors/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+  <link href="https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.5/js/fileinput.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {
       $('#register_begin_time').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii'
+        format: 'YYYY-MM-DD HH:mm'
       });
       $('#register_end_time').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii'
+        format: 'YYYY-MM-DD HH:mm'
       });
       $('#overall_end_time').datetimepicker({
-        format: 'yyyy-mm-dd hh:ii'
+        format: 'YYYY-MM-DD HH:mm'
       });
       {% for z in zip %}
         $('#submit_begin_time_{{ z.contest.id }}').datetimepicker({
-          format: 'yyyy-mm-dd hh:ii'
+          format: 'YYYY-MM-DD HH:mm'
         });
         $('#submit_end_time_{{ z.contest.id }}').datetimepicker({
-          format: 'yyyy-mm-dd hh:ii'
+          format: 'YYYY-MM-DD HH:mm'
         });
         $('#release_time_{{ z.contest.id }}').datetimepicker({
-          format: 'yyyy-mm-dd hh:ii'
+          format: 'YYYY-MM-DD HH:mm'
         });
       {% endfor %}
       $("#image").fileinput({

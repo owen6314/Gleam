@@ -203,7 +203,7 @@ class ProfileEditOrganizerView(View):
       request.user.organizer_profile.avatar = avatar
       request.user.organizer_profile.save()
 
-      return redirect('profile-organizer', request.user.id)
+      return redirect('profile-edit-organizer')
     else:
       return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
 
@@ -231,6 +231,7 @@ class AccountEditOrganizerView(View):
       if user:
         user.set_password(new_password)
         user.save()
+        login(request, user)
         return redirect('home-organizer')
       else:
         form.add_error('old_password', u'原密码错误')
