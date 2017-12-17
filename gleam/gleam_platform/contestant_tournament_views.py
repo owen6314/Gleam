@@ -245,6 +245,7 @@ class KickContestantView(View):
       return redirect('tournament-detail-contestant', tournament_id)
     if contestant == user:
       messages.add_message(request, messages.ERROR, '你不能直接踢出自己')
+      return redirect('tournament-detail-contestant', tournament_id)
     team.members.remove(contestant)
     team.save()
     messages.add_message(request, messages.SUCCESS, '踢出成员成功')
