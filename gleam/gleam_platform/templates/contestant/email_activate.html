@@ -75,7 +75,7 @@
             nonblock: true
           },
         });
-        $('#link_resend>#button_resend').trigger('click')
+        $('#link_resend>#button_resend').trigger('click');
         $("#button_resend").attr("class","btn btn-disabled");
         $("#button_resend").html("已发送(60s内只能发送一次)");
         $("#link_resend").removeAttr("href");
