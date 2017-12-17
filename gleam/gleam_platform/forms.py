@@ -43,7 +43,7 @@ class TournamentForm(forms.ModelForm):
     register_begin_time = self.cleaned_data['register_begin_time']
     register_end_time = self.cleaned_data['register_end_time']
     if register_begin_time > register_end_time:
-      raise forms.ValidationError('注册截止时间应位于注册开始时间之后')
+      raise forms.ValidationError('报名截止时间应位于报名开始时间之后')
 
 
 class ContestForm(forms.ModelForm):
@@ -55,13 +55,13 @@ class ContestForm(forms.ModelForm):
     submit_begin_time = self.cleaned_data['submit_begin_time']
     submit_end_time = self.cleaned_data['submit_end_time']
     if submit_begin_time > submit_end_time:
-      raise forms.ValidationError('提交截止时间应位于开始时间之后')
+      raise forms.ValidationError('阶段结束时间应位于阶段开始时间之后')
 
   def clean_register_end_time(self):
     submit_end_time = self.cleaned_data['submit_end_time']
     release_time = self.cleaned_data['release_time']
     if submit_end_time > release_time:
-      raise forms.ValidationError('成绩公布时间应位于提交截止时间之后')
+      raise forms.ValidationError('成绩公布时间应位于阶段结束时间之后')
 
 
   def clean_pass_rule(self):

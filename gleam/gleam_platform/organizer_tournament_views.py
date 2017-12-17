@@ -147,7 +147,7 @@ class EditTournamentView(View):
       if form.is_valid():
         if form.cleaned_data.get('submit_begin_time') and prev_time:
           if form.cleaned_data.get('submit_begin_time') < prev_time:
-            form.add_error('submit_begin_time', "提交开始时间应位于上一阶段结束之后")
+            form.add_error('submit_begin_time', "阶段开始时间应位于上一阶段公布成绩之后")
             formfail = True
           else:
             form.save()
@@ -155,7 +155,7 @@ class EditTournamentView(View):
         formfail = True
         if form.cleaned_data.get('submit_begin_time') and prev_time:
           if form.cleaned_data.get('submit_begin_time') < prev_time:
-            form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+            form.add_error('submit_begin_time', "阶段开始时间应位于上一阶段公布成绩之后")
       prev_time = form.cleaned_data.get('release_time')
 
     if tournament.overall_end_time and prev_time and tournament.overall_end_time < prev_time:
@@ -259,8 +259,6 @@ class TournamentDetailOrganizerView(View):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
   @staticmethod
-  # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
-  # cache the result may need some other tools like redis
   def get_leaderboard(contest):
     leaderboard = contest.leaderboarditem_set.order_by('-score')
     ret = []
