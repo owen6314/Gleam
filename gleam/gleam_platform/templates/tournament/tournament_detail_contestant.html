@@ -31,7 +31,7 @@
                   <ul class="nav nav-pills">
                     <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
                     <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
-                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_team" data-toggle="tab">
+                    <li style="width:24%;"><a style="font-size:24px;" id="team" href="#tab_team" data-toggle="tab">
                       {% if team_status == 0 %}
                         我要参赛
                       {% else %}
@@ -404,8 +404,8 @@
                       </form>
                     {% else %}
                       <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                          <h2>我的队伍: {{ team.team_name }}</h2>
+                        <div class="col-md-6 col-md-offset-3">
+                          <h2>我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
                           {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
@@ -417,8 +417,8 @@
                             {% for member in team.members %}
                               <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
                               {% if request.user.id == team.leader.user.id %}
-                                <a href=""><i class="fa fa-wrench"></i></a>
-                                <a href=""><i class="fa fa-close"></i></a>
+                                <a id="transfer"><i class="fa fa-wrench"></i></a>
+                                <a id="kick"><i class="fa fa-close"></i></a>
                               {% endif %}
                             {%  endfor %}
                           </h3>
@@ -427,7 +427,7 @@
                           <div>
                             <button class="btn btn-success">提交结果</button>
                             <button class="btn btn-primary">查看过往提交</button>
-                            <a class="btn btn-warning" href="{% url 'quit' tournament_id %}">我要退赛</a>
+                            <a class="btn btn-warning" id="quit"">我要退赛</a>
                           </div>
                         </div>
                       </div>
@@ -536,33 +536,114 @@
       var status = (now_time-start_time)/(end_time-start_time);
       $("#contest-status").width(toPercent(status));
     });
+    $("#team_edit").click(function () {
+      $.confirm({
+        icon: 'fa fa-wrench',
+        title:'修改队伍名',
+        content: '' +
+        '<form action="" class="formName">' +
+        '<div class="form-group">' +
+        '<input type="text" value="' +
+        "{{ team.team_name }}" +
+        '" class="name form-control" required />' +
+        '</div>' +
+        '</form>',
+        type:'blue',
+        animation: 'RotateX',
+        closeAnimation: 'RotateX',
+        backgroundDismiss: false,
+        backgroundDismissAnimation: 'glow',
+        buttons: {
+          confirm: {
+            text: '确认',
+            btnClass:'btn-info',
+            action: function () {
+              }
+            }
+          },
+          cancel: {
+            text: '取消',
+            btnClass: 'btn-danger'
+          }
+      });
+    });
     $("#transfer").click(function () {
       $.confirm({
-        title: '确认',
+        icon: 'fa fa-warning',
+        title: '提示',
         content: '确认将他任命为队长么？',
-        confirmButton: '确认',
-        cancelButton: '取消',
-        confirmButtonClass: 'btn-info',
-        cancelButtonClass: 'btn-danger',
         animation: 'RotateX',
         closeAnimation: 'RotateX',
         backgroundDismiss: true,
-        autoClose: 'cancel|6000',
-        confirm: function(){
-          $.ajax({
-            url : "{% url 'kick' %}?",
-            async : true,
-            dataType : 'text',
-            error : function(xhr) {
-
-            },
-            success : function(data) {
-
+        buttons: {
+          confirm: {
+            text: '确认',
+            btnClass:'btn-info',
+            action: function () {
+              var id = "{{ tournament_id }}";
+              $.ajax({
+                type:'get',
+                dataType:'text',
+                url:"http://127.0.0.1:8000/transfer/"+id,
+                success:function () {
+                  $("#team").text("我要参赛");
+                }
+              })
             }
-          });
+          },
+          cancel:{
+            text:'取消',
+            btnClass:'btn-danger'
+          }
         }
       });
     });
-
+    $("#kick").click(function () {
+      $.confirm({
+        icon: 'fa fa-warning',
+        title: '提示',
+        content: '确认将他开除出队伍吗？',
+        animation: 'RotateX',
+        closeAnimation: 'RotateX',
+        backgroundDismiss: true,
+        buttons: {
+          confirm: {
+            text: '确认',
+            btnClass:'btn-info',
+            action: function () {
+            }
+          },
+          cancel:{
+            text:'取消',
+            btnClass:'btn-danger'
+          }
+        }
+      });
+    });
+    $("#quit").click(function () {
+      $.confirm({
+        icon: 'fa fa-warning',
+        title: '提示',
+        content: '确认要退赛么？',
+        type:'blue',
+        animation: 'RotateX',
+        closeAnimation: 'RotateX',
+        backgroundDismiss: true,
+        autoClose: 'cancel|10000',
+        buttons: {
+          confirm: {
+            text: '确认',
+            btnClass:'btn-info',
+            action: function () {
+              window.location.href = "{% url 'quit' tournament_id %}"
+            }
+          },
+          cancel:{
+            text:'取消',
+            btnClass:'btn-danger'
+          }
+        }
+      });
+    });
   </script>
 {% endblock javascripts %}
