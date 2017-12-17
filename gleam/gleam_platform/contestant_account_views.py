@@ -43,8 +43,11 @@ class SignupContestantView(View):
       # 连接用户类型对应的用户信息表单
       profile = Contestant.objects.create()
       user.contestant_profile = profile
-
       user.save()
+      avatar = Image()
+      avatar.save()
+      user.contestant_profile.avatar = avatar
+      user.contestant_profile.save()
 
       return redirect('confirmation-email-send', user.id)
     else:
@@ -143,7 +146,10 @@ class ProfileContestantView(View):
     fields = ['nick_name', 'gender', 'school', 'introduction']
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
-    data['avatar_url'] = user.contestant_profile.avatar.image.url
+    if user.contestant_profile.avatar.image:
+      data['avatar_url'] = user.contestant_profile.avatar.image.url
+    else:
+      data['avatar_url'] = ''
     data['user'] = user
     # data['user'] = user
 

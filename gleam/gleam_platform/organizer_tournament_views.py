@@ -348,6 +348,7 @@ class ContestLeaderboardOrganizerView(View):
     data = dict()
     data['leaderboard'] = leaderboard
     data['update_time'] = contest.last_csv_upload_time
+    data['contest_id'] = contest_id
     # data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
@@ -357,12 +358,13 @@ class ContestLeaderboardOrganizerView(View):
         data['promoted'] = team_promoted_ids
 
       else:
+        total_num = leader_board_items.count()
         if contest.pass_rule < 1:
-          total_num = leader_board_items.count()
           promoted_num = int(math.floor(total_num * contest.pass_rule))
-          team_promoted_ids = [item.id for item in leader_board_items[:promoted_num]]
+          team_promoted_ids = \
+            [item.id for item in leader_board_items[:min([total_num,promoted_num])]]
         else:
-          team_promoted_ids = [item.id for item in leader_board_items[:contest.pass_rule]]
+          team_promoted_ids = [item.id for item in leader_board_items[:min([total_num, contest.pass_rule])]]
         data['promoted'] = team_promoted_ids
 
     else:
