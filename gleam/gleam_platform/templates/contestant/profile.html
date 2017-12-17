@@ -16,8 +16,8 @@
             <div class="col-md-3 col-sm-3 col-xs-12">
               <div class="profile_img">
                 <div id="crop-avatar">
-                  {% if avatar %}
-                    <img class="img-responsive img-circle avatar-view" src="{{ avatar.image.url }}" style="height:220px;width:220px;" alt="Avatar">
+                  {% if avatar_url %}
+                    <img class="img-responsive img-circle avatar-view" src="{{ avatar_url }}" style="height:220px;width:220px;" alt="Avatar">
                   {% else %}
                     <img class="img-responsive img-circle avatar-view" src="/static/images/default-img.jpg" style="height:220px;width:220px;" alt="Avatar">
                   {% endif %}

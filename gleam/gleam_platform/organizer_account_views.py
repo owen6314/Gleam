@@ -231,6 +231,7 @@ class AccountEditOrganizerView(View):
       if user:
         user.set_password(new_password)
         user.save()
+        login(request, user)
         return redirect('home-organizer')
       else:
         form.add_error('old_password', u'原密码错误')
