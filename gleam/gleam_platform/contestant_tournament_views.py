@@ -298,4 +298,3 @@ class EditTeamNameView(View):
     messages.add_message(request, messages.SUCCESS, '改名成功')
     name_dict = {'team_name': team.name}
     return HttpResponse(json.dumps(name_dict), content_type='application/json')
-
