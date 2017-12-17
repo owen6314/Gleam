@@ -70,6 +70,7 @@ class TournamentDetailContestantView(View):
     if team:
       data['team_status'] = 1
       data['team'] = dict()
+      data['team']['id'] = team.id
       data['team']['team_name'] = team.name
       data['team']['leader'] = team.leader
       data['team']['members'] = team.members.all()
