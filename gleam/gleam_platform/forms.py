@@ -39,22 +39,29 @@ class TournamentForm(forms.ModelForm):
       raise forms.ValidationError('队伍最大人数应为正数')
     return max_team_member_num
 
+  def clean_register_end_time(self):
+    register_begin_time = self.cleaned_data['register_begin_time']
+    register_end_time = self.cleaned_data['register_end_time']
+    if register_begin_time > register_end_time:
+      raise forms.ValidationError('报名截止时间应位于报名开始时间之后')
+
 
 class ContestForm(forms.ModelForm):
   class Meta:
     model = Contest
     exclude = ['tournament', 'team_count', 'last_csv_upload_time']
 
-  def clean(self):
-    cleaned_data = super(ContestForm, self).clean()
-    submit_begin_time = cleaned_data.get('submit_begin_time')
-    submit_end_time = cleaned_data.get('submit_end_time')
-    release_time = cleaned_data.get('release_time')
-    if submit_begin_time and submit_end_time and release_time:
-      if submit_end_time < submit_begin_time:
-        self.add_error('submit_end_time', '提交截止时间应位于开始时间之后')
-      if release_time < submit_end_time:
-        self.add_error('release_time', '成绩公布时间应位于提交截止时间之后')
+  def clean_register_end_time(self):
+    submit_begin_time = self.cleaned_data.get('submit_begin_time')
+    submit_end_time = self.cleaned_data.get('submit_end_time')
+    if submit_begin_time and submit_end_time and submit_begin_time > submit_end_time:
+      raise forms.ValidationError('阶段结束时间应位于阶段开始时间之后')
+
+  def clean_release_time(self):
+    submit_end_time = self.cleaned_data.get('submit_end_time')
+    release_time = self.cleaned_data.get('release_time')
+    if submit_end_time and release_time and submit_end_time > release_time:
+      raise forms.ValidationError('成绩公布时间应位于阶段结束时间之后')
 
   def clean_pass_rule(self):
     pass_rule = self.cleaned_data['pass_rule']
