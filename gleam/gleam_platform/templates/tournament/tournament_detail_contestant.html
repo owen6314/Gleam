@@ -396,7 +396,7 @@
                     {% else %}
                       <div class="row">
                         <div class="col-md-6 col-md-offset-3">
-                          <h2>我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
+                          <h2 id="team_name">我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
                           {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
@@ -550,7 +550,7 @@
         content: '' +
         '<form action="" class="team_edit">' +
         '<div class="form-group">' +
-        '<input type="text" value="' +
+        '<input id="new_team_name" type="text" value="' +
         "{{ team.team_name }}" +
         '" class="name form-control" required />' +
         '</div>' +
@@ -567,7 +567,12 @@
             action: function () {
               $.ajax({
                 dataType: "json",
-                type: "post",
+                type: "get",
+                url: "{% url 'edit-team-name' team.id %}",
+                data: {"team_name": $('#new_team_name').val()},
+                success: function(ret){
+                  $('#team_name').html('我的队伍：' + ret.team_name + '<a id=\"team_edit\"><i class=\"fa fa-wrench\"></i></a>')
+                   }
               })
             }
           },
