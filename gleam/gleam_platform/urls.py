@@ -58,4 +58,7 @@ urlpatterns = [
   # Image Manage Urls
   url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),
 
+  # Default View 404
+  url(r'^', NotFoundView.as_view(), name='default'),
+
 ]
