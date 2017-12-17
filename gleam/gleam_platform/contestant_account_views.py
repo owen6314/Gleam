@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 from .forms import UserSignupForm, UserLoginForm, ProfileContestantForm, AccountEditForm
 from .models import Tournament, Contestant, User, Image
@@ -102,6 +103,7 @@ class LoginContestantView(View):
         return redirect('home-contestant')
 
     # 跳转到index
+    messages.add_message(request, messages.ERROR, '账号或密码错误！')
     return redirect('index')
 
 

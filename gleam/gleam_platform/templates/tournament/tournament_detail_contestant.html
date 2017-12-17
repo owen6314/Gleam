@@ -396,7 +396,10 @@
                     {% else %}
                       <div class="row">
                         <div class="col-md-6 col-md-offset-3">
-                          <h2 id="team_name">我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
+                          <h2 style="display : inline;">我的队伍:
+                            <h2 id="team_name" style="display : inline;">{{ team.team_name }}</h2>
+                            <a id="team_edit"><i class="fa fa-cog"></i></a>
+                          </h2>
                           {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
@@ -408,9 +411,9 @@
                             {% for member in team.members %}
                               <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
                               {% if request.user.id == team.leader.user.id %}
-                                <a id="{{ member.user.contestant_profile.id }}"><i class="transfer fa fa-wrench"></i></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="transfer fa fa-flag"></i></a>
                                 <a id="transfer_{{ member.user.contestant_profile.id }}" href="{% url 'transfer' tournament_id team.id member.user.contestant_profile.id %}"></a>
-                                <a id="{{ member.user.contestant_profile.id }}"><i class="kick fa fa-close"></i></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="kick fa fa-ban"></i></a>
                                 <a id="kick_{{ member.user.contestant_profile.id }}" href="{% url 'kick' tournament_id team.id member.user.contestant_profile.id %}"></a>
                               {% endif %}
                             {%  endfor %}
@@ -526,6 +529,7 @@
             text: '{{ message }}',
             type: '{{ message.tags }}',
             animate_speed: 'fast',
+            delay:3000,
             styling: 'bootstrap3',
             hide:true,
             shadow:true,
@@ -543,6 +547,7 @@
       var status = (now_time-start_time)/(end_time-start_time);
       $("#contest-status").width(toPercent(status));
     });
+    {% if team_status == 1 %}
     $("#team_edit").click(function () {
       $.confirm({
         icon: 'fa fa-wrench',
@@ -550,7 +555,7 @@
         content: '' +
         '<form action="" class="team_edit">' +
         '<div class="form-group">' +
-        '<input id="new_team_name" type="text" value="' +
+        '<input id="new_team_name" type="text" maxlength="12" value="' +
         "{{ team.team_name }}" +
         '" class="name form-control" required />' +
         '</div>' +
@@ -571,7 +576,8 @@
                 url: "{% url 'edit-team-name' team.id %}",
                 data: {"team_name": $('#new_team_name').val()},
                 success: function(ret){
-                  $('#team_name').html('我的队伍：' + ret.team_name + '<a id=\"team_edit\"><i class=\"fa fa-wrench\"></i></a>')
+                  $('#team_name').html(ret.team_name);
+                  $('#team_name>a').attr("id","team_edit");
                    }
               })
             }
@@ -583,7 +589,7 @@
         }
       });
     });
-    $("#transfer").click(function () {
+    $(".transfer").click(function () {
       var contestant_id = $(this).parent().attr("id");
       $.confirm({
         icon: 'fa fa-warning',
@@ -658,5 +664,6 @@
         }
       });
     });
+    {% endif %}
   </script>
 {% endblock javascripts %}

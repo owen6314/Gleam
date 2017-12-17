@@ -142,7 +142,7 @@ class RegisterView(View):
     except:
       return redirect('index')
     if now < tournament.register_begin_time or now > tournament.register_end_time:
-      messages.add_message(request, messages.ERROR, '目前已不在报名之间内')
+      messages.add_message(request, messages.ERROR, '目前已不在报名时间内')
       return redirect('tournament-detail-contestant', tournament_id)
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     target_team = None
@@ -241,10 +241,10 @@ class KickContestantView(View):
       messages.add_message(request, messages.ERROR, '您不是队长，无权踢出成员')
       return redirect('tournament-detail-contestant', tournament_id)
     if contestant not in team.members.all():
-      messages.add_message(request, messages.ERROR, '你指定的人不在队伍里面')
+      messages.add_message(request, messages.ERROR, '您指定的人不在队伍里面')
       return redirect('tournament-detail-contestant', tournament_id)
     if contestant == user:
-      messages.add_message(request, messages.ERROR, '你不能直接踢出自己')
+      messages.add_message(request, messages.ERROR, '您不能直接踢出自己')
       return redirect('tournament-detail-contestant', tournament_id)
     team.members.remove(contestant)
     team.save()
@@ -267,10 +267,13 @@ class TransferLeaderView(View):
     except ObjectDoesNotExist:
       return redirect('index')
     if user != team.leader:
-      messages.add_message(request, messages.ERROR, '你不是队长，无法移交队长')
+      messages.add_message(request, messages.ERROR, '您不是队长，无法移交队长')
       return redirect('tournament-detail-contestant', tournament_id)
     if contestant not in team.members.all():
       messages.add_message(request, messages.ERROR, '您指定的人不在队内')
+      return redirect('tournament-detail-contestant', tournament_id)
+    if user == contestant:
+      messages.add_message(request, messages.ERROR, '您已经是队长，无法移交队长')
       return redirect('tournament-detail-contestant', tournament_id)
     team.leader = contestant
     team.save()
@@ -290,12 +293,11 @@ class EditTeamNameView(View):
     except ObjectDoesNotExist:
       return redirect('index')
     if user != team.leader:
-      messages.add_message(request, messages.ERROR, '你不是队长，无法修改队名')
+      messages.add_message(request, messages.ERROR, '您不是队长，无法修改队名')
       name_dict = {'team_name': team.name}
       return JsonResponse(name_dict)
     if team_name:
       team.name = team_name
       team.save()
-    messages.add_message(request, messages.SUCCESS, '改名成功')
     name_dict = {'team_name': team.name}
     return JsonResponse(name_dict)
