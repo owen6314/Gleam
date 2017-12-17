@@ -240,6 +240,8 @@ class KickContestantView(View):
     if contestant not in team.members.all():
       messages.add_message(request, messages.ERROR, '你指定的人不在队伍里面')
       return redirect('tournament-detail-contestant', tournament_id)
+    if contestant == user:
+      messages.add_message(request, messages.ERROR, '你不能直接踢出自己')
     team.members.remove(contestant)
     team.save()
     messages.add_message(request, messages.SUCCESS, '踢出成员成功')
