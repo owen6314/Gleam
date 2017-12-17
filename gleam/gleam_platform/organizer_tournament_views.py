@@ -81,7 +81,7 @@ class CreateTournamentView(View):
       image.save()
       tournament.image = image
       tournament.organizer = request.user.organizer_profile
-      tournament.status = Tournament.STATUS_SAVED
+      tournament.status = Tournament.STATUS_PUBLISHED
       tournament.save()
       for form in contest_forms:
         contest = form.save(commit=False)
