@@ -60,7 +60,7 @@ class CreateTournamentView(View):
       form = ContestForm(data)
       contest_forms.append(form)
       if not form.is_valid():
-          formfail = True
+        formfail = True
 
     prev_time = tournament_form.cleaned_data.get('register_end_time')
     for form in contest_forms:
@@ -362,7 +362,7 @@ class ContestLeaderboardOrganizerView(View):
         if contest.pass_rule < 1:
           promoted_num = int(math.floor(total_num * contest.pass_rule))
           team_promoted_ids = \
-            [item.id for item in leader_board_items[:min([total_num,promoted_num])]]
+            [item.id for item in leader_board_items[:min([total_num, promoted_num])]]
         else:
           team_promoted_ids = [item.id for item in leader_board_items[:min([total_num, contest.pass_rule])]]
         data['promoted'] = team_promoted_ids

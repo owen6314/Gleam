@@ -20,7 +20,6 @@ from gleam import settings
 
 
 class SignupContestantView(View):
-
   @staticmethod
   def get(request):
     form = UserSignupForm()
@@ -82,7 +81,8 @@ class SendConfirmationEmailView(View):
     )
     email.send()
 
-    return render(request, 'contestant/email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+    return render(request, 'contestant/email_activate.html',
+                  {'user_id': user.id, 'domain': 'http://' + current_site.domain})
 
 
 class LoginContestantView(View):
@@ -123,7 +123,7 @@ class HomeContestantView(View):
       return redirect('403')
 
     data = dict()
-    data['tournaments'] = Tournament.objects\
+    data['tournaments'] = Tournament.objects \
       .filter(team__members=request.user.contestant_profile).distinct()
 
     return render(request, 'contestant/home.html', data)
@@ -212,7 +212,6 @@ class ProfileEditContestantView(View):
 
 @method_decorator(login_required, name='dispatch')
 class AccountEditContestantView(View):
-
   @staticmethod
   def get(request):
     if request.user.type != 'C' or not request.user.contestant_profile:
@@ -233,6 +232,7 @@ class AccountEditContestantView(View):
       if user:
         user.set_password(new_password)
         user.save()
+        login(request, user)
         return redirect('home-contestant')
       else:
         form.add_error('old_password', u'原密码错误')
