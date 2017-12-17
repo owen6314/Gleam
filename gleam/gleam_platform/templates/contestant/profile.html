@@ -24,7 +24,7 @@
                 </div>
               </div>
               <h2><b>{{ nick_name }}</b>
-                {% if request.user.id == id %}
+                {% if request.user.id == user.id %}
                   <small>
                     <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
                   </small></h2>
