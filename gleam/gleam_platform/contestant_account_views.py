@@ -144,6 +144,7 @@ class ProfileContestantView(View):
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
     data['avatar_url'] = user.contestant_profile.avatar.image.url
+    data['user'] = user
     # data['user'] = user
 
     return render(request, 'contestant/profile.html', data)
