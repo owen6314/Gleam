@@ -45,7 +45,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="location"> 所在地
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" maxlength="140" id="location" name="location" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.location %}{{user.organizer_profile.location}}{% endif %}">
+                  <input type="text" maxlength="8" id="location" name="location" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.location %}{{user.organizer_profile.location}}{% endif %}">
                 </div>
               </div>
 
@@ -54,7 +54,7 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="field"> 行业
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" maxlength="140" id="field" name="field" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.field %}{{user.organizer_profile.field}}{% endif %}">
+                  <input type="text" maxlength="8" id="field" name="field" class="form-control col-md-7 col-xs-12" value="{% if user.organizer_profile.field %}{{user.organizer_profile.field}}{% endif %}">
                 </div>
               </div>
 
