@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <div class="container object-non-visible" data-animation-effect="fadeIn">
+  <!--<div class="container object-non-visible" data-animation-effect="fadeIn">
     <h1 id="contest"  class="text-center title">我参加的比赛</h1>
     <div class="space"></div>
     <div class="x_content">
@@ -74,68 +74,78 @@
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="section">
-    <div class="container">
-      <h1 class="text-center title" id="portfolio">查看竞赛</h1>
-      <p class="lead text-center">这里包含了本平台发布的所有比赛<br>点击标签来查看</p>
-      <br>
-      <div class="row object-non-visible" data-animation-effect="fadeIn">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <div class="filters text-center">
-            <ul class="nav nav-pills">
-              <li class="active"><a href="#" data-filter="*">全部</a></li>
-              <li><a href="#" data-filter=".join">我参加的</a></li>
-              <li><a href="#" data-filter=".online">正在报名</a></li>
-              <li><a href="#" data-filter=".coming">即将到来</a></li>
-            </ul>
-          </div>
-          {% for tournament in tournamnets %}
+  </div>-->
+  <div class="container">
+    <h1 class="text-center title" id="portfolio">查看竞赛</h1>
+    <p class="lead text-center">这里包含了本平台发布的所有比赛<br>点击标签来查看</p>
+    <br>
+    <div class="row object-non-visible" data-animation-effect="fadeIn">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="filters text-center">
+          <ul class="nav nav-pills">
+            <li class="active"><a href="#" data-filter="*">全部</a></li>
+            <li><a href="#" data-filter=".join">我参加的</a></li>
+            <li><a href="#" data-filter=".online">正在报名</a></li>
+            <li><a href="#" data-filter=".coming">即将到来</a></li>
+          </ul>
+        </div>
+        <div class="isotope-container row grid-space-20">
+          {% for tournament in tournaments %}
             <div class="col-sm-6 col-md-3 col-xs-6 isotope-item join">
               <div class="image-box">
                 <div class="overlay-container">
-                  <img src="/static/images/portfolio-3.jpg" alt="">
-                  <a class="overlay" data-toggle="modal" data-target="#project-3">
+                  {% if tournament.image.url %}
+                    <img src="{{ tournament.image.url }}">
+                  {% else %}
+                    <img src="/static/images/portfolio-1.jpg">
+                  {% endif %}
+                  <a class="overlay">
                     <i class="fa fa-search-plus"></i>
                     <span>已参加</span>
                   </a>
                 </div>
-                <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+                <a class="btn btn-default btn-block" >{{ tournament.name }}</a>
               </div>
             </div>
           {% endfor %}
-          <div class="isotope-container row grid-space-20">
-            {% for tournament in tournaments_coming %}
-              <div class="col-sm-6 col-md-3 col-xs-6 isotope-item coming">
-                <div class="image-box">
-                  <div class="overlay-container">
-                    <img src="/static/images/portfolio-1.jpg" alt="">
-                    <a class="overlay" data-toggle="modal" data-target="#project-1">
-                      <i class="fa fa-search-plus"></i>
-                      <span>即将到来</span>
-                    </a>
-                  </div>
-                  <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-1">{{ tournament.name}}</a>
+          {% for tournament in tournaments_coming %}
+            <div class="col-sm-6 col-md-3 col-xs-6 isotope-item coming">
+              <div class="image-box">
+                <div class="overlay-container">
+                  {% if tournament.image.url %}
+                    <img src="{{ tournament.image.url }}">
+                  {% else %}
+                    <img src="/static/images/portfolio-1.jpg">
+                  {% endif %}
+                  <a class="overlay">
+                    <i class="fa fa-search-plus"></i>
+                    <span>正在注册</span>
+                  </a>
                 </div>
+                <a class="btn btn-default btn-block" >{{ tournament.name }}</a>
               </div>
-            {% endfor %}
-            {% for tournament in tournaments_online %}
-              <div class="col-sm-6 col-md-3 col-xs-6 isotope-item online">
-                <div class="image-box">
-                  <div class="overlay-container">
-                    <img src="/static/images/portfolio-3.jpg" alt="">
-                    <a class="overlay" data-toggle="modal" data-target="#project-3">
-                      <i class="fa fa-search-plus"></i>
-                      <span>正在进行</span>
-                    </a>
-                  </div>
-                  <a class="btn btn-default btn-block" data-toggle="modal" data-target="#project-3">{{ tournament.name}}</a>
+            </div>
+          {% endfor %}
+          {% for tournament in tournaments_online %}
+            <div class="col-sm-6 col-md-3 col-xs-6 isotope-item online">
+              <div class="image-box">
+                <div class="overlay-container">
+                  {% if tournament.image.url %}
+                    <img src="{{ tournament.image.url }}">
+                  {% else %}
+                    <img src="/static/images/portfolio-1.jpg">
+                  {% endif %}
+                  <a class="overlay">
+                    <i class="fa fa-search-plus"></i>
+                    <span>正在进行</span>
+                  </a>
                 </div>
+                <a class="btn btn-default btn-block" >{{ tournament.name }}</a>
               </div>
-            {% endfor %}
-          </div>
-          <a class="pull-right" href="{% url 'tournament-list' %}">查看更多</a>
+            </div>
+          {% endfor %}
         </div>
+        <a class="pull-right" href="{% url 'tournament-list' %}">查看更多</a>
       </div>
     </div>
   </div>
