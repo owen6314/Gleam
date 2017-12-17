@@ -31,7 +31,7 @@ class SignupOrganizerView(View):
       login(request, user)
       return redirect('home-organizer')
     # 跳转到index
-    return redirect('index', {'form': form})
+    return render(request, 'organizer/signup.html', {'form': form})
 
 
 class LoginOrganizerView(View):

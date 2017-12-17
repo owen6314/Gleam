@@ -49,13 +49,13 @@ class SignupContestantView(View):
       return redirect('confirmation-email-send', user.id)
     else:
       try:
-        user = User.objects.get(username=form.cleaned_data['email'])
+        user = User.objects.get(email=request.POST['email'])
         if not user.is_active:
           return redirect('confirmation-email-send', user.id)
       except:
         pass
     # 跳转到index
-    return redirect('index', {'form': form})
+    return render(request, 'contestant/signup.html', {'form': form})
 
 
 class SendConfirmationEmailView(View):
