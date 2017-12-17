@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.contrib import messages
+from django.http import JsonResponse
 from .models import Tournament, Contest, Team, Record, Contestant
 import hashlib
 
@@ -30,6 +31,7 @@ class TournamentDetailContestantView(View):
     data = dict()
 
     data['tournament_id'] = tournament_id
+    data['image'] = tournament.image.image
     data['description'] = tournament.description
     data['name'] = tournament.name
     data['organization'] = tournament.organizer.organization
@@ -243,6 +245,7 @@ class KickContestantView(View):
       return redirect('tournament-detail-contestant', tournament_id)
     if contestant == user:
       messages.add_message(request, messages.ERROR, '你不能直接踢出自己')
+      return redirect('tournament-detail-contestant', tournament_id)
     team.members.remove(contestant)
     team.save()
     messages.add_message(request, messages.SUCCESS, '踢出成员成功')
@@ -273,3 +276,26 @@ class TransferLeaderView(View):
     team.save()
     messages.add_message(request, messages.SUCCESS, '移交队长成功')
     return redirect('tournament-detail-contestant', tournament_id)
+
+
+@method_decorator(login_required, name='dispatch')
+class EditTeamNameView(View):
+  @staticmethod
+  def get(request, *args):
+    team_name = request.GET.get('team_name')
+    team_id = int(args[0])
+    try:
+      team = Team.objects.get(pk=team_id)
+      user = request.user.contestant_profile
+    except ObjectDoesNotExist:
+      return redirect('index')
+    if user != team.leader:
+      messages.add_message(request, messages.ERROR, '你不是队长，无法修改队名')
+      name_dict = {'team_name': team.name}
+      return JsonResponse(name_dict)
+    if team_name:
+      team.name = team_name
+      team.save()
+    messages.add_message(request, messages.SUCCESS, '改名成功')
+    name_dict = {'team_name': team.name}
+    return JsonResponse(name_dict)

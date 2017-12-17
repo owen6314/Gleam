@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.utils import timezone
 from .forms import ContestForm, TournamentForm
-from .models import Tournament, Contest, Team, Record, LeaderBoardItem
+from .models import Tournament, Contest, Team, Record, LeaderBoardItem, Image
 
 import datetime
 import csv
@@ -60,7 +60,7 @@ class CreateTournamentView(View):
       form = ContestForm(data)
       contest_forms.append(form)
       if not form.is_valid():
-          formfail = True
+        formfail = True
 
     prev_time = tournament_form.cleaned_data.get('register_end_time')
     for form in contest_forms:
@@ -77,9 +77,11 @@ class CreateTournamentView(View):
 
     if not formfail:
       tournament = tournament_form.save(commit=False)
-      tournament.image = request.FILES.get('image')
+      image = Image(image=request.FILES.get('image'), type='P', owner=request.user)
+      image.save()
+      tournament.image = image
       tournament.organizer = request.user.organizer_profile
-      tournament.status = Tournament.STATUS_SAVED
+      tournament.status = Tournament.STATUS_PUBLISHED
       tournament.save()
       for form in contest_forms:
         contest = form.save(commit=False)
@@ -120,8 +122,8 @@ class EditTournamentView(View):
     except:
       return redirect('permission-denied-403')
     if 'image' in request.FILES.keys() and request.FILES['image']:
-      tournament.image = request.FILES['image']
-      tournament.save()
+      tournament.image.image = request.FILES['image']
+      tournament.image.save()
     tform = TournamentForm(request.POST, instance=tournament)
     formfail = False
     if tform.is_valid():
@@ -346,6 +348,7 @@ class ContestLeaderboardOrganizerView(View):
     data = dict()
     data['leaderboard'] = leaderboard
     data['update_time'] = contest.last_csv_upload_time
+    data['contest_id'] = contest_id
     # data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
@@ -355,12 +358,13 @@ class ContestLeaderboardOrganizerView(View):
         data['promoted'] = team_promoted_ids
 
       else:
+        total_num = leader_board_items.count()
         if contest.pass_rule < 1:
-          total_num = leader_board_items.count()
           promoted_num = int(math.floor(total_num * contest.pass_rule))
-          team_promoted_ids = [item.id for item in leader_board_items[:promoted_num]]
+          team_promoted_ids = \
+            [item.id for item in leader_board_items[:min([total_num, promoted_num])]]
         else:
-          team_promoted_ids = [item.id for item in leader_board_items[:contest.pass_rule]]
+          team_promoted_ids = [item.id for item in leader_board_items[:min([total_num, contest.pass_rule])]]
         data['promoted'] = team_promoted_ids
 
     else:
