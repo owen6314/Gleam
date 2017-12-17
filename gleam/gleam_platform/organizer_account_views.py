@@ -203,7 +203,7 @@ class ProfileEditOrganizerView(View):
       request.user.organizer_profile.avatar = avatar
       request.user.organizer_profile.save()
 
-      return redirect('profile-organizer', request.user.id)
+      return redirect('profile-edit-organizer')
     else:
       return render(request, 'organizer/organizer_profile_edit.html', {'form': form})
 
