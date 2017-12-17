@@ -2,14 +2,6 @@
 
 {% block title %} | 比赛详情{% endblock title %}
 
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-
 {% block content %}
   <div class = "container">
     <div class = "row">
@@ -530,6 +522,23 @@
       return str;
     }
     $(document).ready(function () {
+      {% if messages %}
+        {% for message in messages %}
+          new PNotify({
+            title: '{{ messages.tags }}',
+            text: '{{ message }}',
+            type: 'info',
+            animate_speed: 'fast',
+            styling: 'bootstrap3',
+            hide:true,
+            shadow:true,
+            nonblock: {
+              nonblock: true
+            },
+          });
+        {% endfor %}
+      {% endif %}
+
       var now_time= Date.parse(new Date());
       var start_time = "{{ current_contest.submit_begin_time }}";
       var end_time = "{{ current_contest.submit_end_time }}";
