@@ -4,71 +4,167 @@
 
 {% block content %}
   <div class = "container">
-    <div class = "row">
-      <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <h1 id="tournament_name" class="title text-center">{{ name }}</h1>
-              <p class="lead text-center">该锦标赛包含多个阶段赛，请留意各阶段相关时间.</p>
-              <div class="space"></div>
-              <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                  <img src="{{ image.url }}" style="width:100%;">
-                  <div class="space"></div>
-                </div>
+  <div class = "row">
+    <div class="section clearfix object-non-visible" data-animation-effect="fadeIn">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 id="tournament_name" class="title text-center">{{ name }}</h1>
+            <p class="lead text-center">该锦标赛包含多个阶段赛，请留意各阶段相关时间.</p>
+            <div class="space"></div>
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2">
+                <img src="{{ image.url }}" style="width:100%;">
+                <div class="space"></div>
               </div>
-              <div class="container">
-                <div class="text-center">
-                  <ul class="nav nav-pills">
-                    <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
-                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
-                    <li style="width:24%;"><a style="font-size:24px;" id="team" href="#tab_team" data-toggle="tab">
-                      {% if team_status == 0 %}
-                        我要参赛
-                      {% else %}
-                        我的队伍
-                      {% endif %}
-                    </a></li>
-                    <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">讨论区</a></li>
-                  </ul>
-                </div>
-                <div id="tournament_content" class="tab-content">
-                  <div class="tab-pane fade active in" style="text-align: center" id="tab_info">
-                    <div class="space"></div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <h3>赛事主办方</h3>
-                        <p>{{ organization }}</p>
+            </div>
+            <div class="container">
+              <div class="text-center">
+                <ul class="nav nav-pills">
+                  <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
+                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
+                  <li style="width:24%;"><a style="font-size:24px;" id="team" href="#tab_team" data-toggle="tab">
+                    {% if team_status == 0 %}
+                      我要参赛
+                    {% else %}
+                      我的队伍
+                    {% endif %}
+                  </a></li>
+                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">讨论区</a></li>
+                </ul>
+              </div>
+              <div id="tournament_content" class="tab-content">
+                <div class="tab-pane fade active in" style="text-align: center" id="tab_info">
+                  <div class="space"></div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h3>赛事主办方</h3>
+                      <p>{{ organization }}</p>
 
-                        <h3>比赛状态</h3>
-                        <p>{{ status }}</p>
+                      <h3>比赛状态</h3>
+                      <p>{{ status }}</p>
 
-                        <h3>注册时间</h3>
-                        <p>{{ register_begin_time}} to {{ register_end_time }}</p>
+                      <h3>注册时间</h3>
+                      <p>{{ register_begin_time}} to {{ register_end_time }}</p>
 
-                        <h3>比赛详情</h3>
-                        <p>{{ description }}</p>
+                      <h3>比赛详情</h3>
+                      <p>{{ description }}</p>
 
-                        <h3>赛制说明</h3>
-                        <h4>队伍人数限制</h4>
-                        <p>{{ max_team_member_num }}</p>
-                        <p>该锦标赛包含以下几个阶段赛组成，点击各阶段以查看阶段赛详情</p>
-                        <div class="col-md-8 col-md-offset-2">
-                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                      <h3>赛制说明</h3>
+                      <h4>队伍人数限制</h4>
+                      <p>{{ max_team_member_num }}</p>
+                      <p>该锦标赛包含以下几个阶段赛组成，点击各阶段以查看阶段赛详情</p>
+                      <div class="col-md-8 col-md-offset-2">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                          <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                              <h4 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                  已经结束的阶段
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
+                                 aria-labelledby="headingOne">
+                              <div class="panel-body">
+                                {% if contests_finished %}
+                                  <table class="table table-added table-bordered">
+                                    <thead>
+                                    <tr>
+                                      <th>阶段赛名称</th>
+                                      <th>提交开始时间</th>
+                                      <th>提交结束时间</th>
+                                      <th>结果公布时间</th>
+                                      <th>阶段赛详情</th>
+                                      <th>每日最大提交数</th>
+                                      {% if contest.pass_rule > 1 %}
+                                        <th>晋级人数</th>
+                                      {% else %}
+                                        <th>晋级比例</th>
+                                      {% endif %}
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for contest in contests_finished %}
+                                      <tr>
+                                        <td>{{ contest.name }}</td>
+                                        <td>{{ contest.submit_begin_time }}</td>
+                                        <td>{{ contest.submit_end_time }}</td>
+                                        <td>{{ contest.release_time }}</td>
+                                        <td>{{ contest.description }}</td>
+                                        <td>{{ contest.max_submit_num }}</td>
+                                        <td>{{ contest.pass_rule }}</td>
+                                      </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                  </table>
+                                {% else %}
+                                  <h2>目前没有已经结束的阶段</h2>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                  正在进行的阶段
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel"
+                                 aria-labelledby="headingTwo">
+                              <div class="panel-body">
+                                {% if current_contest %}
+                                  <h2>{{ current_contest.name }}</h2>
+                                  <div class="row">
+                                  <div class="col-md-12">
+                                    <h3>提交时间</h3>
+                                    <p>{{ current_contest.submit_begin_time }} to {{ current_contest.submit_end_time }}</p>
+
+                                    <h3>结果公布时间</h3>
+                                    <p><b>Before: </b>{{ current_contest.release_time }}</p>
+
+                                    <h3>阶段赛详情</h3>
+                                    <p>{{ current_contest.description }}</p>
+
+                                    {% if contest.pass_rule > 1 %}
+                                      <h3>晋级人数</h3>
+                                    {% else %}
+                                      <h3>晋级比例</h3>
+                                    {% endif %}
+                                    <p>{{ contest.pass_rule }}</p>
+
+                                    <h3>比赛进度</h3>
+                                    <div class="progress progress-striped active" style="height:30px;">
+                                      <div class="progress-bar progress-bar-success" id="contest-status" role="progressbar"
+                                           aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                    </div>
+                                  </div>
+                                {% else %}
+                                  <h2>目前没有正在进行的阶段</h2>
+                                {% endif %}
+                                </div>
+                              </div>
+                            </div>
                             <div class="panel panel-default">
-                              <div class="panel-heading" role="tab" id="headingOne">
+                              <div class="panel-heading" role="tab" id="headingThree">
                                 <h4 class="panel-title">
                                   <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                     href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    已经结束的阶段
+                                     href="#collapseThree" aria-expanded="false"
+                                     aria-controls="collapseThree">
+                                    尚未开始的阶段
                                   </a>
                                 </h4>
                               </div>
-                              <div id="collapseOne" class="panel-collapse collapse" role="tabpanel"
-                                   aria-labelledby="headingOne">
+                              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                                   aria-labelledby="headingThree">
                                 <div class="panel-body">
-                                  {% if contests_finished %}
+                                  {% if contests_coming %}
                                     <table class="table table-added table-bordered">
                                       <thead>
                                       <tr>
@@ -87,7 +183,7 @@
                                       </thead>
 
                                       <tbody>
-                                      {% for contest in contests_finished %}
+                                      {% for contest in contests_coming %}
                                         <tr>
                                           <td>{{ contest.name }}</td>
                                           <td>{{ contest.submit_begin_time }}</td>
@@ -101,105 +197,8 @@
                                       </tbody>
                                     </table>
                                   {% else %}
-                                    <h2>目前没有已经结束的阶段</h2>
+                                    <h2>目前没有即将到来的阶段</h2>
                                   {% endif %}
-                                </div>
-                              </div>
-                            </div>
-                            <div class="panel panel-default">
-                              <div class="panel-heading" role="tab" id="headingTwo">
-                                <h4 class="panel-title">
-                                  <a data-toggle="collapse" data-parent="#accordion"
-                                     href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                    正在进行的阶段
-                                  </a>
-                                </h4>
-                              </div>
-                              <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel"
-                                   aria-labelledby="headingTwo">
-                                <div class="panel-body">
-                                  {% if current_contest %}
-                                    <h2>{{ current_contest.name }}</h2>
-                                    <div class="row">
-                                    <div class="col-md-12">
-                                      <h3>提交时间</h3>
-                                      <p>{{ current_contest.submit_begin_time }} to {{ current_contest.submit_end_time }}</p>
-
-                                      <h3>结果公布时间</h3>
-                                      <p><b>Before: </b>{{ current_contest.release_time }}</p>
-
-                                      <h3>阶段赛详情</h3>
-                                      <p>{{ current_contest.description }}</p>
-
-                                      {% if contest.pass_rule > 1 %}
-                                        <h3>晋级人数</h3>
-                                      {% else %}
-                                        <h3>晋级比例</h3>
-                                      {% endif %}
-                                      <p>{{ contest.pass_rule }}</p>
-
-                                      <h3>比赛进度</h3>
-                                      <div class="progress progress-striped active" style="height:30px;">
-                                        <div class="progress-bar progress-bar-success" id="contest-status" role="progressbar"
-                                             aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
-                                        </div>
-                                      </div>
-                                    </div>
-                                  {% else %}
-                                    <h2>目前没有正在进行的阶段</h2>
-                                  {% endif %}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingThree">
-                                  <h4 class="panel-title">
-                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                       href="#collapseThree" aria-expanded="false"
-                                       aria-controls="collapseThree">
-                                      尚未开始的阶段
-                                    </a>
-                                  </h4>
-                                </div>
-                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                     aria-labelledby="headingThree">
-                                  <div class="panel-body">
-                                    {% if contests_coming %}
-                                      <table class="table table-added table-bordered">
-                                        <thead>
-                                        <tr>
-                                          <th>阶段赛名称</th>
-                                          <th>提交开始时间</th>
-                                          <th>提交结束时间</th>
-                                          <th>结果公布时间</th>
-                                          <th>阶段赛详情</th>
-                                          <th>每日最大提交数</th>
-                                          {% if contest.pass_rule > 1 %}
-                                            <th>晋级人数</th>
-                                          {% else %}
-                                            <th>晋级比例</th>
-                                          {% endif %}
-                                        </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        {% for contest in contests_coming %}
-                                          <tr>
-                                            <td>{{ contest.name }}</td>
-                                            <td>{{ contest.submit_begin_time }}</td>
-                                            <td>{{ contest.submit_end_time }}</td>
-                                            <td>{{ contest.release_time }}</td>
-                                            <td>{{ contest.description }}</td>
-                                            <td>{{ contest.max_submit_num }}</td>
-                                            <td>{{ contest.pass_rule }}</td>
-                                          </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                      </table>
-                                    {% else %}
-                                      <h2>目前没有即将到来的阶段</h2>
-                                    {% endif %}
-                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -397,7 +396,7 @@
                     {% else %}
                       <div class="row">
                         <div class="col-md-6 col-md-offset-3">
-                          <h2>我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
+                          <h2 id="team_name">我的队伍: {{ team.team_name }}<a id="team_edit"><i class="fa fa-wrench"></i></a></h2>
                           {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                             <h3>Team id: {{ team.unique_id }}
                             </h3>
@@ -419,8 +418,6 @@
                           <h3>指导教师: <a>{{ team.tutor }}</a></h3>
                           <h3>提交次数：{{ team.submit_num }}</h3>
                           <div>
-                            <button class="btn btn-success">提交结果</button>
-                            <button class="btn btn-primary">查看过往提交</button>
                             <a class="btn btn-warning" id="quit">我要退赛</a>
                           </div>
                         </div>
@@ -525,9 +522,9 @@
       {% if messages %}
         {% for message in messages %}
           new PNotify({
-            title: '{{ messages.tags }}',
+            title: '{{ message.tags }}',
             text: '{{ message }}',
-            type: 'info',
+            type: '{{ message.tags }}',
             animate_speed: 'fast',
             styling: 'bootstrap3',
             hide:true,
@@ -538,7 +535,6 @@
           });
         {% endfor %}
       {% endif %}
-
       var now_time= Date.parse(new Date());
       var start_time = "{{ current_contest.submit_begin_time }}";
       var end_time = "{{ current_contest.submit_end_time }}";
@@ -554,7 +550,7 @@
         content: '' +
         '<form action="" class="team_edit">' +
         '<div class="form-group">' +
-        '<input type="text" value="' +
+        '<input id="new_team_name" type="text" value="' +
         "{{ team.team_name }}" +
         '" class="name form-control" required />' +
         '</div>' +
@@ -571,7 +567,12 @@
             action: function () {
               $.ajax({
                 dataType: "json",
-                type: "post",
+                type: "get",
+                url: "{% url 'edit-team-name' team.id %}",
+                data: {"team_name": $('#new_team_name').val()},
+                success: function(ret){
+                  $('#team_name').html('我的队伍：' + ret.team_name + '<a id=\"team_edit\"><i class=\"fa fa-wrench\"></i></a>')
+                   }
               })
             }
           },
