@@ -32,15 +32,14 @@
         </li>
         <li><a><i class="fa fa-edit"></i>资料管理<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="{% url 'profile-organizer' request.user.id %}" target="blank">我的主页</a></li>
             <li><a href="{% url 'profile-edit-organizer' %}">资料修改</a></li>
             <li><a href="{% url 'organizer-account-edit' %}">密码修改</a></li>
           </ul>
         </li>
         <li><a><i class="fa fa-info"></i>Gleam<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="../error/page_404.html">关于Gleam</a></li>
-            <li><a href="mailto:calciferzh@outlook.com">联系Gleam</a></li>
+            <li><a href="{% url '403' %}">关于Gleam</a></li>
+            <li><a href="mailto:gleam_10bn_worth@sina.com">联系Gleam</a></li>
           </ul>
         </li>
         <li>

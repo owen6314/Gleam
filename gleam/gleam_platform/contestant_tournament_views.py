@@ -4,6 +4,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from django.contrib import messages
+from django.http import JsonResponse
 from .models import Tournament, Contest, Team, Record, Contestant
 import hashlib
 
@@ -29,6 +31,7 @@ class TournamentDetailContestantView(View):
     data = dict()
 
     data['tournament_id'] = tournament_id
+    data['image'] = tournament.image.image
     data['description'] = tournament.description
     data['name'] = tournament.name
     data['organization'] = tournament.organizer.organization
@@ -69,6 +72,7 @@ class TournamentDetailContestantView(View):
     if team:
       data['team_status'] = 1
       data['team'] = dict()
+      data['team']['id'] = team.id
       data['team']['team_name'] = team.name
       data['team']['leader'] = team.leader
       data['team']['members'] = team.members.all()
@@ -81,6 +85,8 @@ class TournamentDetailContestantView(View):
     else:
       data['team_status'] = 0
 
+    if len(args) == 2:
+      data['msg'] = args[1]
     return render(request, 'tournament/tournament_detail_contestant.html', data)
 
   @staticmethod
@@ -134,9 +140,9 @@ class RegisterView(View):
       tournament = Tournament.objects.get(pk=tournament_id)
       contestant = request.user.contestant_profile
     except:
-      # Invalid infomation
       return redirect('index')
     if now < tournament.register_begin_time or now > tournament.register_end_time:
+      messages.add_message(request, messages.ERROR, '目前已不在报名时间内')
       return redirect('tournament-detail-contestant', tournament_id)
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     target_team = None
@@ -146,53 +152,44 @@ class RegisterView(View):
       except ObjectDoesNotExist:
         target_team = None
       if not target_team:
-        # invalid unique_id
+        messages.add_message(request, messages.ERROR, '不存在的队伍码，请与队长再次确认')
         return redirect('tournament-detail-contestant', tournament_id)
       if target_team.members.count() >= tournament.max_team_member_num:
-        # too many members
+        messages.add_message(request, messages.ERROR, '该队伍人已满，请与队长联系')
         return redirect('tournament-detail-contestant', tournament_id)
-    if not team:
-      if not target_team:
-        team_name = contestant.nick_name + '_' + tournament.name
-        now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-        md5.update((team_name + now).encode('utf-8'))
-        while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-          md5.update((target_team.name + now).encode('utf-8'))
-        contest = tournament.contest_set.order_by('submit_begin_time').first()
-        team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest(), leader=contestant)
-        team.save()
-        team.contests.add(contest)
-        team.members.add(contestant)
-        team.save()
-        return redirect('tournament-detail-contestant', tournament_id)
-      else:
-        target_team.members.add(contestant)
+    if team:
+      messages.add_message(request, messages.ERROR, '您已经参加了一只队伍，如要变更请先退队')
+      return redirect('tournament-detail-contestant', tournament_id)
+    if target_team:
+      target_team.members.add(contestant)
+      now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+      md5.update((target_team.name + now).encode('utf-8'))
+      while Team.objects.filter(unique_id=md5.hexdigest()):
         now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
-        while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-          md5.update((target_team.name + now).encode('utf-8'))
-        target_team.unique_id = md5.hexdigest()
-        target_team.save()
-        return redirect('tournament-detail-contestant', tournament_id)
+      target_team.unique_id = md5.hexdigest()
+      target_team.save()
+      messages.add_message(request, messages.SUCCESS, '加队成功.')
+      return redirect('tournament-detail-contestant', tournament_id)
     else:
-      if target_team:
-        team = team[0]
-        if target_team.members.count() + team.members.count() >= tournament.max_team_member_num:
-          # too many members
-          return redirect('contest-detail')
-        for member in team.members:
-          target_team.members.add(member)
-        team.delete()
+      team_name = contestant.nick_name + '_' + tournament.name
+      now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+      md5.update((team_name + now).encode('utf-8'))
+      while Team.objects.filter(unique_id=md5.hexdigest()):
         now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         md5.update((target_team.name + now).encode('utf-8'))
-        while Team.objects.filter(unique_id=md5.hexdigest()):
-          now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-          md5.update((target_team.name + now).encode('utf-8'))
-        target_team.unique_id = md5.hexdigest()
-        target_team.save()
-        return redirect('tournament-detail-contestant', tournament_id)
+      if tournament.contest_set.count() != 0:
+        contest = tournament.contest_set.order_by('submit_begin_time').first()
+      else:
+        contest = None
+      team = Team(name=team_name, tournament=tournament, unique_id=md5.hexdigest(), leader=contestant)
+      team.save()
+      if contest:
+        team.contests.add(contest)
+      team.members.add(contestant)
+      team.save()
+      messages.add_message(request, messages.SUCCESS, '组队成功')
+      return redirect('tournament-detail-contestant', tournament_id)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -204,20 +201,21 @@ class QuitTeamView(View):
       tournament = Tournament.objects.get(pk=tournament_id)
       contestant = request.user.contestant_profile
     except:
-      # Invalid infomation
-      return redirect('tournament-detail-contestant', tournament_id)
+      return redirect('index')
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
     if not team:
-      # No team
+      messages.add_message(request, messages.ERROR, '您还没有在任何一只队伍里')
       return redirect('tournament-detail-contestant', tournament_id)
     team = team[0]
     if team.members.count() == 1:
       team.delete()
     else:
       if team.leader == contestant:
+        messages.add_message(request, messages.ERROR, '请先移交队长再进行退队')
         return redirect('tournament-detail-contestant', tournament_id)
       team.members.remove(contestant)
       team.save()
+    messages.add_message(request, messages.SUCCESS, '退队成功')
     return redirect('tournament-detail-contestant', tournament_id)
 
 
@@ -234,13 +232,23 @@ class KickContestantView(View):
       contestant = Contestant.objects.get(pk=contestant_id)
       user = request.user.contestant_profile
     except ObjectDoesNotExist:
+      return redirect('index')
+
+    if timezone.now() < tournament.register_begin_time or timezone.now() > tournament.register_end_time:
+      messages.add_message(request, messages.ERROR, '注册时间已过，不能踢出成员，有需要请联系主办方')
       return redirect('tournament-detail-contestant', tournament_id)
-
-    if tournament.register_begin_time <= timezone.now() <= tournament.register_end_time:
-      if user == team.leader and contestant in team.members.all():
-        team.members.remove(contestant)
-        team.save()
-
+    if user != team.leader:
+      messages.add_message(request, messages.ERROR, '您不是队长，无权踢出成员')
+      return redirect('tournament-detail-contestant', tournament_id)
+    if contestant not in team.members.all():
+      messages.add_message(request, messages.ERROR, '您指定的人不在队伍里面')
+      return redirect('tournament-detail-contestant', tournament_id)
+    if contestant == user:
+      messages.add_message(request, messages.ERROR, '您不能直接踢出自己')
+      return redirect('tournament-detail-contestant', tournament_id)
+    team.members.remove(contestant)
+    team.save()
+    messages.add_message(request, messages.SUCCESS, '踢出成员成功')
     return redirect('tournament-detail-contestant', tournament_id)
 
 
@@ -257,11 +265,39 @@ class TransferLeaderView(View):
       contestant = Contestant.objects.get(pk=contestand_id)
       user = request.user.contestant_profile
     except ObjectDoesNotExist:
+      return redirect('index')
+    if user != team.leader:
+      messages.add_message(request, messages.ERROR, '您不是队长，无法移交队长')
       return redirect('tournament-detail-contestant', tournament_id)
-
-    if tournament.register_begin_time <= timezone.now() <= tournament.register_end_time:
-      if user == team.leader and contestant in team.members.all() and contestant != team.leader:
-        team.leader = contestant
-        team.save()
-
+    if contestant not in team.members.all():
+      messages.add_message(request, messages.ERROR, '您指定的人不在队内')
+      return redirect('tournament-detail-contestant', tournament_id)
+    if user == contestant:
+      messages.add_message(request, messages.ERROR, '您已经是队长，无法移交队长')
+      return redirect('tournament-detail-contestant', tournament_id)
+    team.leader = contestant
+    team.save()
+    messages.add_message(request, messages.SUCCESS, '移交队长成功')
     return redirect('tournament-detail-contestant', tournament_id)
+
+
+@method_decorator(login_required, name='dispatch')
+class EditTeamNameView(View):
+  @staticmethod
+  def get(request, *args):
+    team_name = request.GET.get('team_name')
+    team_id = int(args[0])
+    try:
+      team = Team.objects.get(pk=team_id)
+      user = request.user.contestant_profile
+    except ObjectDoesNotExist:
+      return redirect('index')
+    if user != team.leader:
+      messages.add_message(request, messages.ERROR, '您不是队长，无法修改队名')
+      name_dict = {'team_name': team.name}
+      return JsonResponse(name_dict)
+    if team_name:
+      team.name = team_name
+      team.save()
+    name_dict = {'team_name': team.name}
+    return JsonResponse(name_dict)

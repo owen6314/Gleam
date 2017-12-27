@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.utils import timezone
 from .forms import ContestForm, TournamentForm
-from .models import Tournament, Contest, Team, Record, LeaderBoardItem
+from .models import Tournament, Contest, Team, Record, LeaderBoardItem, Image
 
 import datetime
 import csv
@@ -29,15 +29,15 @@ class CreateTournamentView(View):
   # 创建比赛
   @staticmethod
   def post(request):
-    tournament_form = TournamentForm(request.POST)
     data = {
       'name': request.POST.get('name'),
       'description': request.POST.get('description'),
-      'submit_begin_time': request.POST.get('submit_begin_time'),
-      'submit_end_time': request.POST.get('submit_end_time'),
+      'register_begin_time': request.POST.get('register_begin_time'),
+      'register_end_time': request.POST.get('register_end_time'),
       'overall_end_time': request.POST.get('overall_end_time'),
       'max_team_member_num': request.POST.get('max_team_member_num'),
     }
+    tournament_form = TournamentForm(data)
     tournament = None
     contest_forms = []
     formfail = False
@@ -45,6 +45,9 @@ class CreateTournamentView(View):
       formfail = True
 
     form_len = (len(request.POST) - 7) // 6
+    if form_len == 0:
+      tournament_form.add_error('overall_end_time', '请最少添加一个阶段')
+      formfail = True
     for i in range(1, form_len + 1):
       data = {
         'name': request.POST.get('name_' + str(i)),
@@ -57,7 +60,7 @@ class CreateTournamentView(View):
       form = ContestForm(data)
       contest_forms.append(form)
       if not form.is_valid():
-          formfail = True
+        formfail = True
 
     prev_time = tournament_form.cleaned_data.get('register_end_time')
     for form in contest_forms:
@@ -74,9 +77,11 @@ class CreateTournamentView(View):
 
     if not formfail:
       tournament = tournament_form.save(commit=False)
-      tournament.image = request.FILES.get('image')
+      image = Image(image=request.FILES.get('image'), type='P', owner=request.user)
+      image.save()
+      tournament.image = image
       tournament.organizer = request.user.organizer_profile
-      tournament.status = Tournament.STATUS_SAVED
+      tournament.status = Tournament.STATUS_PUBLISHED
       tournament.save()
       for form in contest_forms:
         contest = form.save(commit=False)
@@ -117,8 +122,8 @@ class EditTournamentView(View):
     except:
       return redirect('permission-denied-403')
     if 'image' in request.FILES.keys() and request.FILES['image']:
-      tournament.image = request.FILES['image']
-      tournament.save()
+      tournament.image.image = request.FILES['image']
+      tournament.image.save()
     tform = TournamentForm(request.POST, instance=tournament)
     formfail = False
     if tform.is_valid():
@@ -147,7 +152,7 @@ class EditTournamentView(View):
       if form.is_valid():
         if form.cleaned_data.get('submit_begin_time') and prev_time:
           if form.cleaned_data.get('submit_begin_time') < prev_time:
-            form.add_error('submit_begin_time', "提交开始时间应位于上一阶段结束之后")
+            form.add_error('submit_begin_time', "阶段开始时间应位于上一阶段公布成绩之后")
             formfail = True
           else:
             form.save()
@@ -155,7 +160,7 @@ class EditTournamentView(View):
         formfail = True
         if form.cleaned_data.get('submit_begin_time') and prev_time:
           if form.cleaned_data.get('submit_begin_time') < prev_time:
-            form.add_error('submit_begin_time', "提交截止时间应位于上一阶段结束之后")
+            form.add_error('submit_begin_time', "阶段开始时间应位于上一阶段公布成绩之后")
       prev_time = form.cleaned_data.get('release_time')
 
     if tournament.overall_end_time and prev_time and tournament.overall_end_time < prev_time:
@@ -259,8 +264,6 @@ class TournamentDetailOrganizerView(View):
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
   @staticmethod
-  # Emmm, maybe now we can use contest.leaderboarditem_set.filter('-score') to do that
-  # cache the result may need some other tools like redis
   def get_leaderboard(contest):
     leaderboard = contest.leaderboarditem_set.order_by('-score')
     ret = []
@@ -345,6 +348,7 @@ class ContestLeaderboardOrganizerView(View):
     data = dict()
     data['leaderboard'] = leaderboard
     data['update_time'] = contest.last_csv_upload_time
+    data['contest_id'] = contest_id
     # data['contest_id'] = contest.id
     contest_next = ContestLeaderboardOrganizerView.get_next_contest(contest)
     if contest_next:
@@ -354,12 +358,13 @@ class ContestLeaderboardOrganizerView(View):
         data['promoted'] = team_promoted_ids
 
       else:
+        total_num = leader_board_items.count()
         if contest.pass_rule < 1:
-          total_num = leader_board_items.count()
           promoted_num = int(math.floor(total_num * contest.pass_rule))
-          team_promoted_ids = [item.id for item in leader_board_items[:promoted_num]]
+          team_promoted_ids = \
+            [item.id for item in leader_board_items[:min([total_num, promoted_num])]]
         else:
-          team_promoted_ids = [item.id for item in leader_board_items[:contest.pass_rule]]
+          team_promoted_ids = [item.id for item in leader_board_items[:min([total_num, contest.pass_rule])]]
         data['promoted'] = team_promoted_ids
 
     else:

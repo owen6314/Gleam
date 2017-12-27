@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 from .forms import UserSignupForm, UserLoginForm, ProfileContestantForm, AccountEditForm
 from .models import Tournament, Contestant, User, Image
@@ -20,7 +21,6 @@ from gleam import settings
 
 
 class SignupContestantView(View):
-
   @staticmethod
   def get(request):
     form = UserSignupForm()
@@ -43,13 +43,22 @@ class SignupContestantView(View):
       # 连接用户类型对应的用户信息表单
       profile = Contestant.objects.create()
       user.contestant_profile = profile
-
       user.save()
+      avatar = Image()
+      avatar.save()
+      user.contestant_profile.avatar = avatar
+      user.contestant_profile.save()
 
       return redirect('confirmation-email-send', user.id)
-
+    else:
+      try:
+        user = User.objects.get(email=request.POST['email'])
+        if not user.is_active:
+          return redirect('confirmation-email-send', user.id)
+      except:
+        pass
     # 跳转到index
-    return redirect('index')
+    return render(request, 'contestant/signup.html', {'form': form})
 
 
 class SendConfirmationEmailView(View):
@@ -73,7 +82,8 @@ class SendConfirmationEmailView(View):
     )
     email.send()
 
-    return render(request, 'contestant/email_activate.html', {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+    return render(request, 'contestant/email_activate.html',
+                  {'user_id': user.id, 'domain': 'http://' + current_site.domain})
 
 
 class LoginContestantView(View):
@@ -93,6 +103,7 @@ class LoginContestantView(View):
         return redirect('home-contestant')
 
     # 跳转到index
+    messages.add_message(request, messages.ERROR, '账号或密码错误！')
     return redirect('index')
 
 
@@ -114,7 +125,7 @@ class HomeContestantView(View):
       return redirect('403')
 
     data = dict()
-    data['tournaments'] = Tournament.objects\
+    data['tournaments'] = Tournament.objects \
       .filter(team__members=request.user.contestant_profile).distinct()
 
     return render(request, 'contestant/home.html', data)
@@ -137,6 +148,11 @@ class ProfileContestantView(View):
     fields = ['nick_name', 'gender', 'school', 'introduction']
     data = tool.load_model_obj_data_to_dict(user.contestant_profile, fields)
     data['email'] = user.email
+    if user.contestant_profile.avatar.image:
+      data['avatar_url'] = user.contestant_profile.avatar.image.url
+    else:
+      data['avatar_url'] = ''
+    data['user'] = user
     # data['user'] = user
 
     return render(request, 'contestant/profile.html', data)
@@ -198,7 +214,6 @@ class ProfileEditContestantView(View):
 
 @method_decorator(login_required, name='dispatch')
 class AccountEditContestantView(View):
-
   @staticmethod
   def get(request):
     if request.user.type != 'C' or not request.user.contestant_profile:
@@ -219,6 +234,7 @@ class AccountEditContestantView(View):
       if user:
         user.set_password(new_password)
         user.save()
+        login(request, user)
         return redirect('home-contestant')
       else:
         form.add_error('old_password', u'原密码错误')

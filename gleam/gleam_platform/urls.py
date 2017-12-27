@@ -7,7 +7,7 @@ from .contestant_account_views import SignupContestantView, LoginContestantView,
 from .organizer_tournament_views import CreateTournamentView, TournamentDetailOrganizerView, EditTournamentView, \
   ContestLeaderboardOrganizerView
 from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView,\
-  QuitTeamView, KickContestantView, TransferLeaderView
+  QuitTeamView, KickContestantView, TransferLeaderView, EditTeamNameView
 import gleam.settings as settings
 from .image_manage import serve_image
 
@@ -53,9 +53,12 @@ urlpatterns = [
   url(r'^quit/([1-9][0-9]*)/', QuitTeamView.as_view(), name='quit'),
   url(r'^kick/([1-9][0-9]*)/([1-9][0-9]*)/([1-9][0-9]*)/', KickContestantView.as_view(), name='kick'),
   url(r'^transfer/([1-9][0-9]*)/([1-9][0-9]*)/([1-9][0-9]*)/', TransferLeaderView.as_view(), name='transfer'),
-
+  url(r'^edit-team-name/([1-9][0-9]*)/', EditTeamNameView.as_view(), name='edit-team-name'),
 
   # Image Manage Urls
   url(r'^{}(?P<path>.*)$'.format(settings.MEDIA_URL[1:]), serve_image, name='serve_image'),
+
+  # Default View 404
+  url(r'^', NotFoundView.as_view(), name='default'),
 
 ]

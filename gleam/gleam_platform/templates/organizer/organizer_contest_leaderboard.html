@@ -4,9 +4,9 @@
 
 {% block stylesheets %}
   {{ block.super }}
-  <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/flat/green.css" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/datatables/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
   <link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-{#  <link href="https://cdn.bootcss.com/iCheck/1.0.2/skins/square/green.css" rel="stylesheet">#}
 {% endblock stylesheets %}
 
 {% block content %}
@@ -72,8 +72,8 @@
 
 {% block javascripts %}
   {{ block.super}}
-  <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-{#  <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>#}
-{#  <script type="text/javascript">$('input').iCheck();</script>#}
+  <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+  <script src="https://cdn.bootcss.com/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.bootcss.com/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript">$('input').iCheck();</script>
 {% endblock javascripts %}
