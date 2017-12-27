@@ -111,6 +111,7 @@ class ReSendConfirmationEmailView(View):
     result = {'result': "success"}
     return JsonResponse(result)
 
+
 class LoginContestantView(View):
   # 参赛方登录
   # email password
