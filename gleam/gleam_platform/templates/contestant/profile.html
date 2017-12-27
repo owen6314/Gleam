@@ -26,7 +26,7 @@
               <h2><b>{{ nick_name }}</b>
                 {% if request.user.id == user.id %}
                   <small>
-                    <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench"></i></a>
+                    <a href="{% url 'profile-edit-contestant' %}"><i class="fa fa-wrench" data-toggle="tooltip" title="修改个人信息"></i></a>
                   </small></h2>
                 {% endif %}
               <h4>{{ email }}</h4>

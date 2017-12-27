@@ -12,6 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.contrib import messages
+from django.http import JsonResponse
 
 from .forms import UserSignupForm, UserLoginForm, ProfileContestantForm, AccountEditForm
 from .models import Tournament, Contestant, User, Image
@@ -84,6 +85,31 @@ class SendConfirmationEmailView(View):
 
     return render(request, 'contestant/email_activate.html',
                   {'user_id': user.id, 'domain': 'http://' + current_site.domain})
+
+
+class ReSendConfirmationEmailView(View):
+  @staticmethod
+  def get(request, user_id):
+    try:
+      user = User.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+      return redirect('404')
+
+    current_site = get_current_site(request)
+    mail_subject = '激活Gleam账户，迎接美丽新世界'
+    message = render_to_string('contestant/email_confirmation.html', {
+      'user': user,
+      'domain': current_site.domain,
+      'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+      'token': tool.account_activation_token.make_token(user),
+    })
+    email = EmailMessage(
+      mail_subject, message, settings.EMAIL_FROM, to=[user.email]
+    )
+    email.send()
+
+    result = {'result': "success"}
+    return JsonResponse(result)
 
 
 class LoginContestantView(View):
