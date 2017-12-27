@@ -208,141 +208,6 @@
                     </div>
                   </div>
                   <div class="tab-pane fade" style="text-align: center;" id="tab_rank">
-                    <!--<div class="space"></div>
-                  <h3>当前显示的是
-                    <select class="selectpicker" id="contest_select" data-style="btn btn-info">
-                      <option href="#table_1" data-toggle="tab">预选赛</option>
-                      <option href="#table_2" data-toggle="tab">初赛</option>
-                      <option href="#table_3" data-toggle="tab">复赛</option>
-                      <option href="#table_4" data-toggle="tab">决赛</option>
-                    </select>
-                    阶段的排行榜</h3>
-                  <div class="space"></div>
-                  <div class="col-md-12 tab-content">
-                    <div class="tab-pane fade active in" id="table_1">
-                      <table class="table table-hover">
-                        <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Team Name</th>
-                          <th>Leader</th>
-                          <th>Tutor</th>
-                          <th>Score</th>
-                          <th>Submit_time</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for item in leaderboard %}
-                        <tr>
-                          <th scope="row">{{ item.rank }}</th>
-                          <td>{{ item.team_name }}</td>
-                          <td>{{ item.leader}}</td>
-                          <td>{{ team.tutor }}</td>
-                          <td>{{ team.score }}</td>
-                          <td>{{ team.submit_num }}</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="tab-pane fade" id="table_2">
-                      <table class="table table-hover">
-                        <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Team Name</th>
-                          <th>Team Leader</th>
-                          <th>Score</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>神韦敬致</td>
-                          <td>Godv</td>
-                          <td>97.02</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>盒子精</td>
-                          <td>Thornton</td>
-                          <td>96.34</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>playerunknow</td>
-                          <td>the Bird</td>
-                          <td>93.40</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="tab-pane fade" id="table_3">
-                      <table class="table table-hover">
-                        <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Team Name</th>
-                          <th>Team Leader</th>
-                          <th>Score</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>神韦敬致</td>
-                          <td>Godv</td>
-                          <td>97.02</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>盒子精</td>
-                          <td>Thornton</td>
-                          <td>96.34</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>playerunknow</td>
-                          <td>the Bird</td>
-                          <td>93.40</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="tab-pane fade" id="table_4">
-                      <table class="table table-hover">
-                        <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Team Name</th>
-                          <th>Team Leader</th>
-                          <th>Score</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>神韦敬致</td>
-                          <td>Godv</td>
-                          <td>97.02</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>盒子精</td>
-                          <td>Thornton</td>
-                          <td>96.34</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>playerunknow</td>
-                          <td>the Bird</td>
-                          <td>93.40</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>-->
                     <div class="space"></div>
                     <h3>当前显示的是正在进行阶段的排行榜</h3>
                     <div class="space"></div>
@@ -383,8 +248,15 @@
                           <label class="control-label col-md-3" for="unique_id">队伍id
                           </label>
                           <div class="col-md-6">
-                            <input type="text" id="unique_id" name="unique_id" value="{{ unique_id }}"
+                            <input type="text" id="unique_id" name="unique_id" placeholder="点击我要参赛即可成立一只属于你的队伍；或者输入一支队伍的uniqueId来加入他们"
                                    class="form-control col-md-7">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="control-label col-md-3" for="unique_id">Tips
+                          </label>
+                          <div class="col-md-6">
+                            <p>顾名思义，每支队伍拥有一个唯一的uniqueId且仅对队长可见</p>
                           </div>
                         </div>
                         <div class="form-group">
@@ -411,9 +283,9 @@
                             {% for member in team.members %}
                               <a href="{% url 'profile-contestant' member.user.id %}">{{ member.nick_name }}</a>
                               {% if request.user.id == team.leader.user.id %}
-                                <a id="{{ member.user.contestant_profile.id }}"><i class="transfer fa fa-flag"></i></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="transfer fa fa-flag" data-toggle="tooltip"  title="任命为队长"></i></a>
                                 <a id="transfer_{{ member.user.contestant_profile.id }}" href="{% url 'transfer' tournament_id team.id member.user.contestant_profile.id %}"></a>
-                                <a id="{{ member.user.contestant_profile.id }}"><i class="kick fa fa-ban"></i></a>
+                                <a id="{{ member.user.contestant_profile.id }}"><i class="kick fa fa-ban" data-toggle="tooltip"  title="踢出队伍"></i></a>
                                 <a id="kick_{{ member.user.contestant_profile.id }}" href="{% url 'kick' tournament_id team.id member.user.contestant_profile.id %}"></a>
                               {% endif %}
                             {%  endfor %}

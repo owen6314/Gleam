@@ -25,8 +25,8 @@
                     <li><a style="cursor: pointer;" onclick="info();">讨论</a></li>
                     <li class="dropdown">
                       <a href="#" data-toggle="dropdown">
-                        {% if user.contestant_profile.avatar.image.url %}
-                          <img src="{{ user.contestant_profile.avatar.image.url }}" class="img-circle" align="left" style="width:23px;height:23px;">
+                        {% if user.contestant_profile.avatar.url %}
+                          <img src="{{ user.contestant_profile.avatar.url }}" class="img-circle" align="left" style="width:23px;height:23px;">
                         {% else %}
                           <img src="/static/images/default-img.jpg" class="img-circle" align="left" style="width:23px;height:23px;">
                         {% endif %}

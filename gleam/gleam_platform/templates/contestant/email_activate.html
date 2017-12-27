@@ -12,7 +12,7 @@
             <p style="font-size:40px;">一封验证邮件已经发送到您的邮箱</p>
             <p style="font-size:40px;">请点击邮件中提供的链接完成注册</p>
             <div class="space"></div>
-            <a id="link_resend" href="{{ domain }}{% url 'confirmation-email-send' user_id %}">
+            <a id="link_resend" >
               <button id="button_resend" class="btn btn-success">重发该邮件(60s内只能发送一次)</button>
             </a>
           </div>
@@ -25,61 +25,97 @@
 {% block javascripts %}
   {{ block.super }}
   <script>
-    function change(){
-      $("#button_resend").attr("class","btn btn-success");
-      $("#link_resend").attr("href","{{ domain }}{% url 'confirmation-email-send' user_id %}");
-      $("#button_resend").html("重发该邮件(60s内只能发送一次)");
-    }
     $(document).ready(function() {
       $("#button_resend").click(function () {
-{#        $.ajax({#}
-{#          type: "POST",#}
-{#          dataType: "text",#}
-{#          url: "confirmation-email-send",#}
-{#          data: "request.user.id",#}
-{#          error: function (){#}
-{#            new PNotify({#}
-{#              title: '发送失败',#}
-{#              type: 'warning',#}
-{#              animate_speed: 'fast',#}
-{#              styling: 'bootstrap3',#}
-{#              hide:true,#}
-{#              shadow:true,#}
-{#              nonblock: {#}
-{#                nonblock: true#}
-{#              },#}
-{#            });#}
-{#          },#}
-{#          success: function (){#}
-{#            new PNotify({#}
-{#              title: '发送成功',#}
-{#              type: 'success',#}
-{#              animate_speed: 'fast',#}
-{#              styling: 'bootstrap3',#}
-{#              hide:true,#}
-{#              shadow:true,#}
-{#              nonblock: {#}
-{#                nonblock: true#}
-{#              },#}
-{#            });#}
-{#          }#}
-{#        });#}
-{#        new PNotify({#}
-{#          title: '发送成功',#}
-{#          type: 'info',#}
-{#          animate_speed: 'fast',#}
-{#          styling: 'bootstrap3',#}
-{#          hide:true,#}
-{#          shadow:true,#}
-{#          nonblock: {#}
-{#            nonblock: true#}
-{#          },#}
-{#        });#}
-        $('#link_resend>#button_resend').trigger('click')
-        $("#button_resend").attr("class","btn btn-disabled");
-        $("#button_resend").html("已发送(60s内只能发送一次)");
-        $("#link_resend").removeAttr("href");
-        var t=setTimeout("change()" ,2000);
+        $.ajax({
+          type: "get",
+          url: "{% url 'confirmation-email-resend' user_id %}",
+          error: function (){
+            new PNotify({
+              title: '发送失败',
+              type: 'warning',
+              animate_speed: 'fast',
+              styling: 'bootstrap3',
+              hide:true,
+              shadow:true,
+              nonblock: {
+                nonblock: true
+              }
+            });
+          },
+          success: function(ret){
+            $("#button_resend").attr("class","btn btn-disabled");
+            $("#link_resend").removeAttr("href");
+            new PNotify({
+              title: '发送成功',
+              type: 'success',
+              animate_speed: 'fast',
+              styling: 'bootstrap3',
+              hide:true,
+              shadow:true,
+              nonblock: {
+                nonblock: true
+              }
+            });
+            var timeSec = 59;
+            var timeStr = '';
+            var setTime = setInterval(function Internal(){
+              if (timeSec == 0){
+                $("#button_resend").attr("class","btn btn-success");
+                $("#button_resend").html("重发该邮件(60s内只能发送一次)");
+                clearInterval(setTime);
+                return;
+              }
+              timeStr = "已发送("+timeSec+"s后再次发送)";
+              $("#button_resend").html(timeStr);
+              timeSec--;
+            },1000);
+          }
+        })
+        {#        $.ajax({#}
+        {#          type: "POST",#}
+        {#          dataType: "text",#}
+        {#          url: "confirmation-email-send",#}
+        {#          data: "request.user.id",#}
+        {#          error: function (){#}
+        {#            new PNotify({#}
+        {#              title: '发送失败',#}
+        {#              type: 'warning',#}
+        {#              animate_speed: 'fast',#}
+        {#              styling: 'bootstrap3',#}
+        {#              hide:true,#}
+        {#              shadow:true,#}
+        {#              nonblock: {#}
+        {#                nonblock: true#}
+        {#              },#}
+        {#            });#}
+        {#          },#}
+        {#          success: function (){#}
+        {#            new PNotify({#}
+        {#              title: '发送成功',#}
+        {#              type: 'success',#}
+        {#              animate_speed: 'fast',#}
+        {#              styling: 'bootstrap3',#}
+        {#              hide:true,#}
+        {#              shadow:true,#}
+        {#              nonblock: {#}
+        {#                nonblock: true#}
+        {#              },#}
+        {#            });#}
+        {#          }#}
+        {#        });#}
+        {#        new PNotify({#}
+        {#          title: '发送成功',#}
+        {#          type: 'info',#}
+        {#          animate_speed: 'fast',#}
+        {#          styling: 'bootstrap3',#}
+        {#          hide:true,#}
+        {#          shadow:true,#}
+        {#          nonblock: {#}
+        {#            nonblock: true#}
+        {#          },#}
+        {#        });#}
+
       });
     });
   </script>
