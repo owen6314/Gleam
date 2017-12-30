@@ -3,7 +3,8 @@ from .common_views import LogoutView, IndexView, PermissionDeniedView, NotFoundV
 from .organizer_account_views import SignupOrganizerView, LoginOrganizerView, HomeOrganizerView, ProfileOrganizerView, \
   ProfileEditOrganizerView, AccountEditOrganizerView
 from .contestant_account_views import SignupContestantView, LoginContestantView, HomeContestantView, \
-  ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView, AccountEditContestantView
+  ProfileContestantView, ProfileEditContestantView, activate, SendConfirmationEmailView, ReSendConfirmationEmailView, \
+  AccountEditContestantView
 from .organizer_tournament_views import CreateTournamentView, TournamentDetailOrganizerView, EditTournamentView, \
   ContestLeaderboardOrganizerView
 from .contestant_tournament_views import TournamentDetailContestantView, TournamentListView, RegisterView,\
@@ -35,6 +36,7 @@ urlpatterns = [
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', activate,
       name='activate'),
   url(r'^confirmation-email-send/([1-9][0-9]*)/$', SendConfirmationEmailView.as_view(), name='confirmation-email-send'),
+  url(r'^confirmation-email-resend/([1-9][0-9]*)/$', ReSendConfirmationEmailView.as_view(), name='confirmation-email-resend'),
   url(r'^contestant/account-edit', AccountEditContestantView.as_view(), name='contestant-account-edit'),
 
   # Organizer Tournament Views
