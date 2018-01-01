@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from gleam_platform.models import User, Organizer, Tournament, Contest
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 import datetime
 
 
@@ -200,3 +201,36 @@ class GetLeaderBoardTest(TestCase):
     contest_id = Contest.objects.first().id
     response = c.get('/contest-leaderboard/organizer/%d/' % contest_id)
     self.assertEqual(response.status_code, 200)
+    
+    
+class OrganizerProfileEditTest(TestCase):
+  def setUp(self):
+    c = Client()
+    c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    return super().setUp()
+
+  def test_edit_organization(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    c.post('/profile-edit/organizer', {"organization": "thss"})
+    user = User.objects.get(email="thss@163.com")
+    self.assertEqual(user.organizer_profile.organization, "thss")
+
+
+class OrganizerAccountEditTest(TestCase):
+  def setUp(self):
+    c = Client()
+    c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    return super().setUp()
+  
+  def test_old_password_valid(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    response = c.post('/organizer/account-edit', {"old_password": "12345678admin", "new_password": "12345678admin"})
+    self.assertTrue(isinstance(response, HttpResponseRedirect))
+  
+  def test_old_password_invalid(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    response = c.post('/organizer/account-edit', {"old_password": "12345678", "new_password": "12345678admin"})
+    self.assertFalse(isinstance(response, HttpResponseRedirect))
