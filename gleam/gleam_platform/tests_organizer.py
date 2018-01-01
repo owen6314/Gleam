@@ -7,7 +7,6 @@ import datetime
 
 # 测试主页
 class IndexTest(TestCase):
-
   # 测试主页url
   def test_index_url(self):
     c = Client()
@@ -18,61 +17,58 @@ class IndexTest(TestCase):
 
 
 class SignupOrganizerTest(TestCase):
-
   # 测试组织者注册失败跳转回主页
   def test_signup_organizer_fail_url(self):
     c = Client()
     response = c.post('/signup/organizer')
     self.assertEqual(response.status_code, 200)
     # self.assertEqual(response.url, '/index')
-
+  
   # 测试组织者注册成功跳转到组织者主页
   def test_signup_organizer_success_url(self):
     c = Client()
     response = c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, '/home/organizer')
-
+  
   # 测试注册成功后的组织者信息
   def test_signup_organizer_info(self):
     c = Client()
     response = c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
     u = User.objects.get(email="thss@163.com")
     self.assertEqual(u.email, "thss@163.com")
-
+  
   def tearDown(self):
     User.objects.filter(email="thss@163.com").delete()
 
 
 class LoginOrganizerTest(TestCase):
-
   def setUp(self):
     c = Client()
     response = c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
-
+  
   # 登录失败，跳转到主页
   def test_login_organizer_fail_url(self):
     c = Client()
     response = c.post('/login/organizer')
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, '/index')
-
+  
   def test_login_organizer_success_url(self):
     c = Client()
     response = c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, '/home/organizer')
-
+  
   def tearDown(self):
     User.objects.filter(email="thss@163.com").delete()
 
 
 class CreateTournamentTest(TestCase):
-
   def setUp(self):
     c = Client()
     c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
-
+  
   def test_create_tournament_success(self):
     c = Client()
     c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -97,14 +93,13 @@ class CreateTournamentTest(TestCase):
     self.assertEqual(tournament.description, 'testonlydescription')
     response = c.get('/tournament-detail/organizer/%d/' % tournament.id)
     self.assertEqual(response.status_code, 200)
-
+  
   def tearDown(self):
     User.objects.filter(email="thss@163.com").delete()
     Tournament.objects.filter(name='testonly').delete()
 
 
 class EditTournamentTest(TestCase):
-
   def setUp(self):
     c = Client()
     c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -122,7 +117,7 @@ class EditTournamentTest(TestCase):
                        release_time=now + datetime.timedelta(days=7))
     contest1.save()
     return super().setUp()
-
+  
   def test_edit_tournament_success(self):
     c = Client()
     c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -146,7 +141,7 @@ class EditTournamentTest(TestCase):
     })
     tournament.refresh_from_db()
     self.assertEqual(tournament.description, 'changed')
-
+  
   def test_edit_tournament_invalid_time_fail(self):
     c = Client()
     c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -172,7 +167,6 @@ class EditTournamentTest(TestCase):
 
 
 class GetLeaderBoardTest(TestCase):
-
   def setUp(self):
     now = timezone.now()
     organizer = Organizer()
@@ -194,21 +188,21 @@ class GetLeaderBoardTest(TestCase):
                        release_time=now + datetime.timedelta(days=14))
     contest2.save()
     return super().setUp()
-
+  
   def test_get_leader_board_success(self):
     c = Client()
     c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
     contest_id = Contest.objects.first().id
     response = c.get('/contest-leaderboard/organizer/%d/' % contest_id)
     self.assertEqual(response.status_code, 200)
-    
-    
+
+
 class OrganizerProfileEditTest(TestCase):
   def setUp(self):
     c = Client()
     c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
     return super().setUp()
-
+  
   def test_edit_organization(self):
     c = Client()
     c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
