@@ -40,11 +40,20 @@
               {% endif %}
               <br/>
               <div><strong>所属学校: </strong>
-                <br/><a>{{ school }}</a>
+                <br/>
+                {% if school  %}
+                  <a>{{ school }}</a>
+                {% else %}
+                  <p>无</p>
+                {% endif %}
               </div>
               <br/>
               <div style="word-wrap:break-word; word-break:break-all;display:block;"><strong>个人介绍: </strong>
-                <p>{{ introduction }}</p>
+                {% if introduction  %}
+                  <p>{{ introduction }}</p>
+                {% else %}
+                  <p>这个人很懒，什么都没有留下QAQ</p>
+                {% endif %}
               </div>
               <ul class="social-links">
                 <li class="facebook"><a target="_blank"
