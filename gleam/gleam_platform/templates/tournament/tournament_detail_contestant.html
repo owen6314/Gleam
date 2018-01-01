@@ -22,7 +22,7 @@
               <div class="text-center">
                 <ul class="nav nav-pills">
                   <li class="active" style="width:24%;"><a style="font-size:24px;" href="#tab_info" data-toggle="tab">比赛详情</a></li>
-                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">排行榜</a></li>
+                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_rank" data-toggle="tab">队伍排名</a></li>
                   <li style="width:24%;"><a style="font-size:24px;" id="team" href="#tab_team" data-toggle="tab">
                     {% if team_status == 0 %}
                       我要参赛
@@ -30,7 +30,7 @@
                       我的队伍
                     {% endif %}
                   </a></li>
-                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">讨论区</a></li>
+                  <li style="width:24%;"><a style="font-size:24px;" href="#tab_discuss" data-toggle="tab">参与讨论</a></li>
                 </ul>
               </div>
               <div id="tournament_content" class="tab-content">
@@ -225,16 +225,22 @@
                         </thead>
 
                         <tbody>
-                        {% for item in leaderboard %}
+                        {% if leaderboard %}
+                          {% for item in leaderboard %}
+                            <tr>
+                              <th scope="row">{{ item.rank }}</th>
+                              <td>{{ item.team_name }}</td>
+                              <td>{{ item.members.0.nick_name}}</td>
+                              <td>{{ item.tutor }}</td>
+                              <td>{{ item.score }}</td>
+                              <td>{{ item.time }}</td>
+                            </tr>
+                          {% endfor %}
+                        {% else %}
                           <tr>
-                            <th scope="row">{{ item.rank }}</th>
-                            <td>{{ item.team_name }}</td>
-                            <td>{{ item.members.0.nick_name}}</td>
-                            <td>{{ item.tutor }}</td>
-                            <td>{{ item.score }}</td>
-                            <td>{{ item.time }}</td>
+                            <td colspan="6" style="text-align: center;">目前暂无排名信息</td>
                           </tr>
-                        {% endfor %}
+                        {% endif %}
                         </tbody>
                       </table>
                     </div>
@@ -273,7 +279,7 @@
                             <a id="team_edit"><i class="fa fa-cog"></i></a>
                           </h2>
                           {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
-                            <h3>Team id: {{ team.unique_id }}
+                            <h3 style="word-break: break-all;word-wrap: break-word;">Team id: {{ team.unique_id }}
                             </h3>
                           {% endif %}
                           <h3>队长:
@@ -301,74 +307,79 @@
                   </div>
                   <div class="tab-pane fade" id="tab_discuss">
                     <div class="space"></div>
-                    <table class="table table-striped projects">
-                      <thead>
-                      <tr>
-                        <th style="width: 1%">#</th>
-                        <th >标题</th>
-                        <th >主题</th>
-                        <th >发布者</th>
-                        <th >发布时间</th>
-                        <th >最后回复时间</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr>
-                        <td>#1</td>
-                        <td>
-                          <a>Pesamakini Backend UI</a>
-                        </td>
-                        <td>
-                          <p>流程相关</p>
-                        </td>
-                        <td>
-                          <a>Lanxiaozhi</a>
-                        </td>
-                        <td >
-                          <p>2017/11/19 16:01:01</p>
-                        </td>
-                        <td>
-                          <p>2017/11/19 16:05:01</p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>#2</td>
-                        <td>
-                          <a>Pesamakini Backend UI</a>
-                        </td>
-                        <td>
-                          <p>奖金相关</p>
-                        </td>
-                        <td>
-                          <a>Lanxiaozhi</a>
-                        </td>
-                        <td >
-                          <p>2017/11/19 16:01:01</p>
-                        </td>
-                        <td>
-                          <p>2017/11/19 16:05:01</p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>#2</td>
-                        <td>
-                          <a>Pesamakini Backend UI</a>
-                        </td>
-                        <td>
-                          <p>流程相关</p>
-                        </td>
-                        <td>
-                          <a>Lanxiaozhi</a>
-                        </td>
-                        <td >
-                          <p>2017/11/19 16:01:01</p>
-                        </td>
-                        <td>
-                          <p>2017/11/19 16:05:01</p>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
+                    <div>
+                      <table class="table table-striped projects">
+                        <thead>
+                        <tr>
+                          <th style="width: 1%">#</th>
+                          <th >标题</th>
+                          <th >主题</th>
+                          <th >发布者</th>
+                          <th >发布时间</th>
+                          <th >最后回复时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td colspan="6" style="text-align: center;">目前暂无帖子信息</td>
+                        </tr>
+                        {#                        <tr>#}
+                        {#                          <td>#1</td>#}
+                        {#                          <td>#}
+                        {#                            <a>Pesamakini Backend UI</a>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>流程相关</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <a>Lanxiaozhi</a>#}
+                        {#                          </td>#}
+                        {#                          <td >#}
+                        {#                            <p>2017/11/19 16:01:01</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>2017/11/19 16:05:01</p>#}
+                        {#                          </td>#}
+                        {#                        </tr>#}
+                        {#                        <tr>#}
+                        {#                          <td>#2</td>#}
+                        {#                          <td>#}
+                        {#                            <a>Pesamakini Backend UI</a>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>奖金相关</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <a>Lanxiaozhi</a>#}
+                        {#                          </td>#}
+                        {#                          <td >#}
+                        {#                            <p>2017/11/19 16:01:01</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>2017/11/19 16:05:01</p>#}
+                        {#                          </td>#}
+                        {#                        </tr>#}
+                        {#                        <tr>#}
+                        {#                          <td>#2</td>#}
+                        {#                          <td>#}
+                        {#                            <a>Pesamakini Backend UI</a>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>流程相关</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <a>Lanxiaozhi</a>#}
+                        {#                          </td>#}
+                        {#                          <td >#}
+                        {#                            <p>2017/11/19 16:01:01</p>#}
+                        {#                          </td>#}
+                        {#                          <td>#}
+                        {#                            <p>2017/11/19 16:05:01</p>#}
+                        {#                          </td>#}
+                        {#                        </tr>#}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -403,122 +414,122 @@
       $("#contest-status").width(toPercent(status));
     });
     {% if team_status == 1 %}
-    $("#team_edit").click(function () {
-      $.confirm({
-        icon: 'fa fa-wrench',
-        title:'修改队伍名',
-        content: '' +
-        '<form action="" class="team_edit">' +
-        '<div class="form-group">' +
-        '<input id="new_team_name" type="text" maxlength="12" value="' +
-        "{{ team.team_name }}" +
-        '" class="name form-control" required />' +
-        '</div>' +
-        '</form>',
-        type:'blue',
-        animation: 'RotateX',
-        closeAnimation: 'RotateX',
-        backgroundDismiss: false,
-        backgroundDismissAnimation: 'glow',
-        buttons: {
-          confirm: {
-            text: '确认',
-            btnClass: 'btn-info',
-            action: function () {
-              $.ajax({
-                dataType: "json",
-                type: "get",
-                url: "{% url 'edit-team-name' team.id %}",
-                data: {"team_name": $('#new_team_name').val()},
-                success: function(ret){
-                  $('#team_name').html(ret.team_name);
-                  $('#team_name>a').attr("id","team_edit");
-                   }
-              })
+      $("#team_edit").click(function () {
+        $.confirm({
+          icon: 'fa fa-wrench',
+          title:'修改队伍名',
+          content: '' +
+          '<form action="" class="team_edit">' +
+          '<div class="form-group">' +
+          '<input id="new_team_name" type="text" maxlength="12" value="' +
+          "{{ team.team_name }}" +
+          '" class="name form-control" required />' +
+          '</div>' +
+          '</form>',
+          type:'blue',
+          animation: 'RotateX',
+          closeAnimation: 'RotateX',
+          backgroundDismiss: false,
+          backgroundDismissAnimation: 'glow',
+          buttons: {
+            confirm: {
+              text: '确认',
+              btnClass: 'btn-info',
+              action: function () {
+                $.ajax({
+                  dataType: "json",
+                  type: "get",
+                  url: "{% url 'edit-team-name' team.id %}",
+                  data: {"team_name": $('#new_team_name').val()},
+                  success: function(ret){
+                    $('#team_name').html(ret.team_name);
+                    $('#team_name>a').attr("id","team_edit");
+                  }
+                })
+              }
+            },
+            cancel: {
+              text: '取消',
+              btnClass: 'btn-danger'
             }
-          },
-          cancel: {
-            text: '取消',
-            btnClass: 'btn-danger'
           }
-        }
+        });
       });
-    });
-    $(".transfer").click(function () {
-      var contestant_id = $(this).parent().attr("id");
-      $.confirm({
-        icon: 'fa fa-warning',
-        title: '提示',
-        content: '确认将他任命为队长么？',
-        animation: 'RotateX',
-        closeAnimation: 'RotateX',
-        backgroundDismiss: true,
-        autoClose: 'cancel|10000',
-        buttons: {
-          confirm: {
-            text: '确认',
-            btnClass:'btn-info',
-            action: function () {
-              $("#transfer_"+contestant_id)[0].click();
+      $(".transfer").click(function () {
+        var contestant_id = $(this).parent().attr("id");
+        $.confirm({
+          icon: 'fa fa-warning',
+          title: '提示',
+          content: '确认将他任命为队长么？',
+          animation: 'RotateX',
+          closeAnimation: 'RotateX',
+          backgroundDismiss: true,
+          autoClose: 'cancel|10000',
+          buttons: {
+            confirm: {
+              text: '确认',
+              btnClass:'btn-info',
+              action: function () {
+                $("#transfer_"+contestant_id)[0].click();
+              }
+            },
+            cancel:{
+              text:'取消',
+              btnClass:'btn-danger'
             }
-          },
-          cancel:{
-            text:'取消',
-            btnClass:'btn-danger'
           }
-        }
+        });
       });
-    });
-    $(".kick").click(function () {
-      var contestant_id = $(this).parent().attr("id");
-      $.confirm({
-        icon: 'fa fa-warning',
-        title: '提示',
-        content: '确认将他开除出队伍吗？',
-        animation: 'RotateX',
-        closeAnimation: 'RotateX',
-        backgroundDismiss: true,
-        autoClose: 'cancel|10000',
-        buttons: {
-          confirm: {
-            text: '确认',
-            btnClass:'btn-info',
-            action: function () {
-              $("#kick_"+contestant_id)[0].click();
+      $(".kick").click(function () {
+        var contestant_id = $(this).parent().attr("id");
+        $.confirm({
+          icon: 'fa fa-warning',
+          title: '提示',
+          content: '确认将他开除出队伍吗？',
+          animation: 'RotateX',
+          closeAnimation: 'RotateX',
+          backgroundDismiss: true,
+          autoClose: 'cancel|10000',
+          buttons: {
+            confirm: {
+              text: '确认',
+              btnClass:'btn-info',
+              action: function () {
+                $("#kick_"+contestant_id)[0].click();
+              }
+            },
+            cancel:{
+              text:'取消',
+              btnClass:'btn-danger'
             }
-          },
-          cancel:{
-            text:'取消',
-            btnClass:'btn-danger'
           }
-        }
+        });
       });
-    });
-    $("#quit").click(function () {
-      $.confirm({
-        icon: 'fa fa-warning',
-        title: '提示',
-        content: '确认要退赛么？',
-        type:'blue',
-        animation: 'RotateX',
-        closeAnimation: 'RotateX',
-        backgroundDismiss: true,
-        autoClose: 'cancel|10000',
-        buttons: {
-          confirm: {
-            text: '确认',
-            btnClass:'btn-info',
-            action: function () {
-              window.location.href = "{% url 'quit' tournament_id %}";
+      $("#quit").click(function () {
+        $.confirm({
+          icon: 'fa fa-warning',
+          title: '提示',
+          content: '确认要退赛么？',
+          type:'blue',
+          animation: 'RotateX',
+          closeAnimation: 'RotateX',
+          backgroundDismiss: true,
+          autoClose: 'cancel|10000',
+          buttons: {
+            confirm: {
+              text: '确认',
+              btnClass:'btn-info',
+              action: function () {
+                window.location.href = "{% url 'quit' tournament_id %}";
+              }
+            },
+            cancel:{
+              text:'取消',
+              btnClass:'btn-danger'
             }
-          },
-          cancel:{
-            text:'取消',
-            btnClass:'btn-danger'
           }
-        }
+        });
       });
-    });
     {% endif %}
   </script>
 {% endblock javascripts %}
