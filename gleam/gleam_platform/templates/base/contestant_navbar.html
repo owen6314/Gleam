@@ -1,4 +1,4 @@
-<header class="header fixed clearfix navbar navbar-fixed-top" style="height:60px;padding-top: 0;">
+<header class="header fixed clearfix navbar navbar-fixed-top">
   <div class="container" id="navbar">
     <div class="row">
       <div class="col-md-4">
@@ -12,15 +12,23 @@
           </div>
         </div>
       </div>
-      <div class="col-md-8 col-sm-12 col-xs-12">
+      <div class="col-md-8">
         <div class="header-right clearfix">
           <div class="main-navigation animated">
             <nav class="navbar navbar-default" role="navigation">
               <div class="container-fluid">
-                <div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse-1">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                </div>
+                <div class="collapse navbar-collapse scrollspy smooth-scroll" id="navbar-collapse">
                   <ul class="nav navbar-nav navbar-right">
-                    <li><input placeholder="Search" style="width:100%;color:black;"/></li>
-                    <li><a style="cursor: pointer;" onclick="info();"><i class="fa fa-search"></i> </a></li>
+                    {#                    <li><input placeholder="Search" style="width:100%;color:black;"/></li>#}
+                    <li><a style="cursor: pointer;" onclick="info();"><i class="fa fa-search"></i>&nbsp;搜索</a></li>
                     <li><a id="tournament-list" href="{% url 'tournament-list' %}">竞赛</a></li>
                     <li><a style="cursor: pointer;" onclick="info();">讨论</a></li>
                     <li class="dropdown">
@@ -33,11 +41,11 @@
                         &nbsp;{{ request.user.contestant_profile.nick_name }}
                       </a>
                       <ul class="dropdown-menu" style="min-width:110px;background-color:rgba(0, 0, 0, 0.5);text-align:center;">
-                        <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'home-contestant' %}">个人主页</a></li>
-                        <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'profile-contestant' request.user.id %}">个人信息</a></li>
-                        <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'contestant-account-edit' %}">账户设置</a></li>
+                        <li><a Mostyle="color: rgb(255, 255, 255);"href="{% url 'home-contestant' %}">个人主页</a></li>
+                        <li><a Mostyle="color: rgb(255, 255, 255);"href="{% url 'profile-contestant' request.user.id %}">个人信息</a></li>
+                        <li><a Mostyle="color: rgb(255, 255, 255);"href="{% url 'contestant-account-edit' %}">账户设置</a></li>
                         <li class="divider"></li>
-                        <li><a onMouseOver="color:black;" Mostyle="color: rgb(255, 255, 255);"href="{% url 'logout' %}">登出</a></li>
+                        <li><a Mostyle="color: rgb(255, 255, 255);"href="{% url 'logout' %}">登出</a></li>
                       </ul>
                     </li>
                   </ul>
