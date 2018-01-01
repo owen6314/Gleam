@@ -211,7 +211,6 @@ class QuitTeamView(View):
     messages.add_message(request, type, msg)
     return redirect('tournament-detail-contestant', tournament_id)
 
-
   @staticmethod
   def quit(tournament, contestant):
     team = Team.objects.filter(tournament=tournament).filter(members=contestant)
@@ -226,8 +225,6 @@ class QuitTeamView(View):
     team.members.remove(contestant)
     team.save()
     return messages.SUCCESS, '退队成功'
-
-
 
 
 @method_decorator(login_required, name='dispatch')

@@ -12,7 +12,7 @@ class SignupContestantTest(TestCase):
     c = Client()
     response = c.post('/signup/contestant')
     self.assertEqual(response.status_code, 200)
-    #self.assertEqual(response.url, '/index')
+    # self.assertEqual(response.url, '/index')
 
   # 参赛者注册成功,发送确认邮件
   def test_signup_contestant_success_url(self):

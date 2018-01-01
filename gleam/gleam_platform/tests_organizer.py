@@ -3,6 +3,7 @@ from gleam_platform.models import User, Organizer, Tournament, Contest
 from django.utils import timezone
 import datetime
 
+
 # 测试主页
 class IndexTest(TestCase):
 
@@ -22,7 +23,7 @@ class SignupOrganizerTest(TestCase):
     c = Client()
     response = c.post('/signup/organizer')
     self.assertEqual(response.status_code, 200)
-    #self.assertEqual(response.url, '/index')
+    # self.assertEqual(response.url, '/index')
 
   # 测试组织者注册成功跳转到组织者主页
   def test_signup_organizer_success_url(self):
@@ -95,7 +96,6 @@ class CreateTournamentTest(TestCase):
     self.assertEqual(tournament.description, 'testonlydescription')
     response = c.get('/tournament-detail/organizer/%d/' % tournament.id)
     self.assertEqual(response.status_code, 200)
-
 
   def tearDown(self):
     User.objects.filter(email="thss@163.com").delete()

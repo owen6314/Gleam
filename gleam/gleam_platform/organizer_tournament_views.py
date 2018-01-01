@@ -169,7 +169,7 @@ class EditTournamentView(View):
 
     if formfail:
       tournament.status = Tournament.STATUS_SAVED
-      #tournament.save()
+      # tournament.save()
       return render(request, 'tournament/tournament_edit.html', {'tournament': tournament, 'tform': tform, 'zip': zip})
     else:
       tournament.status = Tournament.STATUS_PUBLISHED
