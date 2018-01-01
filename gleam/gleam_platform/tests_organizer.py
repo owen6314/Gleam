@@ -1,12 +1,12 @@
 from django.test import TestCase, Client
 from gleam_platform.models import User, Organizer, Tournament, Contest
 from django.utils import timezone
+from django.http import HttpResponseRedirect
 import datetime
 
 
 # 测试主页
 class IndexTest(TestCase):
-
   # 测试主页url
   def test_index_url(self):
     c = Client()
@@ -17,7 +17,6 @@ class IndexTest(TestCase):
 
 
 class SignupOrganizerTest(TestCase):
-
   # 测试组织者注册失败跳转回主页
   def test_signup_organizer_fail_url(self):
     c = Client()
@@ -44,7 +43,6 @@ class SignupOrganizerTest(TestCase):
 
 
 class LoginOrganizerTest(TestCase):
-
   def setUp(self):
     c = Client()
     response = c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -67,7 +65,6 @@ class LoginOrganizerTest(TestCase):
 
 
 class CreateTournamentTest(TestCase):
-
   def setUp(self):
     c = Client()
     c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -103,7 +100,6 @@ class CreateTournamentTest(TestCase):
 
 
 class EditTournamentTest(TestCase):
-
   def setUp(self):
     c = Client()
     c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
@@ -171,7 +167,6 @@ class EditTournamentTest(TestCase):
 
 
 class GetLeaderBoardTest(TestCase):
-
   def setUp(self):
     now = timezone.now()
     organizer = Organizer()
@@ -200,3 +195,36 @@ class GetLeaderBoardTest(TestCase):
     contest_id = Contest.objects.first().id
     response = c.get('/contest-leaderboard/organizer/%d/' % contest_id)
     self.assertEqual(response.status_code, 200)
+
+
+class OrganizerProfileEditTest(TestCase):
+  def setUp(self):
+    c = Client()
+    c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    return super().setUp()
+
+  def test_edit_organization(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    c.post('/profile-edit/organizer', {"organization": "thss"})
+    user = User.objects.get(email="thss@163.com")
+    self.assertEqual(user.organizer_profile.organization, "thss")
+
+
+class OrganizerAccountEditTest(TestCase):
+  def setUp(self):
+    c = Client()
+    c.post('/signup/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    return super().setUp()
+
+  def test_old_password_valid(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    response = c.post('/organizer/account-edit', {"old_password": "12345678admin", "new_password": "12345678admin"})
+    self.assertTrue(isinstance(response, HttpResponseRedirect))
+
+  def test_old_password_invalid(self):
+    c = Client()
+    c.post('/login/organizer', {"password": "12345678admin", "email": "thss@163.com"})
+    response = c.post('/organizer/account-edit', {"old_password": "12345678", "new_password": "12345678admin"})
+    self.assertFalse(isinstance(response, HttpResponseRedirect))
