@@ -6,8 +6,6 @@ from django.utils import timezone
 import datetime
 from django.http import HttpResponseRedirect
 
-
-
 class SignupContestantTest(TestCase):
   # 参赛者登录失败跳转到主页
   def test_signup_contestant_fail_url(self):
