@@ -387,7 +387,7 @@ class ContestantProfileEditTest(TestCase):
     c.post('/profile-edit/contestant', {"resident_id": "110103199705041234"})
     user = User.objects.get(email="thss@163.com")
     self.assertEqual(user.contestant_profile.resident_id, "110103199705041234")
-    
+
   def test_resident_id_invalid(self):
     c = Client()
     c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
@@ -405,13 +405,13 @@ class ContestantAccountEditTest(TestCase):
     user.contestant_profile.save()
     user.save()
     return super().setUp()
-  
+
   def test_old_password_valid(self):
     c = Client()
     c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
     response = c.post('/contestant/account-edit', {"old_password": "12345678admin", "new_password": "12345678admin"})
     self.assertTrue(isinstance(response, HttpResponseRedirect))
-  
+
   def test_old_password_invalid(self):
     c = Client()
     c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
@@ -425,12 +425,12 @@ class ContestantSendEmailTest(TestCase):
     c.post('/signup/contestant', {"password": "12345678admin", "email": "thss@163.com"})
     self.user = User.objects.get(email="thss@163.com")
     return super().setUp()
-  
+
   def test_send_email_success(self):
     c = Client()
     response = c.get('/confirmation-email-send/' + str(self.user.id) + '/')
     self.assertFalse(isinstance(response, HttpResponseRedirect))
-    
+
   def test_send_email_fail_user_not_exists(self):
     c = Client()
     self.user.is_active = True
@@ -438,6 +438,3 @@ class ContestantSendEmailTest(TestCase):
     self.user.save()
     response = c.get('/confirmation-email-send/' + str(self.user.id + 100000) + '/')
     self.assertTrue(isinstance(response, HttpResponseRedirect))
-  
-
-
