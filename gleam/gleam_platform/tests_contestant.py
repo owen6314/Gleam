@@ -10,8 +10,8 @@ class SignupContestantTest(TestCase):
   # 参赛者登录失败跳转到主页
   def test_signup_contestant_fail_url(self):
     c = Client()
-    #response = c.post('/signup/contestant')
-    #self.assertEqual(response.status_code, 302)
+    response = c.post('/signup/contestant')
+    self.assertEqual(response.status_code, 200)
     #self.assertEqual(response.url, '/index')
 
   # 参赛者注册成功,发送确认邮件
@@ -41,7 +41,7 @@ class LoginContestantTest(TestCase):
     self.assertEqual(response.url, '/index')
 
 
-class ContestantTournamentTest(TestCase):
+class ContestantTournamentUnitTest(TestCase):
   def setUp(self):
     now = timezone.now()
     organizer = Organizer()
@@ -62,12 +62,9 @@ class ContestantTournamentTest(TestCase):
                        submit_end_time=now + datetime.timedelta(days=13),
                        release_time=now + datetime.timedelta(days=14))
     contest2.save()
-    contestant1 = Contestant(nick_name='c1')
-    contestant1.save()
-    contestant2 = Contestant(nick_name='c2')
-    contestant2.save()
-    contestant3 = Contestant(nick_name='c3')
-    contestant3.save()
+    Contestant(nick_name='c1').save()
+    Contestant(nick_name='c2').save()
+    Contestant(nick_name='c3').save()
     return super().setUp()
 
   def test_register_create_success(self):
@@ -226,7 +223,7 @@ class ContestantTournamentTest(TestCase):
     _, msg = TransferLeaderView.transfer(tournament, team, leader, other_member)
     self.assertEqual(msg, "您指定的人不在队伍里面")
 
-  def test_kick_not_leader_fail(self):
+  def test_transfer_not_leader_fail(self):
     tournament = Tournament.objects.get(name='T1')
     leader = Contestant.objects.get(nick_name='c1')
     member = Contestant.objects.get(nick_name='c2')
@@ -236,7 +233,7 @@ class ContestantTournamentTest(TestCase):
     _, msg = TransferLeaderView.transfer(tournament, team, member, leader)
     self.assertEqual(msg, "您不是队长，无法移交队长")
 
-  def test_kick_self_fail(self):
+  def test_transfer_self_fail(self):
     tournament = Tournament.objects.get(name='T1')
     leader = Contestant.objects.get(nick_name='c1')
     member = Contestant.objects.get(nick_name='c2')
@@ -245,3 +242,129 @@ class ContestantTournamentTest(TestCase):
     RegisterView.register(tournament, member, team)
     _, msg = TransferLeaderView.transfer(tournament, team, leader, leader)
     self.assertEqual(msg, "您已经是队长，无法移交队长")
+
+
+class TournamentDetailTest(TestCase):
+
+  def setUp(self):
+    now = timezone.now()
+    organizer = Organizer()
+    organizer.save()
+    tournament = Tournament(name='T1', organizer=organizer, description='unchanged', max_team_member_num=4,
+                            status=Tournament.STATUS_PUBLISHED,
+                            register_begin_time=now - datetime.timedelta(days=1),
+                            register_end_time=now + datetime.timedelta(days=1),
+                            overall_end_time=now + datetime.timedelta(days=31))
+    tournament.save()
+    contest1 = Contest(name='T1C1', description='T1C1D', tournament=tournament,
+                       submit_begin_time=now + datetime.timedelta(days=1),
+                       submit_end_time=now + datetime.timedelta(days=6),
+                       release_time=now + datetime.timedelta(days=7))
+    contest1.save()
+    contest2 = Contest(name='T1C2', description='T1C2D', tournament=tournament,
+                       submit_begin_time=now + datetime.timedelta(days=7),
+                       submit_end_time=now + datetime.timedelta(days=13),
+                       release_time=now + datetime.timedelta(days=14))
+    contest2.save()
+    c = Client()
+    c.post('/signup/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    user = User.objects.get(email="thss@163.com")
+    user.is_active = True
+    user.save()
+    return super().setUp()
+
+  def test_tournament_detail_success(self):
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    tournament_id = Tournament.objects.get(name='T1').id
+    response = c.get('/tournament-detail/contestant/%d/' % tournament_id)
+    self.assertEqual(response.status_code, 200)
+
+  def test_tournament_list_success(self):
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    response = c.get('/tournament-list')
+    self.assertEqual(response.status_code, 200)
+
+
+class ContestantTeamOperationTest(TestCase):
+  def setUp(self):
+    now = timezone.now()
+    organizer = Organizer()
+    organizer.save()
+    tournament = Tournament(name='T1', organizer=organizer, description='T1D', max_team_member_num=4,
+                            status=Tournament.STATUS_PUBLISHED,
+                            register_begin_time=now - datetime.timedelta(days=1),
+                            register_end_time=now + datetime.timedelta(days=1),
+                            overall_end_time=now + datetime.timedelta(days=31))
+    tournament.save()
+    contest1 = Contest(name='T1C1', description='T1C1D', tournament=tournament,
+                       submit_begin_time=now + datetime.timedelta(days=1),
+                       submit_end_time=now + datetime.timedelta(days=6),
+                       release_time=now + datetime.timedelta(days=7))
+    contest1.save()
+    contest2 = Contest(name='T1C2', description='T1C2D', tournament=tournament,
+                       submit_begin_time=now + datetime.timedelta(days=7),
+                       submit_end_time=now + datetime.timedelta(days=13),
+                       release_time=now + datetime.timedelta(days=14))
+    contest2.save()
+    c = Client()
+    c.post('/signup/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    user = User.objects.get(email="thss@163.com")
+    user.is_active = True
+    user.contestant_profile.nick_name = 'leader'
+    user.contestant_profile.save()
+    user.save()
+    c.post('/signup/contestant', {"password": "12345678admin", "email": "thsss@163.com"})
+    user = User.objects.get(email="thsss@163.com")
+    user.is_active = True
+    user.contestant_profile.nick_name = 'member'
+    user.contestant_profile.save()
+    user.save()
+    return super().setUp()
+
+  def test_register_success(self):
+    tournament = Tournament.objects.get(name='T1')
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    c.post('/register/%d/' % tournament.id)
+    team = Team.objects.filter(tournament=tournament)
+    self.assertEqual(team.count(), 1)
+
+  def test_quit_success(self):
+    tournament = Tournament.objects.get(name='T1')
+    leader = Contestant.objects.get(nick_name='leader')
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    RegisterView.register(tournament, leader, None)
+    self.assertEqual(Team.objects.count(), 1)
+    c.get('/quit/%d/' % tournament.id)
+    self.assertEqual(Team.objects.count(), 0)
+
+  def test_kick_success(self):
+    tournament = Tournament.objects.get(name='T1')
+    leader = Contestant.objects.get(nick_name='leader')
+    member = Contestant.objects.get(nick_name='member')
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    RegisterView.register(tournament, leader, None)
+    team = Team.objects.first()
+    RegisterView.register(tournament, member, team)
+    self.assertEqual(team.members.count(), 2)
+    c.get('/kick/%d/%d/%d/' % (tournament.id, team.id, member.id))
+    team.refresh_from_db()
+    self.assertEqual(team.members.count(), 1)
+
+  def test_transfer_success(self):
+    tournament = Tournament.objects.get(name='T1')
+    leader = Contestant.objects.get(nick_name='leader')
+    member = Contestant.objects.get(nick_name='member')
+    c = Client()
+    c.post('/login/contestant', {"password": "12345678admin", "email": "thss@163.com"})
+    RegisterView.register(tournament, leader, None)
+    team = Team.objects.first()
+    RegisterView.register(tournament, member, team)
+    self.assertEqual(team.leader.id, leader.id)
+    c.get('/transfer/%d/%d/%d/' % (tournament.id, team.id, member.id))
+    team.refresh_from_db()
+    self.assertEqual(team.leader.id, member.id)

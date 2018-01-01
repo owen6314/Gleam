@@ -31,7 +31,10 @@ class TournamentDetailContestantView(View):
     data = dict()
 
     data['tournament_id'] = tournament_id
-    data['image'] = tournament.image.image
+    if tournament.image:
+      data['image'] = tournament.image.image
+    else:
+      data['image'] = None
     data['description'] = tournament.description
     data['name'] = tournament.name
     data['organization'] = tournament.organizer.organization
@@ -204,7 +207,7 @@ class QuitTeamView(View):
       contestant = request.user.contestant_profile
     except:
       return redirect('index')
-    type, msg = quit(tournament, contestant)
+    type, msg = QuitTeamView.quit(tournament, contestant)
     messages.add_message(request, type, msg)
     return redirect('tournament-detail-contestant', tournament_id)
 
@@ -241,7 +244,7 @@ class KickContestantView(View):
       user = request.user.contestant_profile
     except ObjectDoesNotExist:
       return redirect('index')
-    type, msg = kick(tournament, team, user, contestant)
+    type, msg = KickContestantView.kick(tournament, team, user, contestant)
     messages.add_message(request, type, msg)
     return redirect('tournament-detail-contestant', tournament_id)
 
@@ -274,7 +277,7 @@ class TransferLeaderView(View):
       user = request.user.contestant_profile
     except ObjectDoesNotExist:
       return redirect('index')
-    _, msg = transfer(tournament, team, user, contestant)
+    type, msg = TransferLeaderView.transfer(tournament, team, user, contestant)
     messages.add_message(request, type, msg)
     return redirect('tournament-detail-contestant', tournament_id)
 
