@@ -9,13 +9,13 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% endblock meta %}
     {% block stylesheet %}
-      <link href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" rel="stylesheet">
-      <link href="https://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+      <link href="/static/pnotify/pnotify.custom.min.css" rel="stylesheet">
       <link href="/static/css/animations.css" rel="stylesheet">
       <link href="/static/css/style.css" rel="stylesheet">
       <link href="/static/css/custom.css" rel="stylesheet">
       <link href="/static/css/addition.css" rel="stylesheet">
-      <link href="https://cdn.bootcss.com/pnotify/3.2.0/pnotify.css" rel="stylesheet">
     {% endblock stylesheet %}
     <title>Gleam{% block title %}{% endblock title %}</title>
   {% endblock head %}
@@ -38,9 +38,9 @@
     <script src="https://cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery.isotope/2.0.0/isotope.pkgd.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
-    <script src="https://cdn.bootcss.com/jquery.appear/0.3.6/jquery.appear.js"></script>
-    <script src="https://cdn.bootcss.com/pnotify/3.2.0/pnotify.js"></script>
     <script src="https://cdn.bootcss.com/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+    <script type="text/javascript" src="/static/pnotify/pnotify.custom.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/jquery.appear.js"></script>
     <script type="text/javascript" src="/static/js/template.js"></script>
     <script type="text/javascript" src="/static/js/custom.js"></script>
   {% endblock javascripts %}

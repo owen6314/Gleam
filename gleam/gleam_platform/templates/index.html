@@ -86,7 +86,7 @@
           </div>
         </div>
         <div class="modal-footer" style="text-align: center;">
-          <button type="submit" id="contestant-form" form="login-contestant-form" class="btn btn-disabled" disabled="disabled" >登录</button>
+          <button type="submit" id="contestant-form" class="btn btn-disabled" disabled="disabled" >登录</button>
         </div>
       </div>
     </div>
@@ -1139,6 +1139,9 @@
       else {
         $("#register-organizer-form").submit();
       }
+    });
+    $("#contestant-form").click(function(){
+        $("#login-contestant-form").submit();
     });
     $('.bar-slide').slideToUnlock({
       text : '滑动以验证',
