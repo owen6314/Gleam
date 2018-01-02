@@ -165,7 +165,7 @@ class RegisterView(View):
     if team:
       return messages.ERROR, '您已经参加了一只队伍，如要变更请先退队'
     if target_team:
-      if target_team.members.count() >= tournament.max_team_member_num:
+      if tournament.max_team_member_num != 0 and target_team.members.count() >= tournament.max_team_member_num:
         return messages.ERROR, '该队伍人已满，请与队长联系'
       target_team.members.add(contestant)
       now = timezone.now().strftime("%Y-%m-%d %H:%M:%S")

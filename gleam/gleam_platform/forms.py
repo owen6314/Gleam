@@ -35,7 +35,7 @@ class TournamentForm(forms.ModelForm):
 
   def clean_max_team_member_num(self):
     max_team_member_num = self.cleaned_data['max_team_member_num']
-    if max_team_member_num < 1:
+    if max_team_member_num < 0:
       raise forms.ValidationError('队伍最大人数应为正数')
     return max_team_member_num
 
