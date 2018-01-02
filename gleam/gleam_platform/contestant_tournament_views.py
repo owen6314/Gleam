@@ -37,6 +37,7 @@ class TournamentDetailContestantView(View):
       data['image'] = None
     data['description'] = tournament.description
     data['name'] = tournament.name
+    data['max_team_member_num'] = tournament.max_team_member_num
     data['organization'] = tournament.organizer.organization
     # teams = tournament.team_set.all()
     # contestants = list()
