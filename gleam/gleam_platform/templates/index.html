@@ -1121,6 +1121,11 @@
     $(function () {
       $(".banner-image").backstretch('/static/images/banner.jpg');
       $("#sponsor-sign-in").addClass("active");
+      if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+        $('.bar-slide').hide();
+        $("#contestant-form").attr("class","btn btn-primary");
+        $("#contestant-form").removeAttr("disabled");
+      }
     });
     $("#signin-tab2").click(function(){
       $("#organizer-form").text("登录");
@@ -1141,7 +1146,7 @@
       }
     });
     $("#contestant-form").click(function(){
-        $("#login-contestant-form").submit();
+      $("#login-contestant-form").submit();
     });
     $('.bar-slide').slideToUnlock({
       text : '滑动以验证',
