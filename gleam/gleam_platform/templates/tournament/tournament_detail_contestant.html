@@ -274,7 +274,9 @@
                           <div class="col-md-6 col-md-offset-3">
                             <h2 style="display : inline;">我的队伍:
                               <h2 id="team_name" style="display : inline;">{{ team.team_name }}</h2>
-                              <a id="team_edit"><i class="fa fa-cog"></i></a>
+                              {% if request.user.id == team.leader.user.id %}
+                                <a id="team_edit"><i class="fa fa-cog"></i></a>
+                              {% endif %}
                             </h2>
                             {% if team.unique_id != "0" and request.user.id == team.leader.user.id %}
                               <h3 style="word-break: break-all;word-wrap: break-word;">Team id: {{ team.unique_id }}
