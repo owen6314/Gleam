@@ -31,7 +31,7 @@
           <div class="col-md-8 col-md-offset-2 object-non-visible" data-animation-effect="fadeIn">
             <h1 class="text-center">We are <span>Gleam</span></h1>
             <p class="lead text-center">大学生大数据竞赛报名平台</p>
-            <div class="button-group">
+            <div class="button-group text-center">
               <button id="as-user" data-toggle="modal" data-target="#user-modal" class="btn btn-primary">
                 参加比赛
               </button>
@@ -47,7 +47,6 @@
   <div class="modal fade bs-example-modal-md" tabindex="-1" id="user-modal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
       <div class="modal-content ">
-
         <div class="modal-header" style="background-color: white;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                   aria-hidden="true" style="color:black;">×</span>
@@ -55,7 +54,7 @@
           <h4 class="modal-title"><span>登录</span></h4>
         </div>
         <div class="modal-body">
-          <h1 style="text-align: center;"><a href="{% url 'index' %}">Gleam</a></h1>
+          <h1 style="text-align: center;">Gleam</h1>
           <div>
             <form id="login-contestant-form" class="form-horizontal" role="form" action="{% url 'login-contestant' %}" method="POST">
               {% csrf_token %}
@@ -72,9 +71,6 @@
                 <div class="col-sm-7">
                   <input type="password" class="form-control" id="contestant-login-password" name="password"
                          placeholder="password">
-                </div>
-                <div class="col-md-3 col-md-offset-3 col-sm-3 col-sm-offset-3">
-                  <div style="color:red;">{{ form.login.errors.0 }}</div>
                 </div>
               </div>
               <div class="form-group">
@@ -98,11 +94,11 @@
   <div class="modal fade bs-example-modal-md" tabindex="-1" id="sponsor-modal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" style="background-color: white;">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                   aria-hidden="true">×</span>
           </button>
-          <h4 class="modal-title" id="2">举办比赛</h4>
+          <h4 class="modal-title" id="2" style="color:black;">举办比赛</h4>
         </div>
         <div class="modal-body">
           <div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -123,15 +119,16 @@
                   <form id="login-organizer-form" class="form-horizontal" role="form" action="{% url 'login-organizer' %}" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
-                      <label for="organizer-login-email" class="col-sm-2 control-label">邮箱</label>
-                      <div class="col-sm-10">
+                      <label for="organizer-login-email" class="col-sm-3 control-label">邮箱</label>
+                      <div class="col-sm-7">
                         <input type="text" class="form-control" id="organizer-login-email" name="email"
                                placeholder="example@example.com">
                       </div>
+                      <div class="col-sm-2"></div>
                     </div>
                     <div class="form-group">
-                      <label for="organizer-login-password" class="col-sm-2 control-label">密码</label>
-                      <div class="col-sm-10">
+                      <label for="organizer-login-password" class="col-sm-3 control-label">密码</label>
+                      <div class="col-sm-7">
                         <input type="password" class="form-control" id="organizer-login-password" name="password"
                                placeholder="password">
                       </div>
@@ -146,18 +143,20 @@
                   <form id="register-organizer-form" class="form-horizontal" role="form" action="{% url 'signup-organizer' %}" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
-                      <label for="contestant-login-email" class="col-sm-2 control-label">邮箱</label>
-                      <div class="col-sm-10">
+                      <label for="contestant-login-email" class="col-sm-3 control-label">邮箱</label>
+                      <div class="col-sm-7">
                         <input type="text" class="form-control" id="organizer-register-email" name="email"
                                placeholder="example@example.com">
                       </div>
+                      <div class="col-sm-2"></div>
                     </div>
                     <div class="form-group">
-                      <label for="contestant-login-password" class="col-sm-2 control-label">密码</label>
-                      <div class="col-sm-10">
+                      <label for="contestant-login-password" class="col-sm-3 control-label">密码</label>
+                      <div class="col-sm-7">
                         <input type="password" class="form-control" id="organizer-register-password" name="password"
                                placeholder="password">
                       </div>
+                      <div class="col-sm-2"></div>
                     </div>
                   </form>
                 </div>
@@ -178,51 +177,44 @@
       <div class="row">
         <div class="col-md-12">
           <h1 id="about" class="title text-center">About <span>Gleam</span></h1>
-          <p class="lead text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta officia,
-            aspernatur.</p>
+          <p class="lead text-center">什么是大学生大数据竞赛报名平台？</p>
           <div class="space"></div>
           <div class="row">
             <div class="col-md-6">
-              <img src="/static/images/section-image-1.png" alt="">
+              <img src="/static/images/bg-image-1.jpg" alt="">
               <div class="space"></div>
             </div>
             <div class="col-md-6">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi adipisci illo,
-                voluptatum ipsam fuga error commodi architecto, laudantium culpa tenetur at id, beatae
-                placeat deserunt iure quas voluptas fugit eveniet.</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ducimus explicabo quibusdam
-                temporibus deserunt doloremque pariatur ea, animi a. Delectus similique atque eligendi,
-                enim vel reiciendis deleniti neque aliquid, sit?</p>
+              <p><strong>Big data</strong> is data sets that are so voluminous and complex that traditional data
+                processing application software are inadequate to deal with them. Big data challenges include capturing
+                data, data storage, data analysis, search, sharing, transfer, visualization, querying,
+                updating and information privacy. There are three dimensions to big data known as Volume,
+                Variety and Velocity.</p>
+              <footer class="pull-right">——Wikipedia</footer>
+              <br>
               <ul class="list-unstyled">
-                <li><i class="fa fa-caret-right pr-10 text-colored"></i> Lorem ipsum dolor sit amet</li>
-                <li><i class="fa fa-caret-right pr-10 text-colored"></i> Reiciendis deleniti neque
-                  aliquid
-                </li>
-                <li><i class="fa fa-caret-right pr-10 text-colored"></i> Ipsam fuga error commodi</li>
-                <li><i class="fa fa-caret-right pr-10 text-colored"></i> Lorem ipsum dolor sit amet</li>
-                <li><i class="fa fa-caret-right pr-10 text-colored"></i> Dignissimos molestiae
-                  necessitatibus
-                </li>
+                <li><i class="fa fa-caret-right pr-10 text-colored"></i> 竞赛平台 </li>
+                <li><i class="fa fa-caret-right pr-10 text-colored"></i> 大数据竞赛平台 </li>
+                <li><i class="fa fa-caret-right pr-10 text-colored"></i> 大数据竞赛报名平台 </li>
+                <li><i class="fa fa-caret-right pr-10 text-colored"></i> 失败的大数据竞赛报名平台 </li>
+                <li><i class="fa fa-caret-right pr-10 text-colored"></i> 跑路 </li>
               </ul>
             </div>
           </div>
           <div class="space"></div>
-          <h2>Becessitatibus quae beatae possimus ullam</h2>
+          <h2>Lately</h2>
           <div class="row">
             <div class="col-md-6">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi adipisci illo,
-                voluptatum ipsam fuga error commodi architecto, laudantium culpa tenetur at id, beatae
-                placeat deserunt iure quas voluptas fugit eveniet.</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ducimus explicabo quibusdam
-                temporibus deserunt doloremque pariatur ea, animi a. Delectus similique atque eligendi,
-                enim vel reiciendis deleniti neque aliquid, sit?</p>
-              <p>Vitae dolores quam magnam accusantium nam, voluptatibus expedita delectus, dolorum odio
-                magni ut nemo nihil ex earum pariatur molestias velit eveniet, facere autem saepe aut.
-                Ut minima itaque porro facere. Cumque vitae autem, dignissimos molestiae necessitatibus
-                culpa aliquam deleniti soluta sunt voluptatibus tenetur, unde dolorem eligendi doloribus
-                quibusdam facere totam. Possimus atque deserunt numquam aliquam magnam, facilis officiis
-                illo alias ipsa voluptas laborum, praesentium eveniet nobis velit voluptatem odio
-                eligendi, corporis et iste distinctio! Repellendus, id, ad.</p>
+              <p>The term "big data" tends to refer to the use of predictive analytics, user behavior analytics,
+                or certain other advanced data analytics methods that extract value from data, and seldom to a particular
+                size of data set. "There is little doubt that the quantities of data now available are indeed large,
+                but that’s not the most relevant characteristic of this new data ecosystem."Analysis of data sets can
+                find new correlations to "spot business trends, prevent diseases, combat crime and so on."Scientists,
+                business executives, practitioners of medicine, advertising and governments alike regularly meet
+                difficulties with large data-sets in areas including Internet search, fintech, urban informatics, and
+                business informatics. Scientists encounter limitations in e-Science work, including meteorology,
+                genomics, connectomics, complex physics simulations, biology and environmental research.</p>
+              <footer class="pull-right">——Wikipedia</footer>
             </div>
             <div class="col-md-6">
               <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -231,19 +223,14 @@
                     <h4 class="panel-title">
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
                          aria-expanded="true" aria-controls="collapseOne">
-                        Collapsible Group Item #1
+                        产品经理说了算
                       </a>
                     </h4>
                   </div>
                   <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
                        aria-labelledby="headingOne">
                     <div class="panel-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                      richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-                      dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                      tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                      assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-                      wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher.
+                      老实人，孤立他
                     </div>
                   </div>
                 </div>
@@ -252,19 +239,14 @@
                     <h4 class="panel-title">
                       <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                          href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Collapsible Group Item #2
+                        前端开发
                       </a>
                     </h4>
                   </div>
                   <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
                        aria-labelledby="headingTwo">
                     <div class="panel-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                      richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-                      dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                      tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                      assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-                      wes anderson cred nesciunt sapiente ea proident.
+                      怎么好看怎么来，让后端去适配
                     </div>
                   </div>
                 </div>
@@ -274,19 +256,14 @@
                       <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                          href="#collapseThree" aria-expanded="false"
                          aria-controls="collapseThree">
-                        Collapsible Group Item #3
+                        后端开发
                       </a>
                     </h4>
                   </div>
                   <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
                        aria-labelledby="headingThree">
                     <div class="panel-body">
-                      Richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-                      dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                      tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-                      assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-                      wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-                      vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic.
+                      怎么方便怎么来，大不了重构
                     </div>
                   </div>
                 </div>
@@ -310,17 +287,16 @@
     <div class="container">
       <h1 class="text-center title" id="hot">热门赛事</h1>
       <div class="separator"></div>
-      <p class="lead text-center">Lorem ipsum dolor sit amet laudantium molestias similique.<br> Quisquam incidunt
-        ut laboriosam.</p>
+      <p class="lead text-center">以下是发布在Gleam上的一些热门赛事，点击以查看详情</p>
       <br>
       <div class="row object-non-visible" data-animation-effect="fadeIn">
         <div class="col-md-12">
           <div class="filters text-center">
             <ul class="nav nav-pills">
-              <li class="active"><a href="#" data-filter="*">All</a></li>
-              <li><a href="#" data-filter=".web-design">Web design</a></li>
-              <li><a href="#" data-filter=".app-development">App development</a></li>
-              <li><a href="#" data-filter=".site-building">Site building</a></li>
+              <li class="active"><a href="#" data-filter="*">全部</a></li>
+              <li><a href="#" data-filter=".web-design">逼格高的</a></li>
+              <li><a href="#" data-filter=".app-development">奖金丰富的</a></li>
+              <li><a href="#" data-filter=".site-building">从入门到放弃</a></li>
             </ul>
           </div>
           <div class="isotope-container row grid-space-20">
@@ -1040,8 +1016,7 @@
             <div class="media-body">
               <h3 class="media-heading">方便快捷的浏览体验</h3>
               <blockquote>
-                <p>Aperiam consequatur quo quis exercitationem reprehenderit suscipit iste placeat.</p>
-                <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                <p>超棒的前端团队给你不一样的报名体验</p>
               </blockquote>
             </div>
           </div>
@@ -1056,9 +1031,7 @@
             <div class="media-body">
               <h3 class="media-heading">赛事提醒从不错过</h3>
               <blockquote>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure aperiam consequatur
-                  quo.</p>
-                <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                <p>再也不用担心错过DDL</p>
               </blockquote>
             </div>
           </div>
@@ -1069,10 +1042,9 @@
               <img src="/static/images/testimonial-3.png" alt="">
             </div>
             <div class="media-body">
-              <h3 class="media-heading">Amazing!</h3>
+              <h3 class="media-heading">精彩赛事一网打尽</h3>
               <blockquote>
-                <p>Iure aperiam consequatur quo quis exercitationem reprehenderit dolor vel ducimus.</p>
-                <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                <p>网罗大大小小大数据竞赛，总有一项你可以报名</p>
               </blockquote>
             </div>
           </div>
@@ -1083,10 +1055,9 @@
               <img src="/static/images/testimonial-1.png" alt="">
             </div>
             <div class="media-body">
-              <h3 class="media-heading">Best!</h3>
+              <h3 class="media-heading">Fancy and Useless</h3>
               <blockquote>
-                <p>Aperiam consequatur quo quis exercitationem reprehenderit suscipit iste placeat.</p>
-                <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
+                <p>Emmmm...</p>
               </blockquote>
             </div>
           </div>
@@ -1149,40 +1120,22 @@
   <script>
     $(function () {
       $(".banner-image").backstretch('/static/images/banner.jpg');
-      $("#user-sign-in").addClass("active");
       $("#sponsor-sign-in").addClass("active");
-    });
-    $("#signin-tab1").click(function(){
-
-      $("#user-register").removeClass("active");
-      $("#user-sign-in").addClass("active");
-      $("#contestant-form").text("登录");
-    });
-    $("#register-tab1").click(function(){
-
-      $("#contestant-form").text("注册");
-      $("#user-register").addClass("active");
-      $("#user-sign-in").removeClass("active");
+      if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+        $('.bar-slide').hide();
+        $("#contestant-form").attr("class","btn btn-primary");
+        $("#contestant-form").removeAttr("disabled");
+      }
     });
     $("#signin-tab2").click(function(){
-
       $("#organizer-form").text("登录");
       $("#sponsor-sign-in").addClass("active");
       $("#sponsor-register").removeClass("active");
     });
     $("#register-tab2").click(function(){
-
       $("#organizer-form").text("注册");
       $("#sponsor-sign-in").removeClass("active");
       $("#sponsor-register").addClass("active");
-    });
-    $("#contestant-form").click(function(){
-      if ($("#contestant-form").text() == "登录"){
-        $("#login-contestant-form").submit();
-      }
-      else{
-        $("#register-contestant-form").submit();
-      }
     });
     $("#organizer-form").click(function(){
       if ($("#organizer-form").text() == "登录"){
@@ -1191,6 +1144,9 @@
       else {
         $("#register-organizer-form").submit();
       }
+    });
+    $("#contestant-form").click(function(){
+      $("#login-contestant-form").submit();
     });
     $('.bar-slide').slideToUnlock({
       text : '滑动以验证',
