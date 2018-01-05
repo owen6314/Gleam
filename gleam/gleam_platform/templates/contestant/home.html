@@ -4,6 +4,7 @@
 
 {% block stylesheet %}
   {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
 {% endblock stylesheet %}
 
 {% block content %}
@@ -153,4 +154,19 @@
 
 {% block javascripts %}
   {{ block.super }}
+  <script>
+    sessionStorage.setItem('userId', '1_u'+{{ request.user.id }});
+    sessionStorage.setItem('companyId', '1');
+    sessionStorage.setItem('companyName', 'Gleam');
+    {#var json = {"nick_name":"{{ request.user.contestant_profile.nick_name }}"};#}
+    {#sessionStorage.setItem("data", json);#}
+  </script>
+  <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+  <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.bootcss.com/socket.io/2.0.3/socket.io.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+  <script src="http://123.206.22.71/media/files/2018/01/03/yogurt-chat-window_EPc6bPG.js"></script>
+
 {% endblock javascripts %}
