@@ -3,4 +3,4 @@ A competition register platform using django, course project of **Software Engin
 
 Developed at https://gitlab.thsecourse.com (expired).
 
-Doc in [hackmd](https://hackmd.io/FAkHv1ZnTJKSl-sSjKw7OQ)
+Docs in [hackmd](https://hackmd.io/FAkHv1ZnTJKSl-sSjKw7OQ)
